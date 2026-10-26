@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='black'/><text x='32' y='44' font-size='30' text-anchor='middle' fill='%2300C805' font-family='Arial' font-weight='bold'>G</text></svg>">
+<link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='black'/><text x='32' y='44' font-size='30' text-anchor='middle' fill='%2300C805' font-family='Arial' font-weight='bold'>G</text></svg>">
+<title>Garmin Leaderboard</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #000; color: #e8e8e8; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 28px 20px 48px; }
+  h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; }
+  .sub { color: #888; font-size: 13px; margin-top: 6px; }
+  .toggle { display: flex; gap: 24px; margin: 28px 0 8px; border-bottom: 1px solid rgba(255,255,255,0.14); }
+  .toggle button { background: none; border: none; color: #888; font-size: 15px; padding: 0 0 10px; cursor: pointer; }
+  .toggle button.active { color: #fff; border-bottom: 2px solid #fff; margin-bottom: -1px; }
+  .daytoggle { display: flex; gap: 10px; margin: 20px 0 4px; }
+  .daytoggle button { background: none; border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; color: #aaa; font-size: 13px; padding: 6px 12px; cursor: pointer; }
+  .daytoggle button.active { color: #fff; border-color: #fff; }
+  .daylabel { color: #888; font-size: 13px; margin: 14px 0 20px; }
+  .board { margin-top: 26px; }
+  .board h2 { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #888; margin-bottom: 2px; }
+  .row { display: flex; align-items: baseline; gap: 14px; width: 100%; background: none; border: none; border-bottom: 1px solid rgba(255,255,255,0.10); color: inherit; font: inherit; text-align: left; padding: 14px 0; cursor: pointer; }
+  .rank { font-size: 30px; font-weight: 300; color: #666; width: 34px; flex-shrink: 0; }
+  .name { font-size: 17px; flex: 1; }
+  .val { font-size: 30px; font-weight: 600; }
+  .val.green { color: #00C805; }
+  .val.small { font-size: 22px; }
+  .hrvline { font-size: 13px; color: #888; padding: 0 0 14px 48px; border-bottom: 1px solid rgba(255,255,255,0.10); }
+  .panel { display: none; padding: 14px 0 14px 48px; border-bottom: 1px solid rgba(255,255,255,0.10); }
+  .panel.open { display: block; }
+  .panel div { font-size: 14px; color: #aaa; padding: 3px 0; }
+  .panel div b { color: #ddd; font-weight: 500; }
+  .summary { margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.14); padding-top: 20px; }
+  .summary h2 { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #888; margin-bottom: 12px; }
+  .summary p { font-size: 15px; line-height: 1.55; color: #ccc; margin-bottom: 12px; }
+  .summary p b { color: #fff; font-weight: 600; }
+  .person-table { margin-top: 30px; }
+  .person-table h3 { font-size: 17px; font-weight: 600; margin-bottom: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th { text-align: left; color: #888; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; padding: 8px 6px 8px 0; border-bottom: 1px solid rgba(255,255,255,0.14); }
+  td { padding: 9px 6px 9px 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: #ddd; }
+  td:first-child { color: #888; }
+  footer { margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.14); padding-top: 16px; }
+  footer p { font-size: 12px; color: #666; line-height: 1.5; margin-bottom: 8px; }
+  .hidden { display: none !important; }
+  .head { display: flex; align-items: center; justify-content: space-between; }
+  .info-btn { width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.30); background: none; color: #ccc; font-size: 15px; font-weight: 600; cursor: pointer; flex-shrink: 0; }
+  .info { margin-top: 18px; padding: 16px 0; border-top: 1px solid rgba(255,255,255,0.14); border-bottom: 1px solid rgba(255,255,255,0.14); }
+  .info h3 { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #888; margin-bottom: 12px; }
+  .info p { font-size: 14px; line-height: 1.55; color: #aaa; margin-bottom: 10px; }
+  .info p b { color: #ddd; font-weight: 500; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <h1>Garmin Leaderboard</h1>
+    <button id="info-btn" class="info-btn" aria-expanded="false" aria-controls="info-panel" title="How the numbers are computed">i</button>
+  </div>
+  <p class="sub">Oct 19&ndash;25, 2026 &middot; Recovery and strain are modeled estimates</p>
+
+  <div id="info-panel" class="info hidden">
+    <h3>How the numbers are computed</h3>
+    <p><b>Recovery (Est.)</b> = 50% sleep score + 30% HRV component + 20% Body Battery charged. HRV component = 50 + (last night's HRV &minus; your own weekly average HRV) &times; 2, clamped to 0&ndash;100. A modeled estimate, not a Garmin score.</p>
+    <p><b>Strain (Est.)</b> is a rough directional estimate from that day's steps and heart-rate load. There is no fixed formula behind it, and the ~ means approximate. Use it to compare who trained harder, not as a precise score. Not a Garmin or Whoop number.</p>
+    <p><b>Sleep score</b> is Garmin's own 0&ndash;100 score for the night ending that morning. Not calculated here.</p>
+    <p><b>HRV</b> is Garmin's last-night average HRV in milliseconds. The line under Recovery compares it to your own 7-day average only. HRV is personal and is never ranked across people.</p>
+    <p><b>Resting HR</b> is Garmin's daily resting heart rate in bpm. The weekly board ranks each person's lowest value of the week; lower wins.</p>
+    <p><b>Steps and distance</b> are Garmin's daily totals; distance is in miles.</p>
+    <p><b>Body Battery</b> values are Garmin's. Only the charged value feeds Recovery.</p>
+    <p><b>Rankings:</b> higher wins, except Resting HR where lower wins. The #1 value is green.</p>
+    <p><b>Expanded rows</b> show context for that metric only. Recovery expands to its three inputs, Steps expands to distance. Distance never appears under Resting HR.</p>
+    <p><b>Missing data:</b> &mdash; means nothing was recorded that day (Jordan has no sleep or HRV for Oct 23), not zero. Weekly averages use recorded days only.</p>
+    <p><b>Daily vs Weekly:</b> Daily defaults to the last full day (Oct 24). Today (Oct 25) is partial, as of ~7:35 PM PDT. Weekly covers Oct 19&ndash;25.</p>
+    <p><b>Data:</b> Garmin Personal API, Oct 19&ndash;25, 2026 snapshot. The board is static and does not self-update yet.</p>
+    <p>Anything marked (Est.) is a modeled estimate, not an official Garmin or Whoop score.</p>
+  </div>
+
+  <div class="toggle" role="tablist">
+    <button id="tab-daily" class="active" role="tab" aria-selected="true">Daily</button>
+    <button id="tab-weekly" role="tab" aria-selected="false">Weekly</button>
+  </div>
+
+  <div id="daily-view">
+    <div class="daytoggle">
+      <button id="day-yesterday" class="active">Yesterday &middot; Oct 24</button>
+      <button id="day-today">Today &middot; Oct 25</button>
+    </div>
+    <p class="daylabel" id="daylabel">Full day</p>
+    <div id="daily-boards"></div>
+  </div>
+
+  <div id="weekly-view" class="hidden">
+    <div id="weekly-boards"></div>
+    <div class="summary">
+      <h2>The week so far</h2>
+      <p><b>Austin, the metronome</b> &mdash; sleep never below 75 all week (avg 88.9), recovery avg 74 and never below 62, steady steps every day.</p>
+      <p><b>Jordan, the rollercoaster</b> &mdash; a brutal Oct 19&ndash;21 (sleep 57, 65, 54; recovery 58, 48, 57), then a strong finish: recovery 77, 77, 78.</p>
+      <p><b>The twist</b> &mdash; Jordan out-walked Austin 2.1&times; this week (101,450 vs 47,685 steps), but his two biggest step days lined up with his two worst nights: 27,904 steps Oct 19 with sleep 57, and 23,371 steps Oct 21 with sleep 54.</p>
+      <p><b>Bottom line</b> &mdash; Jordan wins today; Austin wins the week (avg recovery 74 vs 66, avg sleep 88.9 vs 72.0).</p>
+    </div>
+    <div id="weekly-tables"></div>
+  </div>
+
+  <footer>
+    <p>Recovery (Est.) = 50% sleep score + 30% HRV vs own baseline + 20% Body Battery charged. Modeled estimate, not a Garmin score.</p>
+    <p>Oct 25 is a partial day.</p>
+    <p>Strain is a rough steps+HR-based estimate.</p>
+    <p>HRV is personal &mdash; shown only against your own baseline, never ranked.</p>
+  </footer>
+</div>
+
+<script>
+const DAYS = ["Oct 19", "Oct 20", "Oct 21", "Oct 22", "Oct 23", "Oct 24", "Oct 25"];
+const PEOPLE = [
+  {
+    name: "Austin",
+    sleep: [88, 88, 92, 98, 86, 95, 75],
+    recovery: [78, 74, 78, 82, 72, 71, 62],
+    hrv: [70, 63, 65, 64, 59, 53, 54],
+    rhr: [53, 54, 55, 52, 57, 55, 57],
+    steps: [8430, 7837, 7020, 5590, 5557, 8248, 5003],
+    stages: [[12, 64, 25], [18, 64, 18], [24, 62, 14], [22, 52, 26], [16, 63, 22], [22, 55, 22], [17, 73, 10]],
+    battery: [[30, 67, 76], [24, 70, 76], [25, 75, 74], [18, 80, 87], [25, 75, 68], [15, 65, 75], [43, 70, 42]],
+    stress: [25, 29, 26, 38, 25, 39, 28],
+    maxhr: [150, 101, 98, 110, 163, 111, 116],
+    dist: [4.50, 4.18, 3.79, 3.01, 3.28, 4.46, 2.71],
+    strainYesterday: 9, strainToday: 5,
+    hrvVsOwnYesterday: "HRV 53 vs own avg 61",
+    hrvVsOwnToday: "HRV 54 vs own avg 61",
+    weekly: { steps: 47685, dist: 25.93, avgSleep: 88.9, avgRecovery: 74, avgHrv: 61.1, lowRhr: 52, bestRec: "Oct 22 (82)", bestSleep: "Oct 22 (98)" }
+  },
+  {
+    name: "Jordan",
+    sleep: [57, 65, 54, 86, null, 82, 88],
+    recovery: [58, 48, 57, 77, null, 77, 78],
+    hrv: [74, 57, 76, 75, null, 79, 81],
+    rhr: [49, 55, 53, 49, 55, 49, 48],
+    steps: [27904, 13288, 23371, 12341, 16918, 4515, 3113],
+    stages: [[30, 42, 27], [9, 78, 13], [31, 51, 18], [14, 66, 20], null, [25, 56, 18], [19, 55, 26]],
+    battery: [[10, 72, 87], [10, 55, 55], [9, 66, 67], [18, 90, 81], [5, 25, 51], [28, 87, 64], [42, 74, 60]],
+    stress: [32, 32, 27, 28, 45, 23, 22],
+    maxhr: [141, 123, 117, 123, 146, 103, 106],
+    dist: [15.07, 6.60, 11.57, 6.11, 8.69, 2.26, 1.55],
+    strainYesterday: 6, strainToday: 4,
+    hrvVsOwnYesterday: "HRV 79 vs own avg 74",
+    hrvVsOwnToday: "HRV 81 vs own avg 73",
+    weekly: { steps: 101450, dist: 51.85, avgSleep: 72.0, avgRecovery: 66, avgHrv: 73.7, lowRhr: 48, bestRec: "Oct 25 (78)", bestSleep: "Oct 25 (88)" }
+  }
+];
+const fmt = (n) => n.toLocaleString("en-US");
+const show = (v) => (v === null || v === undefined ? "\u2014" : v);
+
+function expandableRow(rank, name, valHtml, panelHtml) {
+  const btn = document.createElement("button");
+  btn.className = "row";
+  btn.setAttribute("aria-expanded", "false");
+  btn.innerHTML = '<span class="rank">' + rank + '</span><span class="name">' + name + '</span>' + valHtml;
+  const panel = document.createElement("div");
+  panel.className = "panel";
+  panel.innerHTML = panelHtml;
+  btn.addEventListener("click", () => {
+    const open = panel.classList.toggle("open");
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+  return [btn, panel];
+}
+
+function recoveryPanel(p, i) {
+  const bat = p.battery[i];
+  return "<div><b>Sleep score:</b> " + show(p.sleep[i]) + "</div>"
+    + "<div><b>HRV last night:</b> " + show(p.hrv[i]) + "</div>"
+    + "<div><b>Body Battery charged:</b> " + bat[1] + "</div>";
+}
+
+function sleepPanel(p, i) {
+  const st = p.stages[i];
+  const stageLine = st ? "Deep " + st[0] + "% &middot; Light " + st[1] + "% &middot; REM " + st[2] + "%" : "\u2014";
+  return "<div><b>Sleep stages:</b> " + stageLine + "</div>";
+}
+
+function stepsPanel(p, i) {
+  return "<div><b>Distance:</b> " + p.dist[i].toFixed(2) + " mi</div>";
+}
+
+function strainPanel(p, i) {
+  return "<div><b>Max HR:</b> " + p.maxhr[i] + "</div>"
+    + "<div><b>Steps:</b> " + fmt(p.steps[i]) + "</div>";
+}
+
+function rhrPanel(p) {
+  return "<div><b>Resting HR Oct 19&ndash;25:</b> " + p.rhr.map(show).join(" &middot; ") + "</div>";
+}
+
+function weeklyStepsPanel(p) {
+  const w = p.weekly;
+  return "<div><b>Steps Oct 19&ndash;25:</b> " + p.steps.map((s) => fmt(s)).join(" &middot; ") + "</div>"
+    + "<div><b>Total distance:</b> " + w.dist.toFixed(2) + " mi</div>";
+}
+
+function weeklySleepPanel(p) {
+  return "<div><b>Sleep Oct 19&ndash;25:</b> " + p.sleep.map(show).join(" &middot; ") + "</div>";
+}
+
+function weeklyRecoveryPanel(p) {
+  return "<div><b>Recovery Oct 19&ndash;25:</b> " + p.recovery.map(show).join(" &middot; ") + "</div>";
+}
+
+function weeklyRhrPanel(p) {
+  return "<div><b>Resting HR Oct 19&ndash;25:</b> " + p.rhr.map(show).join(" &middot; ") + "</div>";
+}
+
+function renderBoard(container, title, ranked) {
+  const sec = document.createElement("div");
+  sec.className = "board";
+  const h = document.createElement("h2");
+  h.textContent = title;
+  sec.appendChild(h);
+  ranked.forEach((entry, idx) => {
+    const [btn, panel] = expandableRow(idx + 1, entry.person.name, entry.valHtml, entry.panelHtml);
+    if (idx === 0) {
+      btn.querySelector(".val").classList.add("green");
+    }
+    sec.appendChild(btn);
+    sec.appendChild(panel);
+    if (entry.subline) {
+      const sub = document.createElement("div");
+      sub.className = "hrvline";
+      sub.textContent = entry.subline;
+      sec.appendChild(sub);
+    }
+  });
+  container.appendChild(sec);
+}
+
+function renderDaily(dayIdx) {
+  const isToday = dayIdx === 6;
+  document.getElementById("daylabel").textContent = isToday ? "Partial day (as of ~7:35 PM PDT)" : "Full day";
+  const box = document.getElementById("daily-boards");
+  box.innerHTML = "";
+
+  const byVal = (key, desc) => [...PEOPLE].sort((a, b) => desc ? b[key][dayIdx] - a[key][dayIdx] : a[key][dayIdx] - b[key][dayIdx]);
+
+  renderBoard(box, "Recovery (Est.)", byVal("recovery", true).map((p) => ({
+    person: p,
+    valHtml: '<span class="val">' + p.recovery[dayIdx] + "</span>",
+    panelHtml: recoveryPanel(p, dayIdx),
+    subline: isToday ? p.hrvVsOwnToday : p.hrvVsOwnYesterday
+  })));
+
+  renderBoard(box, "Sleep", byVal("sleep", true).map((p) => ({
+    person: p,
+    valHtml: '<span class="val">' + p.sleep[dayIdx] + "</span>",
+    panelHtml: sleepPanel(p, dayIdx)
+  })));
+
+  renderBoard(box, "Steps", byVal("steps", true).map((p) => ({
+    person: p,
+    valHtml: '<span class="val">' + fmt(p.steps[dayIdx]) + "</span>",
+    panelHtml: stepsPanel(p, dayIdx)
+  })));
+
+  const strainKey = isToday ? "strainToday" : "strainYesterday";
+  renderBoard(box, isToday ? "Strain (Est., in progress)" : "Strain (Est.)",
+    [...PEOPLE].sort((a, b) => b[strainKey] - a[strainKey]).map((p) => ({
+      person: p,
+      valHtml: '<span class="val">~' + p[strainKey] + "</span>",
+      panelHtml: strainPanel(p, dayIdx)
+    })));
+
+  renderBoard(box, "Resting HR", byVal("rhr", false).map((p) => ({
+    person: p,
+    valHtml: '<span class="val">' + p.rhr[dayIdx] + "</span>",
+    panelHtml: rhrPanel(p)
+  })));
+}
+
+function renderWeekly() {
+  const box = document.getElementById("weekly-boards");
+  box.innerHTML = "";
+  const byWeekly = (key, desc) => [...PEOPLE].sort((a, b) => desc ? b.weekly[key] - a.weekly[key] : a.weekly[key] - b.weekly[key]);
+
+  renderBoard(box, "Steps", byWeekly("steps", true).map((p) => ({
+    person: p,
+    valHtml: '<span class="val">' + fmt(p.weekly.steps) + "</span>",
+    panelHtml: weeklyStepsPanel(p)
+  })));
+
+  renderBoard(box, "Avg sleep", byWeekly("avgSleep", true).map((p) => ({
+    person: p,
+    valHtml: '<span class="val">' + p.weekly.avgSleep.toFixed(1) + "</span>",
+    panelHtml: weeklySleepPanel(p)
+  })));
+
+  renderBoard(box, "Avg recovery (Est.)", byWeekly("avgRecovery", true).map((p) => ({
+    person: p,
+    valHtml: '<span class="val">' + p.weekly.avgRecovery + "</span>",
+    panelHtml: weeklyRecoveryPanel(p)
+  })));
+
+  renderBoard(box, "Lowest resting HR", byWeekly("lowRhr", false).map((p) => ({
+    person: p,
+    valHtml: '<span class="val">' + p.weekly.lowRhr + "</span>",
+    panelHtml: weeklyRhrPanel(p)
+  })));
+
+  const tables = document.getElementById("weekly-tables");
+  tables.innerHTML = "";
+  PEOPLE.forEach((p) => {
+    const wrap = document.createElement("div");
+    wrap.className = "person-table";
+    const h = document.createElement("h3");
+    h.textContent = p.name;
+    wrap.appendChild(h);
+    let html = "<table><tr><th>Day</th><th>Sleep</th><th>Recovery (Est.)</th><th>HRV</th><th>Resting HR</th><th>Steps</th></tr>";
+    DAYS.forEach((d, i) => {
+      html += "<tr><td>" + d + "</td><td>" + show(p.sleep[i]) + "</td><td>" + show(p.recovery[i]) + "</td><td>" + show(p.hrv[i]) + "</td><td>" + show(p.rhr[i]) + "</td><td>" + fmt(p.steps[i]) + "</td></tr>";
+    });
+    html += "</table>";
+    wrap.innerHTML += html;
+    tables.appendChild(wrap);
+  });
+}
+
+let currentDay = 5;
+renderDaily(currentDay);
+renderWeekly();
+
+document.getElementById("day-yesterday").addEventListener("click", () => {
+  currentDay = 5;
+  document.getElementById("day-yesterday").classList.add("active");
+  document.getElementById("day-today").classList.remove("active");
+  renderDaily(currentDay);
+});
+document.getElementById("day-today").addEventListener("click", () => {
+  currentDay = 6;
+  document.getElementById("day-today").classList.add("active");
+  document.getElementById("day-yesterday").classList.remove("active");
+  renderDaily(currentDay);
+});
+document.getElementById("tab-daily").addEventListener("click", () => {
+  document.getElementById("tab-daily").classList.add("active");
+  document.getElementById("tab-daily").setAttribute("aria-selected", "true");
+  document.getElementById("tab-weekly").classList.remove("active");
+  document.getElementById("tab-weekly").setAttribute("aria-selected", "false");
+  document.getElementById("daily-view").classList.remove("hidden");
+  document.getElementById("weekly-view").classList.add("hidden");
+});
+document.getElementById("tab-weekly").addEventListener("click", () => {
+  document.getElementById("tab-weekly").classList.add("active");
+  document.getElementById("tab-weekly").setAttribute("aria-selected", "true");
+  document.getElementById("tab-daily").classList.remove("active");
+  document.getElementById("tab-daily").setAttribute("aria-selected", "false");
+  document.getElementById("weekly-view").classList.remove("hidden");
+  document.getElementById("daily-view").classList.add("hidden");
+});
+document.getElementById("info-btn").addEventListener("click", () => {
+  const panel = document.getElementById("info-panel");
+  const hidden = panel.classList.toggle("hidden");
+  document.getElementById("info-btn").setAttribute("aria-expanded", hidden ? "false" : "true");
+});
+</script>
+</body>
+</html>
