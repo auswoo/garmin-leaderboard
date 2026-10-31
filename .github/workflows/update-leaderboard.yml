@@ -1,0 +1,47 @@
+# Hourly refresh for the Garmin leaderboard.
+#
+# How it works: GitHub Actions (not Muse's sandbox) calls the Garmin
+# Personal API with the owners' API keys, which live as repository secrets
+# (Settings -> Secrets and variables -> Actions):
+#   GARMIN_API_KEY_AUSTIN, GARMIN_API_KEY_JORDAN
+# The script rebuilds data.js and commits it only when it changed. GitHub
+# Pages then serves the updated board a few minutes later.
+#
+# No key, token, or JWT appears in this file, the script, or the logs.
+# The workflow never triggers on push, so its own data.js commits cannot
+# loop back into another run.
+
+name: Update leaderboard
+
+on:
+  schedule:
+    - cron: "0 * * * *"  # hourly, UTC
+  workflow_dispatch:  # manual run from the Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch Garmin data and rebuild data.js
+        env:
+          GARMIN_API_KEY_AUSTIN: ${{ secrets.GARMIN_API_KEY_AUSTIN }}
+          GARMIN_API_KEY_JORDAN: ${{ secrets.GARMIN_API_KEY_JORDAN }}
+        run: python3 scripts/update_board_data.py
+      - name: Commit data.js if it changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data.js
+          if git diff --cached --quiet; then
+            echo "data.js unchanged, nothing to commit"
+          else
+            git commit -m "Update leaderboard data"
+            git push || (git pull --rebase && git push)
+          fi
