@@ -13,7 +13,7 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #000; color: #e8e8e8; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
-  .wrap { max-width: 560px; margin: 0 auto; padding: 28px 20px 48px; }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 28px 20px 48px; padding-top: calc(28px + env(safe-area-inset-top)); }
   h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; }
   .sub { color: #888; font-size: 13px; margin-top: 6px; }
   .toggle { display: flex; gap: 24px; margin: 28px 0 8px; border-bottom: 1px solid rgba(255,255,255,0.14); }
