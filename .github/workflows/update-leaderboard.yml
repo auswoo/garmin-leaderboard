@@ -15,7 +15,7 @@ name: Update leaderboard
 
 on:
   schedule:
-    - cron: "0 * * * *"  # hourly, UTC
+    - cron: "17 * * * *"  # hourly, off-peak minute to avoid GitHub's top-of-hour scheduler load
   workflow_dispatch:  # manual run from the Actions tab
 
 permissions:
