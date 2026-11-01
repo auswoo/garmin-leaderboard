@@ -138,6 +138,20 @@ def fetch_person(api_key, start, end):
           file=sys.stderr)
     print("keys sleep: %s" % first_record_keys(sleep, "data", "sleepSummaries"),
           file=sys.stderr)
+    # Steps are not a top-level summary field, so they must live inside
+    # movement. Log movement's own keys (schema only) to pin down the shape.
+    srows = summaries.get("data", []) if isinstance(summaries, dict) else summaries
+    if isinstance(srows, list) and srows and isinstance(srows[0], dict):
+        mv = srows[0].get("movement")
+        if isinstance(mv, dict):
+            print("keys movement: %s" % sorted(mv.keys()), file=sys.stderr)
+        elif isinstance(mv, list):
+            print("movement type: list of %d items" % len(mv), file=sys.stderr)
+            if mv and isinstance(mv[0], dict):
+                print("keys movement[0]: %s" % sorted(mv[0].keys()),
+                      file=sys.stderr)
+        else:
+            print("movement type: %s" % type(mv).__name__, file=sys.stderr)
 
     days = {}
 
@@ -195,7 +209,8 @@ def extract_steps(summary, movement):
     auth, so its parsing was never validated), so several candidate paths
     are tried in order."""
     if isinstance(movement, dict):
-        for key in ("value", "steps", "stepCount", "totalSteps"):
+        for key in ("value", "steps", "stepCount", "totalSteps",
+                    "dailySteps", "stepTotal", "stepsCount"):
             v = movement.get(key)
             if isinstance(v, (int, float)):
                 return v
@@ -244,6 +259,8 @@ def extract_distance(summary, movement, steps):
 def _stage_durations(record):
     """Return (deep, light, rem) durations in seconds, or None."""
     triples = [
+        # Confirmed from the Oct 31 run's logs (exact field names).
+        ("deepSleepSeconds", "lightSleepSeconds", "remSleepSeconds"),
         ("deepSleepDurationInSeconds", "lightSleepDurationInSeconds",
          "remSleepDurationInSeconds"),
         ("deepSleepDuration", "lightSleepDuration", "remSleepDuration"),
