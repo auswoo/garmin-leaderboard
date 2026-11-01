@@ -27,10 +27,10 @@ Board math (must match the board's info sheet):
     board shows "-" for strength minutes.
   - Weekly aggregates use recorded days only.
 
-Distance and sleep stages are extracted best-effort: the exact field names
-in these endpoints were never confirmed against a live response, so several
-candidate paths are tried and the raw record keys are logged (keys only, no
-values) on each run. If a field is absent, the board shows "-" for it.
+Steps, distance, and sleep stages are extracted best-effort: the exact field
+names in these endpoints were never confirmed against a live response, so
+several candidate paths are tried and the raw record keys are logged (keys
+only, no values) on each run. If a field is absent, the board shows "-" for it.
 
 Atomicity: if either account's token exchange or any data call fails, the
 script exits non-zero WITHOUT touching data.js, so a partial board is never
@@ -157,8 +157,8 @@ def fetch_person(api_key, start, end):
         hr = d.get("heartRate") or {}
         bb = d.get("bodyBattery") or {}
         st = d.get("stress") or {}
-        mv = d.get("movement") or {}
-        steps = mv.get("value") if isinstance(mv, dict) else None
+        mv = d.get("movement")
+        steps = extract_steps(d, mv)
         row = days.setdefault(date, {})
         row["restingHR"] = hr.get("restingValue")
         row["maxHR"] = hr.get("maxValue")
@@ -189,6 +189,36 @@ def fetch_person(api_key, start, end):
     return True, days
 
 
+def extract_steps(summary, movement):
+    """Best-effort daily steps. The movement object's shape was never
+    confirmed against a live response (the old vault pull never got past
+    auth, so its parsing was never validated), so several candidate paths
+    are tried in order."""
+    if isinstance(movement, dict):
+        for key in ("value", "steps", "stepCount", "totalSteps"):
+            v = movement.get(key)
+            if isinstance(v, (int, float)):
+                return v
+        nested = movement.get("steps")
+        if isinstance(nested, dict):
+            v = nested.get("value")
+            if isinstance(v, (int, float)):
+                return v
+    if isinstance(movement, list):
+        for item in movement:
+            if isinstance(item, dict):
+                kind = str(item.get("type") or item.get("typeKey") or "")
+                if "step" in kind.lower():
+                    v = item.get("value")
+                    if isinstance(v, (int, float)):
+                        return v
+    for key in ("steps", "stepCount", "totalSteps", "dailySteps"):
+        v = summary.get(key)
+        if isinstance(v, (int, float)):
+            return v
+    return None
+
+
 def extract_distance(summary, movement, steps):
     """Best-effort distance in miles. Unknown units are the risk: a daily
     distance over 100 can only be meters, and a large value with almost no
@@ -196,7 +226,8 @@ def extract_distance(summary, movement, steps):
     candidates = [summary.get("distance"), summary.get("totalDistance"),
                   summary.get("distanceInMeters"),
                   summary.get("distanceMeters"),
-                  summary.get("totalDistanceInMeters")]
+                  summary.get("totalDistanceInMeters"),
+                  summary.get("distanceMiles")]
     if isinstance(movement, dict):
         candidates += [movement.get("distance"),
                        movement.get("distanceInMeters")]
