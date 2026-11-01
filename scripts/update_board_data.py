@@ -1,8 +1,8 @@
-"""Fetch Austin's and Jordan Hemus's Garmin Personal API data and rebuild
-data.js for the public leaderboard (auswoo.github.io/garmin-leaderboard/).
+"""Fetch Austin's, Jordan Hemus's, and Ethan's Garmin Personal API data and
+rebuild data.js for the public leaderboard (auswoo.github.io/garmin-leaderboard/).
 
 Runs on GitHub Actions, where the API keys live as repository secrets
-(GARMIN_API_KEY_AUSTIN, GARMIN_API_KEY_JORDAN). No key, token, or JWT is
+(GARMIN_API_KEY_AUSTIN, GARMIN_API_KEY_JORDAN, GARMIN_API_KEY_ETHAN). No key, token, or JWT is
 ever printed or written to any file. Logs carry only statuses and counts.
 
 Auth flow (Garmin Personal API):
@@ -54,6 +54,7 @@ MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
 PEOPLE = [
     ("Austin", "GARMIN_API_KEY_AUSTIN"),
     ("Jordan", "GARMIN_API_KEY_JORDAN"),
+    ("Ethan", "GARMIN_API_KEY_ETHAN"),
 ]
 
 
@@ -414,36 +415,42 @@ def fmt(n):
 
 
 def build_summary(people):
-    """Short data-driven weekly summary paragraphs (HTML strings)."""
+    """Short data-driven weekly summary paragraphs (HTML strings).
+
+    Leader lines compare the leader against the runner-up, so they work
+    for any number of people on the board."""
     if len(people) < 2:
         return []
-    a, b = people[0], people[1]
-    wa, wb = a["weekly"], b["weekly"]
     lines = []
 
-    if wa["steps"] != wb["steps"]:
-        leader, loser = (a, b) if wa["steps"] > wb["steps"] else (b, a)
+    def top_two(key):
+        ranked = sorted(people, key=lambda p: p["weekly"][key], reverse=True)
+        return ranked[0], ranked[1]
+
+    leader, runner = top_two("steps")
+    if leader["weekly"]["steps"] != runner["weekly"]["steps"]:
         ratio = ""
-        if loser["weekly"]["steps"] > 0:
+        if runner["weekly"]["steps"] > 0:
             ratio = " (%s\u00d7)" % round_half_up(
-                leader["weekly"]["steps"] / loser["weekly"]["steps"], 1)
+                leader["weekly"]["steps"] / runner["weekly"]["steps"], 1)
         lines.append("<b>%s leads steps</b> &mdash; %s vs %s this week%s."
                      % (leader["name"], fmt(leader["weekly"]["steps"]),
-                        fmt(loser["weekly"]["steps"]), ratio))
-    if wa["avgSleep"] != wb["avgSleep"]:
-        leader, loser = (a, b) if wa["avgSleep"] > wb["avgSleep"] else (b, a)
+                        fmt(runner["weekly"]["steps"]), ratio))
+    leader, runner = top_two("avgSleep")
+    if leader["weekly"]["avgSleep"] != runner["weekly"]["avgSleep"]:
         lines.append("<b>%s leads sleep</b> &mdash; avg %s vs %s."
                      % (leader["name"], leader["weekly"]["avgSleep"],
-                        loser["weekly"]["avgSleep"]))
-    if wa["avgRecovery"] != wb["avgRecovery"]:
-        leader, loser = (a, b) if wa["avgRecovery"] > wb["avgRecovery"] else (b, a)
+                        runner["weekly"]["avgSleep"]))
+    leader, runner = top_two("avgRecovery")
+    if leader["weekly"]["avgRecovery"] != runner["weekly"]["avgRecovery"]:
         lines.append("<b>%s leads recovery</b> &mdash; avg %s vs %s."
                      % (leader["name"], leader["weekly"]["avgRecovery"],
-                        loser["weekly"]["avgRecovery"]))
+                        runner["weekly"]["avgRecovery"]))
     daily = [p for p in people if p["recovery"][5] is not None]
     if daily:
         daily_leader = max(daily, key=lambda p: p["recovery"][5])
-        weekly_leader = (a if wa["avgRecovery"] >= wb["avgRecovery"] else b)
+        weekly_leader = max(people,
+                            key=lambda p: p["weekly"]["avgRecovery"])
         lines.append("<b>Bottom line</b> &mdash; %s leads the last full day; "
                      "%s leads the week."
                      % (daily_leader["name"], weekly_leader["name"]))
