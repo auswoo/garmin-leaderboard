@@ -191,6 +191,13 @@ function weeklyRhrPanel(p) {
   return "<div><b>Resting HR Oct 19&ndash;25:</b> " + p.rhr.map(show).join(" &middot; ") + "</div>";
 }
 
+function weeklyStrainPanel(p) {
+  const daily = (p.strain || []).map(show).join(" &middot; ");
+  const total = (p.weekly.totalStrain == null ? "—" : p.weekly.totalStrain);
+  return "<div><b>Daily strain:</b> " + daily + "</div>"
+    + "<div><b>Total strain:</b> " + total + "</div>";
+}
+
 function renderBoard(container, title, ranked) {
   const sec = document.createElement("div");
   sec.className = "board";
@@ -277,6 +284,12 @@ function renderWeekly() {
     person: p,
     valHtml: '<span class="val">' + p.weekly.avgRecovery + "</span>",
     panelHtml: weeklyRecoveryPanel(p)
+  })));
+
+  renderBoard(box, "Avg strain (Est.)", [...PEOPLE].sort((a, b) => (b.weekly.avgStrain || 0) - (a.weekly.avgStrain || 0)).map((p) => ({
+    person: p,
+    valHtml: '<span class="val">' + (p.weekly.avgStrain == null ? "—" : p.weekly.avgStrain.toFixed(1)) + "</span>",
+    panelHtml: weeklyStrainPanel(p)
   })));
 
   renderBoard(box, "Lowest resting HR", byWeekly("lowRhr", false).map((p) => ({
