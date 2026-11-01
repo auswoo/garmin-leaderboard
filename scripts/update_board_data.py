@@ -25,7 +25,9 @@ Board math (must match the board's info sheet):
     rounded to the nearest whole number (half up). Strength minutes are not
     available from these endpoints yet, so that term is 0 for now and the
     board shows "-" for strength minutes.
-  - Weekly aggregates use recorded days only.
+  - Weekly aggregates use recorded days only. Weekly strain is the average
+    of daily Strain (Est.) over recorded days, with the week's total also
+    reported.
 
 Steps, distance, and sleep stages are extracted best-effort: the exact field
 names in these endpoints were never confirmed against a live response, so
@@ -378,12 +380,15 @@ def compute_person(name, dates, rows):
             return "\u2014"
         return "%s (%s)" % (day_label(dates[best_i]), best_v)
 
+    strains = [strain(i) for i in range(len(dates))]
     weekly = {
         "steps": sum(v for v in steps if v is not None),
         "dist": round_half_up(sum(v for v in dist if v is not None), 2),
         "avgSleep": round_half_up(mean_or_zero(sleep), 1),
         "avgRecovery": int(round_half_up(mean_or_zero(recovery))),
         "avgHrv": round_half_up(mean_or_zero(hrv), 1),
+        "avgStrain": round_half_up(mean_or_zero(strains), 1),
+        "totalStrain": sum(v for v in strains if v is not None),
         "lowRhr": min((v for v in rhr if v is not None), default=999),
         "bestRec": best(recovery),
         "bestSleep": best(sleep),
@@ -401,6 +406,7 @@ def compute_person(name, dates, rows):
         "stress": stress,
         "maxhr": maxhr,
         "dist": dist,
+        "strain": strains,
         "strength": [None] * len(dates),
         "strainYesterday": strain(5),
         "strainToday": strain(6),
