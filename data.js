@@ -11,9 +11,9 @@ window.BOARD_DATA = {
    "Oct 30",
    "Oct 31"
   ],
-  "updatedAt": "2026-11-01T00:06:10.732821Z",
-  "updatedTimePT": "5:06 PM PDT",
-  "updatedLongPT": "Oct 31, 5:06 PM PDT",
+  "updatedAt": "2026-11-01T00:25:02.227517Z",
+  "updatedTimePT": "5:25 PM PDT",
+  "updatedLongPT": "Oct 31, 5:25 PM PDT",
   "live": true
  },
  "days": [
@@ -365,10 +365,178 @@ window.BOARD_DATA = {
     "bestRec": "Oct 25 (81)",
     "bestSleep": "Oct 25 (88)"
    }
+  },
+  {
+   "name": "Ethan",
+   "sleep": [
+    76,
+    86,
+    66,
+    null,
+    87,
+    87,
+    37
+   ],
+   "recovery": [
+    74,
+    70,
+    65,
+    null,
+    74,
+    74,
+    23
+   ],
+   "hrv": [
+    72,
+    55,
+    62,
+    null,
+    60,
+    60,
+    37
+   ],
+   "rhr": [
+    49,
+    53,
+    54,
+    52,
+    51,
+    53,
+    56
+   ],
+   "steps": [
+    9601,
+    6209,
+    9388,
+    7410,
+    6101,
+    14559,
+    5558
+   ],
+   "stages": [
+    [
+     25,
+     52,
+     24
+    ],
+    [
+     23,
+     54,
+     23
+    ],
+    [
+     28,
+     56,
+     16
+    ],
+    null,
+    [
+     25,
+     49,
+     26
+    ],
+    [
+     15,
+     69,
+     16
+    ],
+    [
+     23,
+     61,
+     16
+    ]
+   ],
+   "battery": [
+    [
+     15,
+     64,
+     75
+    ],
+    [
+     21,
+     69,
+     63
+    ],
+    [
+     38,
+     73,
+     56
+    ],
+    [
+     5,
+     25,
+     58
+    ],
+    [
+     11,
+     73,
+     67
+    ],
+    [
+     7,
+     72,
+     76
+    ],
+    [
+     15,
+     10,
+     2
+    ]
+   ],
+   "stress": [
+    36,
+    32,
+    32,
+    36,
+    34,
+    42,
+    63
+   ],
+   "maxhr": [
+    118,
+    196,
+    114,
+    120,
+    131,
+    173,
+    147
+   ],
+   "dist": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "strength": [
+    null,
+    null,
+    null,
+    null,
+    null,
+    null,
+    null
+   ],
+   "strainYesterday": 21,
+   "strainToday": 11,
+   "hrvVsOwnYesterday": "HRV 60 vs own avg 63",
+   "hrvVsOwnToday": "HRV 37 vs own avg 57",
+   "weekly": {
+    "steps": 58826,
+    "dist": 0.0,
+    "avgSleep": 73.2,
+    "avgRecovery": 63,
+    "avgHrv": 57.7,
+    "lowRhr": 49,
+    "bestRec": "Oct 25 (74)",
+    "bestSleep": "Oct 29 (87)"
+   }
   }
  ],
  "summary": [
-  "<b>Jordan leads steps</b> &mdash; 101,999 vs 40,594 this week (2.5\u00d7).",
+  "<b>Jordan leads steps</b> &mdash; 101,999 vs 58,826 this week (1.7\u00d7).",
   "<b>Austin leads sleep</b> &mdash; avg 79.8 vs 75.7.",
   "<b>Austin leads recovery</b> &mdash; avg 69 vs 67.",
   "<b>Bottom line</b> &mdash; Austin leads the last full day; Austin leads the week."
