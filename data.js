@@ -11,9 +11,9 @@ window.BOARD_DATA = {
    "Oct 30",
    "Oct 31"
   ],
-  "updatedAt": "2026-10-31T23:52:52.890201Z",
-  "updatedTimePT": "4:52 PM PDT",
-  "updatedLongPT": "Oct 31, 4:52 PM PDT",
+  "updatedAt": "2026-11-01T00:06:10.732821Z",
+  "updatedTimePT": "5:06 PM PDT",
+  "updatedLongPT": "Oct 31, 5:06 PM PDT",
   "live": true
  },
  "days": [
@@ -65,22 +65,46 @@ window.BOARD_DATA = {
     56
    ],
    "steps": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
+    5659,
+    6061,
+    6712,
+    5407,
+    6976,
+    7201,
+    2578
    ],
    "stages": [
+    [
+     17,
+     73,
+     10
+    ],
+    [
+     11,
+     79,
+     10
+    ],
+    [
+     18,
+     60,
+     22
+    ],
     null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
+    [
+     22,
+     55,
+     23
+    ],
+    [
+     14,
+     73,
+     13
+    ],
+    [
+     19,
+     62,
+     19
+    ]
    ],
    "battery": [
     [
@@ -155,12 +179,12 @@ window.BOARD_DATA = {
     null,
     null
    ],
-   "strainYesterday": null,
-   "strainToday": null,
+   "strainYesterday": 9,
+   "strainToday": 9,
    "hrvVsOwnYesterday": "HRV 62 vs own avg 57",
    "hrvVsOwnToday": "HRV 60 vs own avg 58",
    "weekly": {
-    "steps": 0,
+    "steps": 40594,
     "dist": 0.0,
     "avgSleep": 79.8,
     "avgRecovery": 69,
@@ -209,22 +233,50 @@ window.BOARD_DATA = {
     53
    ],
    "steps": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
+    7530,
+    21341,
+    22680,
+    11978,
+    13510,
+    16817,
+    8143
    ],
    "stages": [
-    null,
-    null,
-    null,
-    null,
-    null,
-    null,
-    null
+    [
+     19,
+     55,
+     26
+    ],
+    [
+     21,
+     51,
+     28
+    ],
+    [
+     19,
+     65,
+     15
+    ],
+    [
+     17,
+     65,
+     18
+    ],
+    [
+     18,
+     62,
+     20
+    ],
+    [
+     21,
+     66,
+     14
+    ],
+    [
+     24,
+     53,
+     22
+    ]
    ],
    "battery": [
     [
@@ -299,12 +351,12 @@ window.BOARD_DATA = {
     null,
     null
    ],
-   "strainYesterday": null,
-   "strainToday": null,
+   "strainYesterday": 21,
+   "strainToday": 10,
    "hrvVsOwnYesterday": "HRV 73 vs own avg 69",
    "hrvVsOwnToday": "HRV 71 vs own avg 68",
    "weekly": {
-    "steps": 0,
+    "steps": 101999,
     "dist": 0.0,
     "avgSleep": 75.7,
     "avgRecovery": 67,
@@ -316,6 +368,7 @@ window.BOARD_DATA = {
   }
  ],
  "summary": [
+  "<b>Jordan leads steps</b> &mdash; 101,999 vs 40,594 this week (2.5\u00d7).",
   "<b>Austin leads sleep</b> &mdash; avg 79.8 vs 75.7.",
   "<b>Austin leads recovery</b> &mdash; avg 69 vs 67.",
   "<b>Bottom line</b> &mdash; Austin leads the last full day; Austin leads the week."
