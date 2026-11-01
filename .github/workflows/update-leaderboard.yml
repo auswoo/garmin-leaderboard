@@ -3,7 +3,7 @@
 # How it works: GitHub Actions (not Muse's sandbox) calls the Garmin
 # Personal API with the owners' API keys, which live as repository secrets
 # (Settings -> Secrets and variables -> Actions):
-#   GARMIN_API_KEY_AUSTIN, GARMIN_API_KEY_JORDAN
+#   GARMIN_API_KEY_AUSTIN, GARMIN_API_KEY_JORDAN, GARMIN_API_KEY_ETHAN
 # The script rebuilds data.js and commits it only when it changed. GitHub
 # Pages then serves the updated board a few minutes later.
 #
@@ -33,6 +33,7 @@ jobs:
         env:
           GARMIN_API_KEY_AUSTIN: ${{ secrets.GARMIN_API_KEY_AUSTIN }}
           GARMIN_API_KEY_JORDAN: ${{ secrets.GARMIN_API_KEY_JORDAN }}
+          GARMIN_API_KEY_ETHAN: ${{ secrets.GARMIN_API_KEY_ETHAN }}
         run: python3 scripts/update_board_data.py
       - name: Commit data.js if it changed
         run: |
