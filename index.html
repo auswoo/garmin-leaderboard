@@ -85,7 +85,7 @@
     <p><b>Rankings:</b> higher wins, except Resting HR where lower wins. The #1 value is green.</p>
     <p><b>Expanded rows</b> show context for that metric only. Recovery expands to its three inputs, Steps expands to distance. Distance never appears under Resting HR.</p>
     <p><b>Missing data:</b> &mdash; means nothing was recorded that day, not zero. Weekly averages use recorded days only.</p>
-    <p id="info-daily-weekly"><b>Daily vs Weekly:</b> Daily defaults to the last full day.</p>
+    <p id="info-daily-weekly"><b>Daily vs Weekly:</b> Daily defaults to today.</p>
     <p id="info-data"><b>Data:</b> Garmin Personal API, Oct 19&ndash;25, 2026 snapshot. The board is static and does not self-update yet.</p>
     <p>Anything marked (Est.) is a modeled estimate, not an official Garmin or Whoop score.</p>
   </div>
@@ -98,8 +98,8 @@
 
   <div id="daily-view">
     <div class="daytoggle">
-      <button id="day-yesterday" class="active">Yesterday &middot; Oct 24</button>
-      <button id="day-today">Today &middot; Oct 25</button>
+      <button id="day-yesterday">Yesterday &middot; Oct 24</button>
+      <button id="day-today" class="active">Today &middot; Oct 25</button>
     </div>
     <p class="daylabel" id="daylabel">Full day</p>
     <div id="daily-boards"></div>
@@ -306,13 +306,13 @@ function renderWeekly() {
 document.getElementById("day-yesterday").innerHTML = "Yesterday &middot; " + DAYS[5];
 document.getElementById("day-today").innerHTML = "Today &middot; " + DAYS[6];
 document.getElementById("summary-body").innerHTML = BOARD.summary.map((p) => "<p>" + p + "</p>").join("");
-document.getElementById("info-daily-weekly").innerHTML = "<b>Daily vs Weekly:</b> Daily defaults to the last full day (" + DAYS[5] + "). Today (" + DAYS[6] + ") is partial, as of " + META.updatedTimePT + ". Weekly covers " + DAYS[0] + "&ndash;" + DAYS[6] + ".";
+document.getElementById("info-daily-weekly").innerHTML = "<b>Daily vs Weekly:</b> Daily defaults to today (" + DAYS[6] + "), which is partial as of " + META.updatedTimePT + ". Yesterday (" + DAYS[5] + ") is the last full day. Weekly covers " + DAYS[0] + "&ndash;" + DAYS[6] + ".";
 if (META.live) {
   document.getElementById("sub-line").textContent = DAYS[0] + "–" + DAYS[6] + ", " + META.endDate.slice(0, 4) + " · Updated " + META.updatedLongPT + " · Recovery and strain are modeled estimates";
   document.getElementById("info-data").innerHTML = "<b>Data:</b> Garmin Personal API, " + DAYS[0] + "&ndash;" + DAYS[6] + ". The board refreshes hourly.";
   document.getElementById("footer-partial").textContent = DAYS[6] + " is a partial day.";
 }
-let currentDay = 5;
+let currentDay = 6;
 renderDaily(currentDay);
 renderWeekly();
 
