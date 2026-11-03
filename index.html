@@ -133,7 +133,7 @@ const META = BOARD.meta;
 const fmt = (n) => n.toLocaleString("en-US");
 const show = (v) => (v === null || v === undefined ? "\u2014" : v);
 
-const AVATARS = { "Ethan": "assets/ethan.jpg" };
+const AVATARS = { "Ethan": "assets/ethan.jpg", "Austin": "assets/austin.jpg", "Jordan": "assets/jordan.jpg" };
  function avatarHtml(name) { if (AVATARS[name]) { return '<img class="avatar" src="' + AVATARS[name] + '" alt="">'; } return '<span class="avatar-fallback">' + name.charAt(0) + '</span>'; }
  function expandableRow(rank, name, valHtml, panelHtml) {
   const btn = document.createElement("button");
