@@ -1,4 +1,4 @@
-# Hourly refresh for the Garmin leaderboard.
+# Hourly refresh for the Garmin leaderboard, triggered externally.
 #
 # How it works: GitHub Actions (not Muse's sandbox) calls the Garmin
 # Personal API with the owners' API keys, which live as repository secrets
@@ -14,9 +14,7 @@
 name: Update leaderboard
 
 on:
-  schedule:
-    - cron: "17 * * * *"  # hourly, off-peak minute to avoid GitHub's top-of-hour scheduler load
-  workflow_dispatch:  # manual run from the Actions tab
+  workflow_dispatch:  # triggered hourly by an external dispatch, not by GitHub's scheduler
 
 permissions:
   contents: write
