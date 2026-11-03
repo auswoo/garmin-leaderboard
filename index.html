@@ -28,11 +28,13 @@
   .row { display: flex; align-items: baseline; gap: 14px; width: 100%; background: none; border: none; border-bottom: 1px solid rgba(255,255,255,0.10); color: inherit; font: inherit; text-align: left; padding: 14px 0; cursor: pointer; }
   .rank { font-size: 30px; font-weight: 300; color: #666; width: 34px; flex-shrink: 0; }
   .name { font-size: 17px; flex: 1; }
+   .avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; align-self: center; }
+  .avatar-fallback { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.12); color: #ccc; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; align-self: center; } 
   .val { font-size: 30px; font-weight: 600; }
   .val.green { color: #00C805; }
   .val.small { font-size: 22px; }
-  .hrvline { font-size: 13px; color: #888; padding: 0 0 14px 48px; border-bottom: 1px solid rgba(255,255,255,0.10); }
-  .panel { display: none; padding: 14px 0 14px 48px; border-bottom: 1px solid rgba(255,255,255,0.10); }
+  .hrvline { font-size: 13px; color: #888; padding: 0 0 14px 94px; border-bottom: 1px solid rgba(255,255,255,0.10); }
+  .panel { display: none; padding: 14px 0 14px 94px border-bottom: 1px solid rgba(255,255,255,0.10); }
   .panel.open { display: block; }
   .panel div { font-size: 14px; color: #aaa; padding: 3px 0; }
   .panel div b { color: #ddd; font-weight: 500; }
@@ -131,11 +133,13 @@ const META = BOARD.meta;
 const fmt = (n) => n.toLocaleString("en-US");
 const show = (v) => (v === null || v === undefined ? "\u2014" : v);
 
-function expandableRow(rank, name, valHtml, panelHtml) {
+const AVATARS = { "Ethan": "assets/ethan.jpg" };
+ function avatarHtml(name) { if (AVATARS[name]) { return '<img class="avatar" src="' + AVATARS[name] + '" alt="">'; } return '<span class="avatar-fallback">' + name.charAt(0) + '</span>'; }
+ function expandableRow(rank, name, valHtml, panelHtml) {
   const btn = document.createElement("button");
   btn.className = "row";
   btn.setAttribute("aria-expanded", "false");
-  btn.innerHTML = '<span class="rank">' + rank + '</span><span class="name">' + name + '</span>' + valHtml + '<span class="chev" aria-hidden="true">›</span>';
+  btn.innerHTML = '<span class="rank">' + rank + '</span>' + avatarHtml(name) + '<span class="name">' + name + '</span>' + valHtml + '<span class="chev" aria-hidden="true">›</span>';
   const panel = document.createElement("div");
   panel.className = "panel";
   panel.innerHTML = panelHtml;
