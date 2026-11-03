@@ -120,6 +120,23 @@ def fetch_person(api_key, start, end):
                 "?startDate=%s&endDate=%s" % (start, end))
     if summaries is None or hrv is None or sleep is None:
         return False, {}
+    # PROBE ONLY, Nov 3, 2026: inspect the dailyHeartRate response shape for a
+    # possible future full-day-HR strain formula. Schema and counts only, no
+    # values are logged, and this never affects the returned data or data.js.
+    hr_probe = get("/wellness-service/wellness/dailyHeartRate?date=%s" % end)
+    if hr_probe is None:
+        print("probe dailyHeartRate: no data", file=sys.stderr)
+    elif isinstance(hr_probe, dict):
+        print("probe dailyHeartRate dict keys=%s" % sorted(hr_probe.keys()), file=sys.stderr)
+        for k, v in hr_probe.items():
+            if isinstance(v, list):
+                print("probe dailyHeartRate list %s len=%d first_keys=%s" % (k, len(v), sorted(v[0].keys()) if v and isinstance(v[0], dict) else []), file=sys.stderr)
+            elif isinstance(v, dict):
+                print("probe dailyHeartRate dict %s keys=%s" % (k, sorted(v.keys())), file=sys.stderr)
+    elif isinstance(hr_probe, list):
+        print("probe dailyHeartRate list len=%d first_keys=%s" % (len(hr_probe), sorted(hr_probe[0].keys()) if hr_probe and isinstance(hr_probe[0], dict) else []), file=sys.stderr)
+    else:
+        print("probe dailyHeartRate type=%s" % type(hr_probe).__name__, file=sys.stderr)
 
     # Log raw record keys only (schema, no values) to aid extraction fixes.
     def first_record_keys(payload, *keys):
