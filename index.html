@@ -86,20 +86,12 @@
   <div id="info-backdrop" class="info-backdrop hidden">
   <div id="info-panel" class="info-sheet" role="dialog" aria-modal="true" aria-label="How the numbers are computed">
     <div class="info-sheet-head"><h3>How the numbers are computed</h3><button id="info-close" class="info-close" aria-label="Close">×</button></div>
-    <p><b>Recovery (Est.)</b> = 50% sleep score + 30% HRV component + 20% Body Battery charged. HRV component = 50 + (last night's HRV &minus; your own weekly average HRV) &times; 2, clamped to 0&ndash;100. A modeled estimate, not a Garmin score.</p>
-    <p><b>Strain (Est.)</b> = min(21, HR load + min(5, steps &divide; 2000) + min(6, strength minutes &divide; 15)), rounded to the nearest whole number. HR load = min(15, sum(max(0, HR &minus; resting HR) &times; minutes) &divide; 3000) over that day's full-day heart-rate samples, so sustained cardio load counts, not just a peak. Steps capture volume at a capped weight, and strength minutes capture lifting load that steps and heart rate miss. Only strength-training activities count toward the third term, so cardio is not double-counted. The ~ means the day is still partial. Not a Garmin or Whoop number.</p>
-    <p><b>Sleep score</b> is Garmin's own 0&ndash;100 score for the night ending that morning. Not calculated here.</p>
-    <p><b>HRV</b> is Garmin's last-night average HRV in milliseconds. The line under Recovery compares it to your own 7-day average only. HRV is personal and is never ranked across people.</p>
-    <p><b>Resting HR</b> is Garmin's daily resting heart rate in bpm. It is shown as personal context only — each person's value against their own weekly average — and is not ranked across people.</p>
-    <p><b>Steps and distance</b> are Garmin's daily totals; distance is in miles.</p>
-    <p><b>Body Battery</b> values are Garmin's. Only the charged value feeds Recovery.</p>
-    <p><b>Rankings:</b> higher wins on every ranked board. The #1 value is green.</p>
-<p><b>Overall (top strip):</b> the strip orders everyone by rank points across all ranked boards in the view you are on: 3 points for 1st, 2 for 2nd, 1 for 3rd on each board, ties share points, maximum 12. Daily uses Recovery, Sleep, Steps, and Strain; Weekly uses total Steps, Avg sleep, Avg recovery, and Avg strain. The small number badge on each photo shows the overall order (1, 2, 3); ties share a number. Resting HR is not ranked and is not counted in the overall score, because it is largely a personal baseline; it is shown as personal context, not as a competition.</p>
-    <p><b>Expanded rows</b> show context for that metric only. Recovery expands to its three inputs, Steps expands to distance. Distance never appears under Resting HR.</p>
-    <p><b>Missing data:</b> &mdash; means nothing was recorded that day, not zero. Weekly averages use recorded days only.</p>
-    <p id="info-daily-weekly"><b>Daily vs Weekly:</b> Daily defaults to today.</p>
-    <p id="info-data"><b>Data:</b> Garmin Personal API, Oct 19&ndash;25, 2026 snapshot. The board is static and does not self-update yet.</p>
-    <p>Anything marked (Est.) is a modeled estimate, not an official Garmin or Whoop score.</p>
+    <p><b>Recovery (Est.)</b> = 50% sleep score + 30% HRV component + 20% Body Battery charged. HRV component = 50 + (last night's HRV &minus; your weekly average HRV) &times; 2, clamped to 0&ndash;100.</p>
+<p><b>Strain (Est.)</b> = min(21, HR load + min(5, steps &divide; 2000) + min(6, strength minutes &divide; 15)), rounded. HR load = min(15, sum(max(0, HR &minus; resting HR) &times; minutes) &divide; 3000) over full-day samples. Strength minutes = strength training only.</p>
+<p><b>Sleep, HRV, Resting HR, Steps, distance, Body Battery</b> are Garmin's own numbers, not calculated here.</p>
+<p><b>HRV and Resting HR are never ranked</b> &mdash; shown against your own average only.</p>
+<p><b>Rankings:</b> higher wins, #1 is green. <b>Overall strip:</b> 3/2/1 points per ranked board, ties share, max 12. Daily: Recovery, Sleep, Steps, Strain. Weekly: total Steps, Avg sleep, Avg recovery, Avg strain.</p>
+<p>~ = partial day. &mdash; = nothing recorded, not zero. Weekly averages use recorded days only. Anything (Est.) is modeled, not a Garmin or Whoop score.</p>
   </div>
   </div>
 
