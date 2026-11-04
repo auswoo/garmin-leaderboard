@@ -25,24 +25,22 @@
   .daylabel { color: #888; font-size: 13px; margin: 14px 0 20px; }
   .board { margin-top: 26px; }
   .board h2 { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #888; margin-bottom: 2px; }
-  .row { display: flex; align-items: baseline; gap: 14px; width: 100%; background: none; border: none; border-bottom: 1px solid rgba(255,255,255,0.10); color: inherit; font: inherit; text-align: left; padding: 14px 0; cursor: pointer; }
+  .row { display: flex; align-items: center; gap: 14px; width: 100%; background: none; border: none; border-bottom: 1px solid rgba(255,255,255,0.10); color: inherit; font: inherit; text-align: left; padding: 14px 0; cursor: pointer; }
   .rank { font-size: 30px; font-weight: 300; color: #666; width: 34px; flex-shrink: 0; }
-  .name { font-size: 17px; flex: 1; }
+  .namecol { display: flex; flex-direction: column; flex: 1; }
+  .name { font-size: 17px; }
+  .namecol .name { flex: none; }
+  .rowsub { font-size: 12px; color: #888; margin-top: 2px; }
    .avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; align-self: center; }
   .avatar-fallback { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.12); color: #ccc; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; align-self: center; } 
      .people-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 16px 0 0; }
-    .people-chip { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; }
 .personal-row { font-size: 15px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.10); color: #ddd; }
-    .people-chip span:last-child { font-size: 12px; color: #ccc; white-space: nowrap; } 
 .avatar-wrap { position: relative; line-height: 0; }
- .people-chip .avatar, .people-chip .avatar-fallback { width: 56px; height: 56px; }
- .people-chip .avatar-fallback { font-size: 20px; }
  .medal { position: absolute; bottom: 0; right: 0; width: 20px; height: 20px; border-radius: 50%; background: #111; color: #fff; border: 1.5px solid rgba(255,255,255,0.85); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; line-height: 1; white-space: nowrap; }
  
   .val { font-size: 30px; font-weight: 600; }
   .val.green { color: #00C805; }
   .val.small { font-size: 22px; }
-  .hrvline { font-size: 13px; color: #888; padding: 0 0 14px 48px; border-bottom: 1px solid rgba(255,255,255,0.10); }
   .panel { display: none; padding: 14px 0 14px 48px; border-bottom: 1px solid rgba(255,255,255,0.10); }
   .panel.open { display: block; }
   .panel div { font-size: 14px; color: #aaa; padding: 3px 0; }
@@ -67,8 +65,11 @@
   .val { font-family: ui-rounded, "SF Pro Rounded", system-ui, sans-serif; font-variant-numeric: tabular-nums; }
   .ring text { font-family: ui-rounded, "SF Pro Rounded", system-ui, sans-serif; font-variant-numeric: tabular-nums; }
   .rank, .race-pts, .delta, svg text { font-variant-numeric: tabular-nums; }
-  .valwrap { display: flex; flex-direction: column; align-items: flex-end; align-self: center; }
   .delta { font-size: 11px; color: #888; margin-top: 2px; }
+  .delta.up { color: #5da87f; }
+  .delta.down { color: #c07a6b; }
+  .race-row .avatar-wrap { flex-shrink: 0; }
+  .race-row .medal { width: 16px; height: 16px; font-size: 9px; border-width: 1px; }
   .trend-tooltip { font-size: 13px; color: #ccc; margin-top: 8px; min-height: 20px; }
   #trend-chart svg { touch-action: pan-y; }
   .ring { width: 52px; height: 52px; flex-shrink: 0; align-self: center; }
@@ -100,14 +101,14 @@
     <h1>Garmin Leaderboard</h1>
     <button id="info-btn" class="info-btn" aria-expanded="false" aria-controls="info-panel" title="How the numbers are computed">i</button>
   </div>
-  <p class="sub" id="sub-line">Oct 19&ndash;25, 2026 &middot; Recovery and strain are modeled estimates</p>
+  <p class="sub" id="sub-line">Oct 29&ndash;Nov 4, 2026 &middot; Updated 10:57 AM PST</p>
 
   <div id="info-backdrop" class="info-backdrop hidden">
   <div id="info-panel" class="info-sheet" role="dialog" aria-modal="true" aria-label="How the numbers are computed">
     <div class="info-sheet-head"><h3>How the numbers are computed</h3><button id="info-close" class="info-close" aria-label="Close">×</button></div>
     <p><b>Recovery (Est.)</b> = 50% sleep score + 30% HRV component + 20% Body Battery charged. HRV component = 50 + (last night's HRV &minus; your weekly average HRV) &times; 2, clamped to 0&ndash;100.</p>
 <p><b>Strain (Est.)</b> = min(21, HR load + min(5, steps &divide; 2000) + min(6, strength minutes &divide; 15)), rounded. HR load = min(15, sum(max(0, HR &minus; resting HR) &times; minutes) &divide; 3000) over full-day samples. Strength minutes = strength training only.</p>
-<p><b>Rankings:</b> higher wins, #1 is green. <b>Overall strip:</b> 3/2/1 points per ranked board, ties share, max 12. The points race below the photos shows each total out of 12.</p>
+<p><b>Rankings:</b> higher wins, #1 is green. <b>Overall strip:</b> 3/2/1 points per ranked board, ties share, max 12. The points race shows each total out of 12.</p>
 <p>~ = partial day. &mdash; = nothing recorded, not zero. Weekly averages use recorded days only. Anything (Est.) is modeled, not a Garmin or Whoop score.</p>
 <p id="info-daily-weekly"><b>Daily vs Weekly:</b> Daily defaults to today.</p>
 <p id="info-data"><b>Data:</b> Garmin Personal API. The board refreshes hourly.</p>
@@ -157,12 +158,13 @@ const show = (v) => (v === null || v === undefined ? "\u2014" : v);
 const AVATARS = { "Ethan": "assets/ethan.jpg", "Austin": "assets/austin.jpg", "Jordan": "assets/jordan.jpg" };
 const CHART_COLORS = {"Austin": "#5aa2ff", "Jordan": "#ff8a5c", "Ethan": "#a78bfa"};
  function avatarHtml(name) { if (AVATARS[name]) { return '<img class="avatar" src="' + AVATARS[name] + '" alt="">'; } return '<span class="avatar-fallback">' + name.charAt(0) + '</span>'; }
- function expandableRow(rank, name, valHtml, panelHtml) {
+ function expandableRow(rank, name, valHtml, panelHtml, subline, delta) {
   const btn = document.createElement("button");
   btn.className = "row";
   btn.style.setProperty("--person-color", CHART_COLORS[name] || "#888");
   btn.setAttribute("aria-expanded", "false");
-  btn.innerHTML = '<span class="rank">' + rank + '</span><span class="name">' + name + '</span>' + valHtml + '<span class="chev" aria-hidden="true">›</span>';
+  const nameHtml = '<span class="namecol"><span class="name">' + name + '</span>' + (subline ? '<span class="rowsub">' + subline + '</span>' : '') + (delta || '') + '</span>';
+  btn.innerHTML = '<span class="rank">' + rank + '</span>' + nameHtml + valHtml + '<span class="chev" aria-hidden="true">›</span>';
   const panel = document.createElement("div");
   panel.className = "panel";
   panel.innerHTML = panelHtml;
@@ -233,7 +235,7 @@ function ringHtml(value, max, hueFn, display) {
   const off = (1 - frac) * C;
   return '<span class="ring"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="20" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3.5"/><circle cx="26" cy="26" r="20" fill="none" stroke="' + col + '" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="' + C + '" stroke-dashoffset="' + off + '" transform="rotate(-90 26 26)"/><text x="26" y="30" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">' + display + '</text></svg></span>';
 }
-const recoveryColor = (frac) => 'hsl(' + Math.round(frac * 120) + ', 85%, 55%)';
+const recoveryColor = (frac) => { const v = frac * 100; if (v < 34) return "#e5484d"; if (v <= 66) return "#eab308"; return "#00C805"; };
 const strainColor = (frac) => 'hsl(' + Math.round(215 + frac * 65) + ', 80%, 62%)';
 function renderBoard(container, title, ranked) {
   const sec = document.createElement("div");
@@ -242,7 +244,7 @@ function renderBoard(container, title, ranked) {
   h.textContent = title;
   sec.appendChild(h);
   ranked.forEach((entry, idx) => {
-    const [btn, panel] = expandableRow(idx + 1, entry.person.name, entry.valHtml, entry.panelHtml);
+    const [btn, panel] = expandableRow(idx + 1, entry.person.name, entry.valHtml, entry.panelHtml, entry.subline, entry.delta);
     btn.style.animationDelay = (idx * 50) + "ms";
     if (idx === 0) {
       const valEl = btn.querySelector(".val");
@@ -252,12 +254,6 @@ function renderBoard(container, title, ranked) {
     }
     sec.appendChild(btn);
     sec.appendChild(panel);
-    if (entry.subline) {
-      const sub = document.createElement("div");
-      sub.className = "hrvline";
-      sub.textContent = entry.subline;
-      sec.appendChild(sub);
-    }
   });
   container.appendChild(sec);
 }
@@ -441,10 +437,8 @@ function deltaHtml(curr, prev, label, format) {
   if (curr == null || prev == null) return "";
   const diff = curr - prev;
   const txt = (diff > 0 ? "+" : "") + format(diff);
-  return '<span class="delta">' + txt + " " + label + "</span>";
-}
-function valWrap(inner, delta) {
-  return '<span class="valwrap">' + inner + delta + "</span>";
+  const cls = diff > 0 ? "delta up" : diff < 0 ? "delta down" : "delta";
+  return '<span class="' + cls + '">' + txt + " " + label + "</span>";
 }
 const fmtDiff = (d) => (Number.isInteger(d) ? String(d) : d.toFixed(1));
 function renderDaily(dayIdx) {
@@ -458,20 +452,23 @@ function renderDaily(dayIdx) {
 
   renderBoard(box, "Recovery (Est.)", byVal("recovery", true).map((p) => ({
     person: p,
-    valHtml: valWrap(ringHtml(p.recovery[dayIdx], 100, recoveryColor, show(p.recovery[dayIdx])), deltaHtml(p.recovery[dayIdx], p.recovery[dayIdx - 1], deltaLabel, fmtDiff)),
+    valHtml: ringHtml(p.recovery[dayIdx], 100, recoveryColor, show(p.recovery[dayIdx])),
+    delta: deltaHtml(p.recovery[dayIdx], p.recovery[dayIdx - 1], deltaLabel, fmtDiff),
     panelHtml: recoveryPanel(p, dayIdx),
     subline: isToday ? p.hrvVsOwnToday : p.hrvVsOwnYesterday
   })));
 
   renderBoard(box, "Sleep", byVal("sleep", true).map((p) => ({
     person: p,
-    valHtml: valWrap('<span class="val">' + show(p.sleep[dayIdx]) + "</span>", deltaHtml(p.sleep[dayIdx], p.sleep[dayIdx - 1], deltaLabel, fmtDiff)),
+    valHtml: '<span class="val">' + show(p.sleep[dayIdx]) + "</span>",
+    delta: deltaHtml(p.sleep[dayIdx], p.sleep[dayIdx - 1], deltaLabel, fmtDiff),
     panelHtml: sleepPanel(p, dayIdx)
   })));
 
   renderBoard(box, "Steps", byVal("steps", true).map((p) => ({
     person: p,
-    valHtml: valWrap('<span class="val">' + (p.steps[dayIdx] == null ? "—" : fmt(p.steps[dayIdx])) + "</span>", deltaHtml(p.steps[dayIdx], p.steps[dayIdx - 1], deltaLabel, fmt)),
+    valHtml: '<span class="val">' + (p.steps[dayIdx] == null ? "—" : fmt(p.steps[dayIdx])) + "</span>",
+    delta: deltaHtml(p.steps[dayIdx], p.steps[dayIdx - 1], deltaLabel, fmt),
     panelHtml: stepsPanel(p, dayIdx)
   })));
 
@@ -479,7 +476,8 @@ function renderDaily(dayIdx) {
   renderBoard(box, isToday ? "Strain (Est., in progress)" : "Strain (Est.)",
     [...PEOPLE].sort((a, b) => b[strainKey] - a[strainKey]).map((p) => ({
       person: p,
-      valHtml: valWrap(ringHtml(p[strainKey], 21, strainColor, (p[strainKey] == null ? "—" : "~" + p[strainKey])), deltaHtml(p[strainKey], isToday ? p.strainYesterday : p.strain[dayIdx - 1], deltaLabel, fmtDiff)),
+      valHtml: ringHtml(p[strainKey], 21, strainColor, (p[strainKey] == null ? "—" : "~" + p[strainKey])),
+      delta: deltaHtml(p[strainKey], isToday ? p.strainYesterday : p.strain[dayIdx - 1], deltaLabel, fmtDiff),
       panelHtml: strainPanel(p, dayIdx)
     })));
 
@@ -524,7 +522,7 @@ document.getElementById("day-today").innerHTML = "Today &middot; " + DAYS[6];
 document.getElementById("summary-body").innerHTML = BOARD.summary.map((p) => "<p>" + p + "</p>").join("");
 document.getElementById("info-daily-weekly").innerHTML = "<b>Daily vs Weekly:</b> Daily defaults to today (" + DAYS[6] + "), which is partial as of " + META.updatedTimePT + ". Yesterday (" + DAYS[5] + ") is the last full day. Weekly covers " + DAYS[0] + "&ndash;" + DAYS[6] + ".";
 if (META.live) {
-  document.getElementById("sub-line").textContent = DAYS[0] + "–" + DAYS[6] + ", " + META.endDate.slice(0, 4) + " · Updated " + META.updatedLongPT + " · Recovery and strain are modeled estimates";
+  document.getElementById("sub-line").textContent = DAYS[0] + "–" + DAYS[6] + ", " + META.endDate.slice(0, 4) + " · Updated " + META.updatedTimePT;
   document.getElementById("info-data").innerHTML = "<b>Data:</b> Garmin Personal API, " + DAYS[0] + "&ndash;" + DAYS[6] + ". The board refreshes hourly.";
 }
 const peopleStrip = document.createElement("div");
@@ -562,19 +560,15 @@ function renderPeopleStrip(view, dayIdx) {
     const scored = overallScores(view, dayIdx);
    let lastPoints = null;
    let lastRank = 0;
- scored.forEach((entry, idx) => {
+  const ranked = scored.map((entry, idx) => {
       const rank = (lastPoints === null || entry.points !== lastPoints) ? idx + 1 : lastRank;
       lastPoints = entry.points;
       lastRank = rank;
-      const medalText = String(rank);
-      const chip = document.createElement("div");
-    chip.className = "people-chip";
-    chip.innerHTML = '<div class="avatar-wrap">' + avatarHtml(entry.person.name) + '<span class="medal">' + medalText + '</span></div><span>' + entry.person.name + '</span>';
-    peopleStrip.appendChild(chip);
+      return { person: entry.person, points: entry.points, rank: rank };
   });
   const race = document.createElement("div");
   race.className = "points-race";
-  race.innerHTML = scored.map((entry) => '<div class="race-row"><span class="race-name">' + entry.person.name + '</span><div class="race-track"><div class="race-fill" style="width:' + (entry.points / 12 * 100) + '%;background:' + (CHART_COLORS[entry.person.name] || "#fff") + '"></div></div><span class="race-pts">' + entry.points + '/12</span></div>').join("");
+  race.innerHTML = ranked.map((entry) => '<div class="race-row"><span class="avatar-wrap">' + avatarHtml(entry.person.name) + '<span class="medal">' + entry.rank + '</span></span><span class="race-name">' + entry.person.name + '</span><div class="race-track"><div class="race-fill" style="width:' + (entry.points / 12 * 100) + '%;background:' + (CHART_COLORS[entry.person.name] || "#fff") + '"></div></div><span class="race-pts">' + entry.points + '/12</span></div>').join("");
   peopleStrip.appendChild(race);
 }
  let currentDay = 6;
