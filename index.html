@@ -489,10 +489,10 @@ function renderWeekly() {
   box.innerHTML = "";
   const byWeekly = (key, desc) => [...PEOPLE].sort((a, b) => desc ? b.weekly[key] - a.weekly[key] : a.weekly[key] - b.weekly[key]);
 
-  renderBoard(box, "Steps", byWeekly("steps", true).map((p) => ({
+  renderBoard(box, "Avg recovery (Est.)", byWeekly("avgRecovery", true).map((p) => ({
     person: p,
-    valHtml: '<span class="val">' + fmt(p.weekly.steps) + "</span>",
-    panelHtml: weeklyStepsPanel(p)
+    valHtml: ringHtml(p.weekly.avgRecovery, 100, recoveryColor, p.weekly.avgRecovery),
+    panelHtml: weeklyRecoveryPanel(p)
   })));
 
   renderBoard(box, "Avg sleep", byWeekly("avgSleep", true).map((p) => ({
@@ -501,10 +501,10 @@ function renderWeekly() {
     panelHtml: weeklySleepPanel(p)
   })));
 
-  renderBoard(box, "Avg recovery (Est.)", byWeekly("avgRecovery", true).map((p) => ({
+  renderBoard(box, "Steps", byWeekly("steps", true).map((p) => ({
     person: p,
-    valHtml: ringHtml(p.weekly.avgRecovery, 100, recoveryColor, p.weekly.avgRecovery),
-    panelHtml: weeklyRecoveryPanel(p)
+    valHtml: '<span class="val">' + fmt(p.weekly.steps) + "</span>",
+    panelHtml: weeklyStepsPanel(p)
   })));
 
   renderBoard(box, "Avg strain (Est.)", [...PEOPLE].sort((a, b) => (b.weekly.avgStrain || 0) - (a.weekly.avgStrain || 0)).map((p) => ({
