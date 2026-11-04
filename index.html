@@ -35,8 +35,6 @@
   .avatar-fallback { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.12); color: #ccc; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; align-self: center; } 
      .people-strip { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 16px 0 0; }
 .personal-row { font-size: 15px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.10); color: #ddd; }
-.avatar-wrap { position: relative; line-height: 0; }
- .medal { position: absolute; bottom: 0; right: 0; width: 20px; height: 20px; border-radius: 50%; background: #111; color: #fff; border: 1.5px solid rgba(255,255,255,0.85); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; line-height: 1; white-space: nowrap; }
  
   .val { font-size: 30px; font-weight: 600; }
   .val.green { color: #00C805; }
@@ -68,8 +66,7 @@
   .delta { font-size: 11px; color: #888; margin-top: 2px; }
   .delta.up { color: #5da87f; }
   .delta.down { color: #c07a6b; }
-  .race-row .avatar-wrap { flex-shrink: 0; }
-  .race-row .medal { width: 16px; height: 16px; font-size: 9px; border-width: 1px; }
+  .race-rank { font-size: 16px; font-weight: 300; color: #666; width: 20px; flex-shrink: 0; font-variant-numeric: tabular-nums; }
   .trend-tooltip { font-size: 13px; color: #ccc; margin-top: 8px; min-height: 20px; }
   #trend-chart svg { touch-action: pan-y; }
   .ring { width: 52px; height: 52px; flex-shrink: 0; align-self: center; }
@@ -568,7 +565,7 @@ function renderPeopleStrip(view, dayIdx) {
   });
   const race = document.createElement("div");
   race.className = "points-race";
-  race.innerHTML = ranked.map((entry) => '<div class="race-row"><span class="avatar-wrap">' + avatarHtml(entry.person.name) + '<span class="medal">' + entry.rank + '</span></span><span class="race-name">' + entry.person.name + '</span><div class="race-track"><div class="race-fill" style="width:' + (entry.points / 12 * 100) + '%;background:' + (CHART_COLORS[entry.person.name] || "#fff") + '"></div></div><span class="race-pts">' + entry.points + '/12</span></div>').join("");
+  race.innerHTML = ranked.map((entry) => '<div class="race-row"><span class="race-rank">' + entry.rank + '</span>' + avatarHtml(entry.person.name) + '<span class="race-name">' + entry.person.name + '</span><div class="race-track"><div class="race-fill" style="width:' + (entry.points / 12 * 100) + '%;background:' + (CHART_COLORS[entry.person.name] || "#fff") + '"></div></div><span class="race-pts">' + entry.points + '/12</span></div>').join("");
   peopleStrip.appendChild(race);
 }
  let currentDay = 6;
