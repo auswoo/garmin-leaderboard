@@ -210,7 +210,7 @@ def fetch_person(api_key, start, end):
     for _date, _row in sorted(days.items()):
               _row["hrLoad"] = None
               _rhr = _row.get("restingHR")
-              if _rhr is None:
+                  if _rhr is None:
                             continue
                         _hr = get("/wellness-service/wellness/dailyHeartRate?date=%s" % _date)
       if not isinstance(_hr, dict):
