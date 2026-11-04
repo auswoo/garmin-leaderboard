@@ -118,6 +118,7 @@
       <div id="summary-body"></div>
     </div>
     <div id="weekly-tables"></div>
+    <div class="board"><h2>Week trends</h2><div id="trend-buttons" class="daytoggle"></div><div id="trend-chart"></div><div id="trend-legend"></div></div>
   </div>
 
   <footer>
@@ -313,6 +314,62 @@ function renderSleepChart(dayIdx) {
     return '<div><span style="color:' + (CHART_COLORS[p.name] || "#fff") + '">●</span> ' + p.name + ': ' + (ss == null || se == null ? "—" : fmtClock(ss) + " – " + fmtClock(se)) + '</div>';
   }).join("");
 }
+
+let currentTrend = "recovery";
+const TRENDS = {
+  recovery: {label: "Recovery", get: (p, i) => p.recovery[i], yMin: 0, yMax: 100},
+  sleep: {label: "Sleep", get: (p, i) => p.sleep[i], yMin: 0, yMax: 100},
+  strain: {label: "Strain", get: (p, i) => p.strain[i], yMin: 0, yMax: 21},
+  steps: {label: "Steps", get: (p, i) => p.steps[i], yMin: 0, yMax: null},
+  hrv: {label: "HRV", get: (p, i) => p.hrv[i], yMin: null, yMax: null}
+};
+function setTrend(metric) { currentTrend = metric; renderTrendChart(metric); }
+function renderTrendChart(metric) {
+  metric = metric || currentTrend;
+  const el = document.getElementById("trend-chart");
+  if (!el) return;
+  const cfg = TRENDS[metric];
+  const btns = document.getElementById("trend-buttons");
+  if (btns) btns.innerHTML = Object.keys(TRENDS).map((k) => '<button class="' + (k === metric ? "active" : "") + '" onclick="setTrend(\'' + k + '\')">' + TRENDS[k].label + '</button>').join("");
+  let yMin = cfg.yMin, yMax = cfg.yMax;
+  if (yMin == null || yMax == null) {
+    let vals = [];
+    PEOPLE.forEach((p) => { for (let i = 0; i < 7; i++) { const v = cfg.get(p, i); if (v != null) vals.push(v); } });
+    if (metric === "steps") { yMin = 0; yMax = Math.ceil(Math.max(...vals) / 5000) * 5000; }
+    else { yMin = Math.floor((Math.min(...vals) - 10) / 10) * 10; yMax = Math.ceil((Math.max(...vals) + 10) / 10) * 10; }
+  }
+  const W = 600, H = 220, PL = 48, PR = 10, PT = 10, PB = 24;
+  const x = (i) => PL + (i / 6) * (W - PL - PR);
+  const y = (v) => PT + (1 - (v - yMin) / (yMax - yMin)) * (H - PT - PB);
+  let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block">';
+  for (let k = 0; k <= 4; k++) {
+    const v = yMin + k * (yMax - yMin) / 4;
+    svg += '<line x1="' + PL + '" y1="' + y(v) + '" x2="' + (W - PR) + '" y2="' + y(v) + '" stroke="rgba(255,255,255,0.08)"/>';
+    svg += '<text x="' + (PL - 4) + '" y="' + (y(v) + 4) + '" fill="#888" font-size="11" text-anchor="end">' + (metric === "steps" ? Math.round(v).toLocaleString("en-US") : Math.round(v)) + '</text>';
+  }
+  DAYS.forEach((d, i) => {
+    svg += '<line x1="' + x(i) + '" y1="' + PT + '" x2="' + x(i) + '" y2="' + (H - PB) + '" stroke="rgba(255,255,255,0.08)"/>';
+    svg += '<text x="' + x(i) + '" y="' + (H - 6) + '" fill="#888" font-size="11" text-anchor="middle">' + d + '</text>';
+  });
+  PEOPLE.forEach((p) => {
+    const col = CHART_COLORS[p.name] || "#fff";
+    let seg = [];
+    const flush = () => {
+      if (seg.length > 1) svg += '<polyline points="' + seg.join(" ") + '" fill="none" stroke="' + col + '" stroke-width="2" stroke-linejoin="round"/>';
+      seg = [];
+    };
+    for (let i = 0; i < 7; i++) {
+      const v = cfg.get(p, i);
+      if (v == null) { flush(); continue; }
+      seg.push(x(i) + "," + y(v));
+    }
+    flush();
+  });
+  svg += '</svg>';
+  el.innerHTML = svg;
+  const leg = document.getElementById("trend-legend");
+  if (leg) leg.innerHTML = PEOPLE.map((p) => '<span style="margin-right:14px"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + (CHART_COLORS[p.name] || "#fff") + '"></span> ' + p.name + '</span>').join("");
+}
 function renderDaily(dayIdx) {
   const isToday = dayIdx === 6;
   document.getElementById("daylabel").textContent = isToday ? "Partial day (as of " + META.updatedTimePT + ")" : "Full day";
@@ -397,6 +454,7 @@ function renderWeekly() {
     wrap.innerHTML += html;
     tables.appendChild(wrap);
   });
+  renderTrendChart(currentTrend);
 }
 
 document.getElementById("day-yesterday").innerHTML = "Yesterday &middot; " + DAYS[5];
