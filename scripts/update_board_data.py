@@ -226,6 +226,30 @@ def fetch_person(api_key, start, end):
     else:
         print("sleepprobe no records", file=sys.stderr)
 
+    # SLEEP TIMELINE PROBE 2, Nov 4, 2026: try the Garmin Connect
+    # dailySleepData endpoint (sleepLevels = per-night stage timeline).
+    # Schema and counts only, no values, no timestamps, and this never
+    # affects the returned data or data.js. A 404 here just means the
+    # Personal API allowlist does not expose it.
+    _ds = get("/wellness-service/wellness/dailySleepData?date=%s&nonSleepBufferMinutes=60" % end)
+    if _ds is None:
+        print("sleepprobe2 dailySleepData no data", file=sys.stderr)
+    elif isinstance(_ds, dict):
+        print("sleepprobe2 keys=%s" % sorted(_ds.keys()), file=sys.stderr)
+        _sl = _ds.get("sleepLevels")
+        if isinstance(_sl, list):
+            print("sleepprobe2 sleepLevels len=%d first_keys=%s" % (len(_sl), sorted(_sl[0].keys()) if _sl and isinstance(_sl[0], dict) else []), file=sys.stderr)
+        elif _sl is not None:
+            print("sleepprobe2 sleepLevels type=%s" % type(_sl).__name__, file=sys.stderr)
+        _sm = _ds.get("sleepMovement")
+        if isinstance(_sm, list):
+            print("sleepprobe2 sleepMovement len=%d first_keys=%s" % (len(_sm), sorted(_sm[0].keys()) if _sm and isinstance(_sm[0], dict) else []), file=sys.stderr)
+        _rem = _ds.get("remSleepData")
+        if _rem is not None:
+            print("sleepprobe2 remSleepData type=%s keys=%s" % (type(_rem).__name__, sorted(_rem.keys()) if isinstance(_rem, dict) else []), file=sys.stderr)
+    else:
+        print("sleepprobe2 type=%s" % type(_ds).__name__, file=sys.stderr)
+
     # LIVE, Nov 4, 2026: fetch dailyHeartRate per recorded day and store
     # HR load for the v3b strain formula. Logs derived loads only, never
     # raw heart rates.
