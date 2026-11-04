@@ -27,6 +27,9 @@ Board math (must match the board's info sheet):
     successive samples capped at 30. Strength minutes are not available
     from these endpoints yet, so that term is 0 for now and the board
     shows "-" for strength minutes.
+  - Charts: hrSeries is the 30-minute average heart rate per day (48
+    buckets, local time, null when no samples); sleepStart/sleepEnd are
+    bed/wake minutes-of-day for that night, for the Daily charts.
   - Weekly aggregates use recorded days only. Weekly strain is the average
     of daily Strain (Est.) over recorded days, with the week's total also
     reported.
@@ -60,6 +63,17 @@ PEOPLE = [
     ("Jordan", "GARMIN_API_KEY_JORDAN"),
     ("Ethan", "GARMIN_API_KEY_ETHAN"),
 ]
+
+
+def local_minute(ts):
+    """Minute-of-day from a Garmin *Local timestamp. *Local timestamps
+    carry the timezone offset, so UTC conversion yields local wall time.
+    Handles ms, seconds, or minutes magnitudes."""
+    if not isinstance(ts, (int, float)):
+        return None
+    sec = ts / 1000.0 if ts > 1e12 else (ts if ts > 1e9 else ts * 60.0)
+    dt = datetime.datetime.fromtimestamp(sec, tz=datetime.timezone.utc)
+    return dt.hour * 60 + dt.minute
 
 
 def round_half_up(x, ndigits=0):
@@ -203,52 +217,8 @@ def fetch_person(api_key, start, end):
         row = days.setdefault(date, {})
         row["sleep"] = ov.get("value")
         row["stages"] = extract_stages(s)
-
-    # SLEEP TIMELINE PROBE ONLY, Nov 4, 2026: inspect the sleep summary
-    # record shape for a stage-timeline field (for a future REM-timing
-    # chart). Schema and counts only, no values, no timestamps, and this
-    # never affects the returned data or data.js.
-    def _schema(v, depth):
-        if depth <= 0:
-            return "..."
-        if isinstance(v, dict):
-            return {k: _schema(val, depth - 1) for k, val in list(v.items())[:60]}
-        if isinstance(v, list):
-            out = ["list len=%d" % len(v)]
-            if v:
-                out.append(_schema(v[0], depth - 1))
-            return out
-        return type(v).__name__
-    _srecs = rows_of(sleep, "data", "sleepSummaries")
-    if _srecs and isinstance(_srecs[0], dict):
-        print("sleepprobe schema=%s" % _schema(_srecs[0], 3), file=sys.stderr)
-        print("sleepprobe records=%d" % len(_srecs), file=sys.stderr)
-    else:
-        print("sleepprobe no records", file=sys.stderr)
-
-    # SLEEP TIMELINE PROBE 2, Nov 4, 2026: try the Garmin Connect
-    # dailySleepData endpoint (sleepLevels = per-night stage timeline).
-    # Schema and counts only, no values, no timestamps, and this never
-    # affects the returned data or data.js. A 404 here just means the
-    # Personal API allowlist does not expose it.
-    _ds = get("/wellness-service/wellness/dailySleepData?date=%s&nonSleepBufferMinutes=60" % end)
-    if _ds is None:
-        print("sleepprobe2 dailySleepData no data", file=sys.stderr)
-    elif isinstance(_ds, dict):
-        print("sleepprobe2 keys=%s" % sorted(_ds.keys()), file=sys.stderr)
-        _sl = _ds.get("sleepLevels")
-        if isinstance(_sl, list):
-            print("sleepprobe2 sleepLevels len=%d first_keys=%s" % (len(_sl), sorted(_sl[0].keys()) if _sl and isinstance(_sl[0], dict) else []), file=sys.stderr)
-        elif _sl is not None:
-            print("sleepprobe2 sleepLevels type=%s" % type(_sl).__name__, file=sys.stderr)
-        _sm = _ds.get("sleepMovement")
-        if isinstance(_sm, list):
-            print("sleepprobe2 sleepMovement len=%d first_keys=%s" % (len(_sm), sorted(_sm[0].keys()) if _sm and isinstance(_sm[0], dict) else []), file=sys.stderr)
-        _rem = _ds.get("remSleepData")
-        if _rem is not None:
-            print("sleepprobe2 remSleepData type=%s keys=%s" % (type(_rem).__name__, sorted(_rem.keys()) if isinstance(_rem, dict) else []), file=sys.stderr)
-    else:
-        print("sleepprobe2 type=%s" % type(_ds).__name__, file=sys.stderr)
+        row["sleepStartMin"] = local_minute(s.get("sleepStartTimestampLocal"))
+        row["sleepEndMin"] = local_minute(s.get("sleepEndTimestampLocal"))
 
     # LIVE, Nov 4, 2026: fetch dailyHeartRate per recorded day and store
     # HR load for the v3b strain formula. Logs derived loads only, never
@@ -305,6 +275,31 @@ def fetch_person(api_key, start, end):
         _load = min(15.0, _excess / 3000.0)
         _row["hrLoad"] = round_half_up(_load, 2)
         print("hrload %s samples=%d load=%.2f" % (_date, len(_vals), _load), file=sys.stderr)
+        # HR series for the Daily chart: 30-minute average HR, local time.
+        _sums = [0.0] * 48
+        _counts = [0] * 48
+        _first_min = None
+        _last_min = None
+        for _s in _vals:
+            if not isinstance(_s, (list, tuple)) or len(_s) <= max(_hr_idx, _ts_idx):
+                continue
+            try:
+                _h = float(_s[_hr_idx])
+                _t = float(_s[_ts_idx])
+            except (TypeError, ValueError):
+                continue
+            _sec = _t / 1000.0 if _t > 1e12 else (_t if _t > 1e9 else _t * 60.0)
+            _ldt = datetime.datetime.fromtimestamp(_sec, tz=PT)
+            _min = _ldt.hour * 60 + _ldt.minute
+            if _first_min is None:
+                _first_min = _min
+            _last_min = _min
+            _b = _min // 30
+            if 0 <= _b < 48:
+                _sums[_b] += _h
+                _counts[_b] += 1
+        _row["hrSeries"] = [int(round_half_up(_sums[_b] / _counts[_b])) if _counts[_b] else None for _b in range(48)]
+        print("hrseries %s first_min=%s last_min=%s buckets=%d" % (_date, _first_min, _last_min, sum(1 for c in _counts if c)), file=sys.stderr)
 
     return True, days
 
@@ -421,6 +416,9 @@ def compute_person(name, dates, rows):
     sleep, recovery, hrv, rhr, steps, stages = [], [], [], [], [], []
     battery, stress, maxhr, dist = [], [], [], []
     hrload = []
+    hrSeries = []
+    sleepStart = []
+    sleepEnd = []
     hrv_weekly = []
 
     for date in dates:
@@ -436,6 +434,9 @@ def compute_person(name, dates, rows):
         maxhr.append(r.get("maxHR"))
         dist.append(r.get("dist"))
         hrload.append(r.get("hrLoad"))
+        hrSeries.append(r.get("hrSeries"))
+        sleepStart.append(r.get("sleepStartMin"))
+        sleepEnd.append(r.get("sleepEndMin"))
 
     recorded_hrv = [v for v in hrv if v is not None]
     # Baseline is the weekly average as displayed on the board (1 decimal),
@@ -514,6 +515,9 @@ def compute_person(name, dates, rows):
         "dist": dist,
         "strain": strains,
         "hrload": hrload,
+        "hrSeries": hrSeries,
+        "sleepStart": sleepStart,
+        "sleepEnd": sleepEnd,
         "strength": [None] * len(dates),
         "strainYesterday": strain(5),
         "strainToday": strain(6),
