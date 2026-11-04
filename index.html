@@ -120,7 +120,6 @@
 
   <footer>
     <p>Recovery (Est.) = 50% sleep score + 30% HRV vs own baseline + 20% Body Battery charged. Modeled estimate, not a Garmin score.</p>
-    <p id="footer-partial">Oct 25 is a partial day.</p>
     <p>Strain (Est.) = min(21, HR load + min(5, steps &divide; 2000) + min(6, strength minutes &divide; 15)), rounded to the nearest whole number. HR load is full-day heart-rate load capped at 15. Modeled estimate, not a Garmin or Whoop score.</p>
       </footer>
 </div>
@@ -319,7 +318,6 @@ document.getElementById("info-daily-weekly").innerHTML = "<b>Daily vs Weekly:</b
 if (META.live) {
   document.getElementById("sub-line").textContent = DAYS[0] + "–" + DAYS[6] + ", " + META.endDate.slice(0, 4) + " · Updated " + META.updatedLongPT + " · Recovery and strain are modeled estimates";
   document.getElementById("info-data").innerHTML = "<b>Data:</b> Garmin Personal API, " + DAYS[0] + "&ndash;" + DAYS[6] + ". The board refreshes hourly.";
-  document.getElementById("footer-partial").textContent = DAYS[6] + " is a partial day.";
 }
 const peopleStrip = document.createElement("div");
 peopleStrip.className = "people-strip";
