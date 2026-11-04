@@ -204,62 +204,62 @@ def fetch_person(api_key, start, end):
         row["sleep"] = ov.get("value")
         row["stages"] = extract_stages(s)
 
-        # LIVE, Nov 4, 2026: fetch dailyHeartRate per recorded day and store
-      # HR load for the v3b strain formula. Logs derived loads only, never
-      # raw heart rates.
-      for _date, _row in sorted(days.items()):
-                _row["hrLoad"] = None
-                _rhr = _row.get("restingHR")
-                if _rhr is None:
-                              continue
-                          _hr = get("/wellness-service/wellness/dailyHeartRate?date=%s" % _date)
-        if not isinstance(_hr, dict):
-                      print("hrload %s no data" % _date, file=sys.stderr)
-                      continue
-                  _vals = _hr.get("heartRateValues") or []
-        _descs = _hr.get("heartRateValueDescriptors") or []
-        _hr_idx = None
-        _ts_idx = None
-        for _d in _descs:
-                      if isinstance(_d, dict):
-                                        _key = str(_d.get("key") or "").lower()
-                                        if "heart" in _key:
-                                                              _hr_idx = _d.get("index")
-                                        elif "time" in _key or "stamp" in _key:
-                                                              _ts_idx = _d.get("index")
-                                                  if _hr_idx is None or _ts_idx is None:
-                                                                print("hrload %s descriptors unmatched" % _date, file=sys.stderr)
-                                                                continue
-                                                            _div = 60000.0
-                                _first = None
-        for _s in _vals:
-                      if isinstance(_s, (list, tuple)) and len(_s) > max(_hr_idx, _ts_idx):
-                                        try:
-                                                              _first = float(_s[_ts_idx])
+      # LIVE, Nov 4, 2026: fetch dailyHeartRate per recorded day and store
+    # HR load for the v3b strain formula. Logs derived loads only, never
+    # raw heart rates.
+    for _date, _row in sorted(days.items()):
+              _row["hrLoad"] = None
+              _rhr = _row.get("restingHR")
+              if _rhr is None:
+                            continue
+                        _hr = get("/wellness-service/wellness/dailyHeartRate?date=%s" % _date)
+      if not isinstance(_hr, dict):
+                    print("hrload %s no data" % _date, file=sys.stderr)
+                    continue
+                _vals = _hr.get("heartRateValues") or []
+      _descs = _hr.get("heartRateValueDescriptors") or []
+      _hr_idx = None
+      _ts_idx = None
+      for _d in _descs:
+                    if isinstance(_d, dict):
+                                      _key = str(_d.get("key") or "").lower()
+                                      if "heart" in _key:
+                                                            _hr_idx = _d.get("index")
+                                      elif "time" in _key or "stamp" in _key:
+                                                            _ts_idx = _d.get("index")
+                                                if _hr_idx is None or _ts_idx is None:
+                                                              print("hrload %s descriptors unmatched" % _date, file=sys.stderr)
+                                                              continue
+                                                          _div = 60000.0
+                              _first = None
+      for _s in _vals:
+                    if isinstance(_s, (list, tuple)) and len(_s) > max(_hr_idx, _ts_idx):
+                                      try:
+                                                            _first = float(_s[_ts_idx])
 except (TypeError, ValueError):
-                    _first = None
-                break
-        if _first is not None and _first <= 1e12:
-                      _div = 60.0 if _first > 1e9 else 1.0
-        _excess = 0.0
-        _prev_ts = None
-        for _s in _vals:
-                      if not isinstance(_s, (list, tuple)) or len(_s) <= max(_hr_idx, _ts_idx):
-                                        continue
-                                    try:
-                                                      _h = float(_s[_hr_idx])
-                                                      _t = float(_s[_ts_idx])
+                  _first = None
+              break
+      if _first is not None and _first <= 1e12:
+                    _div = 60.0 if _first > 1e9 else 1.0
+      _excess = 0.0
+      _prev_ts = None
+      for _s in _vals:
+                    if not isinstance(_s, (list, tuple)) or len(_s) <= max(_hr_idx, _ts_idx):
+                                      continue
+                                  try:
+                                                    _h = float(_s[_hr_idx])
+                                                    _t = float(_s[_ts_idx])
 except (TypeError, ValueError):
-                continue
-            if _prev_ts is not None:
-                              _dt = (_t - _prev_ts) / _div
-                              if 0 < _dt <= 30:
-                                                    _excess += max(0.0, _h - _rhr) * _dt
-                                            _prev_ts = _t
-        _load = min(15.0, _excess / 3000.0)
-        _row["hrLoad"] = round_half_up(_load, 2)
-        print("hrload %s samples=%d load=%.2f" % (_date, len(_vals), _load), file=sys.stderr)
-    return True, days
+              continue
+          if _prev_ts is not None:
+                            _dt = (_t - _prev_ts) / _div
+                            if 0 < _dt <= 30:
+                                                  _excess += max(0.0, _h - _rhr) * _dt
+                                          _prev_ts = _t
+      _load = min(15.0, _excess / 3000.0)
+      _row["hrLoad"] = round_half_up(_load, 2)
+      print("hrload %s samples=%d load=%.2f" % (_date, len(_vals), _load), file=sys.stderr)
+  return True, days
 
 
 def extract_steps(summary, movement):
