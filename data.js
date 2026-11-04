@@ -11,9 +11,9 @@ window.BOARD_DATA = {
    "Nov 2",
    "Nov 3"
   ],
-  "updatedAt": "2026-11-04T00:45:23.219708Z",
-  "updatedTimePT": "4:45 PM PST",
-  "updatedLongPT": "Nov 3, 4:45 PM PST",
+  "updatedAt": "2026-11-04T00:51:28.215164Z",
+  "updatedTimePT": "4:51 PM PST",
+  "updatedLongPT": "Nov 3, 4:51 PM PST",
   "live": true
  },
  "days": [
@@ -250,7 +250,7 @@ window.BOARD_DATA = {
     10462,
     9311,
     8638,
-    281
+    987
    ],
    "stages": [
     [
@@ -333,7 +333,7 @@ window.BOARD_DATA = {
     28,
     35,
     31,
-    12
+    18
    ],
    "maxhr": [
     170,
@@ -342,7 +342,7 @@ window.BOARD_DATA = {
     111,
     111,
     123,
-    93
+    106
    ],
    "dist": [
     null,
@@ -360,7 +360,7 @@ window.BOARD_DATA = {
     12,
     12,
     11,
-    1
+    3
    ],
    "strength": [
     null,
@@ -372,17 +372,17 @@ window.BOARD_DATA = {
     null
    ],
    "strainYesterday": 11,
-   "strainToday": 1,
+   "strainToday": 3,
    "hrvVsOwnYesterday": "HRV 59 vs own avg 65",
    "hrvVsOwnToday": "HRV 74 vs own avg 69",
    "weekly": {
-    "steps": 70997,
+    "steps": 71703,
     "dist": 0.0,
     "avgSleep": 74.4,
     "avgRecovery": 66,
     "avgHrv": 69.7,
-    "avgStrain": 13.3,
-    "totalStrain": 93,
+    "avgStrain": 13.6,
+    "totalStrain": 95,
     "lowRhr": 49,
     "bestRec": "Nov 1 (83)",
     "bestSleep": "Nov 1 (93)"
@@ -565,7 +565,7 @@ window.BOARD_DATA = {
   }
  ],
  "summary": [
-  "<b>Jordan leads steps</b> &mdash; 70,997 vs 59,271 this week (1.2\u00d7).",
+  "<b>Jordan leads steps</b> &mdash; 71,703 vs 59,271 this week (1.2\u00d7).",
   "<b>Austin leads sleep</b> &mdash; avg 82.5 vs 74.4.",
   "<b>Austin leads recovery</b> &mdash; avg 68 vs 66.",
   "<b>Bottom line</b> &mdash; Ethan leads the last full day; Austin leads the week."
