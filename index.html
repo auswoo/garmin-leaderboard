@@ -30,11 +30,14 @@
   .name { font-size: 17px; flex: 1; }
    .avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; flex-shrink: 0; align-self: center; }
   .avatar-fallback { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.12); color: #ccc; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; align-self: center; } 
+     .people-strip { display: flex; gap: 20px; margin: 22px 0 0; flex-wrap: wrap; }
+    .people-chip { display: flex; align-items: center; gap: 8px; }
+    .people-chip span:last-child { font-size: 14px; color: #ccc; } 
   .val { font-size: 30px; font-weight: 600; }
   .val.green { color: #00C805; }
   .val.small { font-size: 22px; }
-  .hrvline { font-size: 13px; color: #888; padding: 0 0 14px 94px; border-bottom: 1px solid rgba(255,255,255,0.10); }
-  .panel { display: none; padding: 14px 0 14px 94px; border-bottom: 1px solid rgba(255,255,255,0.10); }
+  .hrvline { font-size: 13px; color: #888; padding: 0 0 14px 48px; border-bottom: 1px solid rgba(255,255,255,0.10); }
+  .panel { display: none; padding: 14px 0 14px 48px; border-bottom: 1px solid rgba(255,255,255,0.10); }
   .panel.open { display: block; }
   .panel div { font-size: 14px; color: #aaa; padding: 3px 0; }
   .panel div b { color: #ddd; font-weight: 500; }
@@ -139,7 +142,7 @@ const AVATARS = { "Ethan": "assets/ethan.jpg", "Austin": "assets/austin.jpg", "J
   const btn = document.createElement("button");
   btn.className = "row";
   btn.setAttribute("aria-expanded", "false");
-  btn.innerHTML = '<span class="rank">' + rank + '</span>' + avatarHtml(name) + '<span class="name">' + name + '</span>' + valHtml + '<span class="chev" aria-hidden="true">›</span>';
+  btn.innerHTML = '<span class="rank">' + rank + '</span><span class="name">' + name + '</span>' + valHtml + '<span class="chev" aria-hidden="true">›</span>';
   const panel = document.createElement("div");
   panel.className = "panel";
   panel.innerHTML = panelHtml;
@@ -329,7 +332,17 @@ if (META.live) {
   document.getElementById("info-data").innerHTML = "<b>Data:</b> Garmin Personal API, " + DAYS[0] + "&ndash;" + DAYS[6] + ". The board refreshes hourly.";
   document.getElementById("footer-partial").textContent = DAYS[6] + " is a partial day.";
 }
-let currentDay = 6;
+const peopleStrip = document.createElement("div");
+ peopleStrip.className = "people-strip";
+ PEOPLE.forEach((p) => {
+  const chip = document.createElement("div");
+  chip.className = "people-chip";
+  chip.innerHTML = avatarHtml(p.name) + '<span>' + p.name + '</span>';
+  peopleStrip.appendChild(chip);
+ });
+ document.querySelector(".toggle"                      ).before(peopleStrip);
+ let currentDay = 6;
+
 renderDaily(currentDay);
 renderWeekly();
 
