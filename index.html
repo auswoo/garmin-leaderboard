@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#000000">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='black'/><text x='32' y='44' font-size='30' text-anchor='middle' fill='%2300C805' font-family='Arial' font-weight='bold'>G</text></svg>">
 <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='14' fill='black'/><text x='32' y='44' font-size='30' text-anchor='middle' fill='%2300C805' font-family='Arial' font-weight='bold'>G</text></svg>">
-<title>Garmin Leaderboard</title>
+<title>Descendants of the Great Great Grandma</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #000; color: #e8e8e8; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
@@ -79,6 +79,8 @@
   .race-fill { height: 100%; border-radius: 999px; }
   .race-pts { font-size: 13px; color: #ddd; width: 36px; text-align: right; flex-shrink: 0; }
   .head { display: flex; align-items: center; justify-content: space-between; }
+  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #888; margin: 0 0 6px; white-space: nowrap; }
+  @media (max-width: 400px) { .eyebrow { letter-spacing: 0.08em; } }
   .info-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.45); background: none; color: #eee; font-size: 16px; font-weight: 600; cursor: pointer; flex-shrink: 0; }
   .info-btn[aria-expanded="true"] { background: rgba(255,255,255,0.12); border-color: #fff; color: #fff; }
   .chev { margin-left: 10px; color: #666; font-size: 18px; align-self: center; flex-shrink: 0; transition: transform 0.15s ease; }
@@ -96,8 +98,9 @@
 <body>
 <div class="top-scrim"></div>
 <div class="wrap">
+  <p class="eyebrow">Descendants of the Great Great Grandma</p>
   <div class="head">
-    <h1>Garmin Leaderboard</h1>
+    <h1>Leaderboard</h1>
     <button id="info-btn" class="info-btn" aria-expanded="false" aria-controls="info-panel" title="How the numbers are computed">i</button>
   </div>
   <p class="sub" id="sub-line">Oct 29&ndash;Nov 4, 2026 &middot; Updated 10:57 AM PST</p>
