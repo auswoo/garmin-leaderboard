@@ -273,7 +273,7 @@ def fetch_person(api_key, start, end):
                 if 0 < _dt <= 30:
                     _excess += max(0.0, _h - _rhr) * _dt
             _prev_ts = _t
-        _load = min(15.0, _excess / 1500.0)
+        _load = min(15.0, _excess / 3000.0)
         if _steps is None or _maxhr is None:
             print("backtest %s samples=%d hr_load=%.2f v2=None v3b=None" % (_date, len(_vals), _load), file=sys.stderr)
             continue
