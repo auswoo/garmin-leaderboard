@@ -189,7 +189,7 @@ function rhrPanel(p) {
 
 function weeklyStepsPanel(p) {
   const w = p.weekly;
-  return "<div><b>Steps Oct 19&ndash;25:</b> " + p.steps.map((s) => fmt(s)).join(" &middot; ") + "</div>"
+  return "<div><b>Steps Oct 19&ndash;25:</b> " + p.steps.map((s) => (s == null ? "—" : fmt(s))).join(" &middot; ") + "</div>"
     + "<div><b>Total distance:</b> " + w.dist.toFixed(2) + " mi</div>";
 }
 
