@@ -340,7 +340,7 @@ const peopleStrip = document.createElement("div");
   chip.innerHTML = avatarHtml(p.name) + '<span>' + p.name + '</span>';
   peopleStrip.appendChild(chip);
  });
- document.querySelector(".toggle"                      ).before(peopleStrip);
+ document.querySelector(".toggle").before(peopleStrip);
  let currentDay = 6;
 
 renderDaily(currentDay);
