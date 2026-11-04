@@ -34,6 +34,12 @@
     .people-chip { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 4px; }
 .personal-row { font-size: 15px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.10); color: #ddd; }
     .people-chip span:last-child { font-size: 12px; color: #ccc; white-space: nowrap; } 
+.avatar-wrap { position: relative; }
+ .medal { position: absolute; top: -6px; right: -6px; font-size: 9px; font-weight: 700; line-height: 1; padding: 3px 4px; border-radius: 999px; white-space: nowrap; color: #000; }
+ .medal-1 { background: #FFD700; }
+ .medal-2 { background: #C0C0C0; }
+ .medal-3 { background: #CD7F32; }
+ 
   .val { font-size: 30px; font-weight: 600; }
   .val.green { color: #00C805; }
   .val.small { font-size: 22px; }
@@ -89,7 +95,7 @@
     <p><b>Steps and distance</b> are Garmin's daily totals; distance is in miles.</p>
     <p><b>Body Battery</b> values are Garmin's. Only the charged value feeds Recovery.</p>
     <p><b>Rankings:</b> higher wins on every ranked board. The #1 value is green.</p>
-<p><b>Overall (top strip):</b> the strip ranks everyone by rank points across all ranked boards in the view you are on: 3 points for 1st, 2 for 2nd, 1 for 3rd on each board, ties share points, maximum 12. Daily uses Recovery, Sleep, Steps, and Strain; Weekly uses total Steps, Avg sleep, Avg recovery, and Avg strain. Resting HR is not ranked and is not counted in the overall score, because it is largely a personal baseline; it is shown as personal context, not as a competition.</p>
+<p><b>Overall (top strip):</b> the strip orders everyone by rank points across all ranked boards in the view you are on: 3 points for 1st, 2 for 2nd, 1 for 3rd on each board, ties share points, maximum 12. Daily uses Recovery, Sleep, Steps, and Strain; Weekly uses total Steps, Avg sleep, Avg recovery, and Avg strain. The small medal on each photo shows the overall order (1st, 2nd, 3rd); ties share a medal. Resting HR is not ranked and is not counted in the overall score, because it is largely a personal baseline; it is shown as personal context, not as a competition.</p>
     <p><b>Expanded rows</b> show context for that metric only. Recovery expands to its three inputs, Steps expands to distance. Distance never appears under Resting HR.</p>
     <p><b>Missing data:</b> &mdash; means nothing was recorded that day, not zero. Weekly averages use recorded days only.</p>
     <p id="info-daily-weekly"><b>Daily vs Weekly:</b> Daily defaults to today.</p>
@@ -374,10 +380,17 @@ function overallScores(view, dayIdx) {
 }
 function renderPeopleStrip(view, dayIdx) {
   peopleStrip.innerHTML = "";
-  overallScores(view, dayIdx).forEach((entry) => {
-    const chip = document.createElement("div");
+    const scored = overallScores(view, dayIdx);
+   let lastPoints = null;
+   let lastRank = 0;
+ scored.forEach((entry, idx) => {
+      const rank = (lastPoints === null || entry.points !== lastPoints) ? idx + 1 : lastRank;
+      lastPoints = entry.points;
+      lastRank = rank;
+      const medalText = rank === 1 ? "1st" : rank === 2 ? "2nd" : "3rd";
+      const chip = document.createElement("div");
     chip.className = "people-chip";
-    chip.innerHTML = avatarHtml(entry.person.name) + '<span>' + entry.person.name + ' &middot; ' + entry.points + ' pts</span>';
+    chip.innerHTML = '<div class="avatar-wrap">' + avatarHtml(entry.person.name) + '<span class="medal medal-' + rank + '">' + medalText + '</span></div><span>' + entry.person.name + '</span>';
     peopleStrip.appendChild(chip);
   });
 }
