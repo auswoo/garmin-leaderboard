@@ -45,17 +45,18 @@
   .panel div b { color: #ddd; font-weight: 500; }
   .summary { margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.14); padding-top: 20px; }
   .summary h2 { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: #888; margin-bottom: 12px; }
-  .summary p { font-size: 15px; line-height: 1.55; color: #ccc; margin-bottom: 12px; }
-  .summary p b { color: #fff; font-weight: 600; }
+  .summary-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.10); }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-label { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: #888; flex-shrink: 0; }
+  .summary-leader { font-size: 15px; color: #ddd; text-align: right; }
   .person-table { margin-top: 30px; }
   .person-table h3 { font-size: 17px; font-weight: 600; margin-bottom: 10px; }
   table { width: 100%; border-collapse: collapse; font-size: 14px; }
   th { text-align: left; color: #888; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600; padding: 8px 6px 8px 0; border-bottom: 1px solid rgba(255,255,255,0.14); }
   td { padding: 9px 6px 9px 0; border-bottom: 1px solid rgba(255,255,255,0.08); color: #ddd; }
   td:first-child { color: #888; }
-  footer { margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.14); padding-top: 16px; }
-  footer p { font-size: 12px; color: #666; line-height: 1.5; margin-bottom: 8px; }
   .hidden { display: none !important; }
+  .top-scrim { position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top, 0px); background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100; }
   .row { animation: rowIn 0.35s ease both; }
   @keyframes rowIn { from { opacity: 0; transform: translateY(8px); } }
   .row { position: relative; padding-left: 10px; }
@@ -67,7 +68,7 @@
   .delta.up { color: #5da87f; }
   .delta.down { color: #c07a6b; }
   .race-rank { font-size: 16px; font-weight: 300; color: #666; width: 20px; flex-shrink: 0; font-variant-numeric: tabular-nums; }
-  .trend-tooltip { font-size: 13px; color: #ccc; margin-top: 8px; min-height: 20px; }
+  .trend-tooltip { font-size: 12px; color: #888; margin-top: 6px; min-height: 16px; }
   #trend-chart svg { touch-action: pan-y; }
   .ring { width: 52px; height: 52px; flex-shrink: 0; align-self: center; }
   .ring svg { width: 100%; height: 100%; display: block; }
@@ -93,6 +94,7 @@
 </style>
 </head>
 <body>
+<div class="top-scrim"></div>
 <div class="wrap">
   <div class="head">
     <h1>Garmin Leaderboard</h1>
@@ -137,10 +139,6 @@
     <div class="board"><h2>Week trends</h2><div id="trend-buttons" class="daytoggle"></div><div id="trend-chart"></div><div id="trend-tooltip" class="trend-tooltip">Tap or drag the chart to compare a day.</div></div>
   </div>
 
-  <footer>
-    <p>Recovery (Est.) = 50% sleep score + 30% HRV vs own baseline + 20% Body Battery charged. Modeled estimate, not a Garmin score.</p>
-    <p>Strain (Est.) = min(21, HR load + min(5, steps &divide; 2000) + min(6, strength minutes &divide; 15)), rounded to the nearest whole number. HR load is full-day heart-rate load capped at 15. Modeled estimate, not a Garmin or Whoop score.</p>
-      </footer>
 </div>
 
 <script src="data.js"></script>
@@ -230,7 +228,7 @@ function ringHtml(value, max, hueFn, display) {
   const frac = Math.max(0, Math.min(1, value / max));
   const col = hueFn(frac);
   const off = (1 - frac) * C;
-  return '<span class="ring"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="20" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3.5"/><circle cx="26" cy="26" r="20" fill="none" stroke="' + col + '" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="' + C + '" stroke-dashoffset="' + off + '" transform="rotate(-90 26 26)"/><text x="26" y="30" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">' + display + '</text></svg></span>';
+  return '<span class="ring"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="20" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="3.5"/><circle cx="26" cy="26" r="20" fill="none" stroke="' + col + '" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="' + C + '" stroke-dashoffset="' + off + '" transform="rotate(-90 26 26)"/><text x="26" y="30" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">' + display + '</text></svg></span>';
 }
 const recoveryColor = (frac) => { const v = frac * 100; if (v < 34) return "#e5484d"; if (v <= 66) return "#eab308"; return "#00C805"; };
 const strainColor = (frac) => 'hsl(' + Math.round(215 + frac * 65) + ', 80%, 62%)';
@@ -272,11 +270,11 @@ function renderHRChart(dayIdx) {
   const y = (v) => PT + (1 - (v - yMin) / (yMax - yMin)) * (H - PT - PB);
   let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block">';
   [["12am", 0], ["6am", 360], ["12pm", 720], ["6pm", 1080], ["12am", 1440]].forEach(([label, m]) => {
-    svg += '<line x1="' + x(m) + '" y1="' + PT + '" x2="' + x(m) + '" y2="' + (H - PB) + '" stroke="rgba(255,255,255,0.12)"/>';
+    svg += '<line x1="' + x(m) + '" y1="' + PT + '" x2="' + x(m) + '" y2="' + (H - PB) + '" stroke="rgba(255,255,255,0.07)"/>';
     svg += '<text x="' + x(m) + '" y="' + (H - 6) + '" fill="#888" font-size="11" text-anchor="middle">' + label + '</text>';
   });
   [40, 80, 120, 160].forEach((v) => {
-    svg += '<line x1="' + PL + '" y1="' + y(v) + '" x2="' + (W - PR) + '" y2="' + y(v) + '" stroke="rgba(255,255,255,0.08)"/>';
+    svg += '<line x1="' + PL + '" y1="' + y(v) + '" x2="' + (W - PR) + '" y2="' + y(v) + '" stroke="rgba(255,255,255,0.05)"/>';
     svg += '<text x="' + (PL - 4) + '" y="' + (y(v) + 4) + '" fill="#888" font-size="11" text-anchor="end">' + v + '</text>';
   });
   PEOPLE.forEach((p) => {
@@ -292,7 +290,7 @@ function renderHRChart(dayIdx) {
     let seg = [];
     let lastX = null, lastY = null;
     const flush = () => {
-      if (seg.length > 1) svg += '<polyline points="' + seg.join(" ") + '" fill="none" stroke="' + col + '" stroke-width="2" stroke-linejoin="round"/>';
+      if (seg.length > 1) svg += '<polyline points="' + seg.join(" ") + '" fill="none" stroke="' + col + '" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
       seg = [];
     };
     series.forEach((v, i) => {
@@ -318,7 +316,7 @@ function renderSleepChart(dayIdx) {
   let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block">';
   [0, 180, 360, 540, 720, 900, 1080].forEach((v) => {
     const m = (axisStart + v) % 1440;
-    svg += '<line x1="' + x(v) + '" y1="' + PT + '" x2="' + x(v) + '" y2="' + (PT + PEOPLE.length * rowH) + '" stroke="rgba(255,255,255,0.12)"/>';
+    svg += '<line x1="' + x(v) + '" y1="' + PT + '" x2="' + x(v) + '" y2="' + (PT + PEOPLE.length * rowH) + '" stroke="rgba(255,255,255,0.07)"/>';
     svg += '<text x="' + x(v) + '" y="' + (H - 6) + '" fill="#888" font-size="11" text-anchor="middle">' + fmtClock(m) + '</text>';
   });
   PEOPLE.forEach((p, idx) => {
@@ -375,20 +373,21 @@ function renderTrendChart(metric) {
   let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block">';
   for (let k = 0; k <= 4; k++) {
     const v = yMin + k * (yMax - yMin) / 4;
-    svg += '<line x1="' + PL + '" y1="' + y(v) + '" x2="' + (W - PR) + '" y2="' + y(v) + '" stroke="rgba(255,255,255,0.08)"/>';
+    svg += '<line x1="' + PL + '" y1="' + y(v) + '" x2="' + (W - PR) + '" y2="' + y(v) + '" stroke="rgba(255,255,255,0.05)"/>';
     svg += '<text x="' + (PL - 4) + '" y="' + (y(v) + 4) + '" fill="#888" font-size="11" text-anchor="end">' + (metric === "steps" ? Math.round(v).toLocaleString("en-US") : Math.round(v)) + '</text>';
   }
   DAYS.forEach((d, i) => {
-    svg += '<line x1="' + x(i) + '" y1="' + PT + '" x2="' + x(i) + '" y2="' + (H - PB) + '" stroke="rgba(255,255,255,0.08)"/>';
+    svg += '<line x1="' + x(i) + '" y1="' + PT + '" x2="' + x(i) + '" y2="' + (H - PB) + '" stroke="rgba(255,255,255,0.05)"/>';
     svg += '<text x="' + x(i) + '" y="' + (H - 6) + '" fill="#888" font-size="11" text-anchor="middle">' + d + '</text>';
   });
   svg += '<line id="trend-guide" x1="' + x(0) + '" y1="' + PT + '" x2="' + x(0) + '" y2="' + (H - PB) + '" stroke="rgba(255,255,255,0.25)" stroke-dasharray="3 3" style="display:none"/>';
+  const trendLabels = [];
   PEOPLE.forEach((p) => {
     const col = CHART_COLORS[p.name] || "#fff";
     let seg = [];
     let lastX = null, lastY = null;
     const flush = () => {
-      if (seg.length > 1) svg += '<polyline points="' + seg.join(" ") + '" fill="none" stroke="' + col + '" stroke-width="2" stroke-linejoin="round"/>';
+      if (seg.length > 1) svg += '<polyline points="' + seg.join(" ") + '" fill="none" stroke="' + col + '" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
       seg = [];
     };
     for (let i = 0; i < 7; i++) {
@@ -399,10 +398,21 @@ function renderTrendChart(metric) {
       lastX = px; lastY = py;
     }
     flush();
-    if (lastX != null) {
-      svg += '<circle cx="' + lastX + '" cy="' + lastY + '" r="4" fill="' + col + '" stroke="#000" stroke-width="1"/>';
-      svg += '<text x="' + (lastX + 6) + '" y="' + (lastY + 4) + '" fill="' + col + '" font-size="12">' + p.name + '</text>';
-    }
+    if (lastX != null) trendLabels.push({ name: p.name, col: col, x: lastX, py: lastY, ly: lastY + 4 });
+  });
+  trendLabels.sort((a, b) => a.ly - b.ly);
+  for (let i = 1; i < trendLabels.length; i++) {
+    if (trendLabels[i].ly - trendLabels[i - 1].ly < 12) trendLabels[i].ly = trendLabels[i - 1].ly + 12;
+  }
+  if (trendLabels.length) {
+    const over = trendLabels[trendLabels.length - 1].ly - (H - 6);
+    if (over > 0) trendLabels.forEach((l) => { l.ly -= over; });
+    trendLabels.forEach((l) => { l.ly = Math.max(12, Math.min(H - 6, l.ly)); });
+  }
+  trendLabels.forEach((l) => {
+    svg += '<circle cx="' + l.x + '" cy="' + l.py + '" r="4" fill="' + l.col + '" stroke="#000" stroke-width="1"/>';
+    if (l.ly !== l.py + 4) svg += '<line x1="' + (l.x + 4) + '" y1="' + l.py + '" x2="' + (l.x + 6) + '" y2="' + (l.ly - 4) + '" stroke="' + l.col + '" stroke-opacity="0.5" stroke-width="1"/>';
+    svg += '<text x="' + (l.x + 6) + '" y="' + l.ly + '" fill="' + l.col + '" font-size="12">' + l.name + '</text>';
   });
   svg += '</svg>';
   el.innerHTML = svg;
@@ -506,17 +516,31 @@ function renderWeekly() {
 
   renderBoard(box, "Avg strain (Est.)", [...PEOPLE].sort((a, b) => (b.weekly.avgStrain || 0) - (a.weekly.avgStrain || 0)).map((p) => ({
     person: p,
-    valHtml: ringHtml(p.weekly.avgStrain, 21, strainColor, (p.weekly.avgStrain == null ? "—" : p.weekly.avgStrain.toFixed(1))),
+    valHtml: ringHtml(p.weekly.avgStrain, 21, strainColor, (p.weekly.avgStrain == null ? "—" : String(Math.round(p.weekly.avgStrain)))),
     panelHtml: weeklyStrainPanel(p)
   })));
 
   
   renderTrendChart(currentTrend);
+  const summaryLeader = (get, fmtMargin) => {
+    const sorted = [...PEOPLE].sort((a, b) => get(b) - get(a));
+    const top = get(sorted[0]);
+    const leaders = sorted.filter((p) => get(p) === top).map((p) => p.name);
+    const second = sorted.find((p) => get(p) < top);
+    return leaders.join(" & ") + (second ? " +" + fmtMargin(top - get(second)) : "");
+  };
+  const weeklyScores = overallScores("weekly", 6);
+  const topPts = weeklyScores[0].points;
+  const overallLeaders = weeklyScores.filter((e) => e.points === topPts).map((e) => e.person.name);
+  document.getElementById("summary-body").innerHTML =
+    '<div class="summary-row"><span class="summary-label">Steps</span><span class="summary-leader">' + summaryLeader((p) => p.weekly.steps, (d) => fmt(d)) + '</span></div>'
+    + '<div class="summary-row"><span class="summary-label">Sleep</span><span class="summary-leader">' + summaryLeader((p) => p.weekly.avgSleep, (d) => d.toFixed(1)) + '</span></div>'
+    + '<div class="summary-row"><span class="summary-label">Recovery</span><span class="summary-leader">' + summaryLeader((p) => p.weekly.avgRecovery, (d) => (Number.isInteger(d) ? String(d) : d.toFixed(1))) + '</span></div>'
+    + '<div class="summary-row"><span class="summary-label">Overall</span><span class="summary-leader">' + overallLeaders.join(" & ") + " " + topPts + "/12</span></div>";
 }
 
 document.getElementById("day-yesterday").innerHTML = "Yesterday &middot; " + DAYS[5];
 document.getElementById("day-today").innerHTML = "Today &middot; " + DAYS[6];
-document.getElementById("summary-body").innerHTML = BOARD.summary.map((p) => "<p>" + p + "</p>").join("");
 document.getElementById("info-daily-weekly").innerHTML = "<b>Daily vs Weekly:</b> Daily defaults to today (" + DAYS[6] + "), which is partial as of " + META.updatedTimePT + ". Yesterday (" + DAYS[5] + ") is the last full day. Weekly covers " + DAYS[0] + "&ndash;" + DAYS[6] + ".";
 if (META.live) {
   document.getElementById("sub-line").textContent = DAYS[0] + "–" + DAYS[6] + ", " + META.endDate.slice(0, 4) + " · Updated " + META.updatedTimePT;
