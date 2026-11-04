@@ -60,6 +60,31 @@
   footer { margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.14); padding-top: 16px; }
   footer p { font-size: 12px; color: #666; line-height: 1.5; margin-bottom: 8px; }
   .hidden { display: none !important; }
+  .row { animation: rowIn 0.35s ease both; }
+  @keyframes rowIn { from { opacity: 0; transform: translateY(8px); } }
+  .row.podium-1 { position: relative; }
+  .row.podium-1::before, .row.podium-2::before, .row.podium-3::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; border-radius: 2px; }
+  .row.podium-1::before { background: linear-gradient(#ffe27a, #c8963e); }
+  .row.podium-2::before { background: linear-gradient(#e8e8ec, #9a9aa2); }
+  .row.podium-3::before { background: linear-gradient(#e8b08a, #8a5a3b); }
+  .row.podium-1 .rank { color: #f5c542; text-shadow: 0 0 12px rgba(245,197,66,0.45); }
+  .row.podium-2 .rank { color: #c9ccd6; }
+  .row.podium-3 .rank { color: #d09a6c; }
+  .crown { font-size: 15px; align-self: center; flex-shrink: 0; }
+  .medal-1 { background: linear-gradient(135deg, #ffe27a, #c8963e); color: #111; border-color: rgba(255,226,122,0.9); box-shadow: 0 0 10px rgba(245,197,66,0.45); }
+  .medal-2 { background: linear-gradient(135deg, #e8e8ec, #9a9aa2); color: #111; border-color: rgba(232,232,236,0.9); }
+  .medal-3 { background: linear-gradient(135deg, #e8b08a, #8a5a3b); color: #111; border-color: rgba(232,176,138,0.9); }
+  .ring { width: 52px; height: 52px; flex-shrink: 0; align-self: center; }
+  .ring svg { width: 100%; height: 100%; display: block; }
+  .ring .arc { animation: arcIn 0.8s ease both; }
+  @keyframes arcIn { from { stroke-dashoffset: 125.7; } }
+  .points-race { grid-column: 1 / -1; margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
+  .race-row { display: flex; align-items: center; gap: 10px; }
+  .race-name { width: 56px; font-size: 13px; color: #ccc; flex-shrink: 0; }
+  .race-track { flex: 1; height: 10px; border-radius: 999px; background: rgba(255,255,255,0.10); overflow: hidden; }
+  .race-fill { height: 100%; border-radius: 999px; animation: raceGrow 0.7s ease both; }
+  @keyframes raceGrow { from { width: 0; } }
+  .race-pts { font-size: 13px; color: #ddd; width: 36px; text-align: right; flex-shrink: 0; }
   .head { display: flex; align-items: center; justify-content: space-between; }
   .info-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.45); background: none; color: #eee; font-size: 16px; font-weight: 600; cursor: pointer; flex-shrink: 0; }
   .info-btn[aria-expanded="true"] { background: rgba(255,255,255,0.12); border-color: #fff; color: #fff; }
@@ -88,7 +113,7 @@
     <div class="info-sheet-head"><h3>How the numbers are computed</h3><button id="info-close" class="info-close" aria-label="Close">×</button></div>
     <p><b>Recovery (Est.)</b> = 50% sleep score + 30% HRV component + 20% Body Battery charged. HRV component = 50 + (last night's HRV &minus; your weekly average HRV) &times; 2, clamped to 0&ndash;100.</p>
 <p><b>Strain (Est.)</b> = min(21, HR load + min(5, steps &divide; 2000) + min(6, strength minutes &divide; 15)), rounded. HR load = min(15, sum(max(0, HR &minus; resting HR) &times; minutes) &divide; 3000) over full-day samples. Strength minutes = strength training only.</p>
-<p><b>Rankings:</b> higher wins, #1 is green. <b>Overall strip:</b> 3/2/1 points per ranked board, ties share, max 12.</p>
+<p><b>Rankings:</b> higher wins, #1 is green. <b>Overall strip:</b> 3/2/1 points per ranked board, ties share, max 12. The points race below the photos shows each total out of 12.</p>
 <p>~ = partial day. &mdash; = nothing recorded, not zero. Weekly averages use recorded days only. Anything (Est.) is modeled, not a Garmin or Whoop score.</p>
 <p id="info-daily-weekly"><b>Daily vs Weekly:</b> Daily defaults to today.</p>
 <p id="info-data"><b>Data:</b> Garmin Personal API. The board refreshes hourly.</p>
@@ -139,9 +164,10 @@ const AVATARS = { "Ethan": "assets/ethan.jpg", "Austin": "assets/austin.jpg", "J
  function avatarHtml(name) { if (AVATARS[name]) { return '<img class="avatar" src="' + AVATARS[name] + '" alt="">'; } return '<span class="avatar-fallback">' + name.charAt(0) + '</span>'; }
  function expandableRow(rank, name, valHtml, panelHtml) {
   const btn = document.createElement("button");
-  btn.className = "row";
+  btn.className = "row" + (rank <= 3 ? " podium-" + rank : "");
   btn.setAttribute("aria-expanded", "false");
-  btn.innerHTML = '<span class="rank">' + rank + '</span><span class="name">' + name + '</span>' + valHtml + '<span class="chev" aria-hidden="true">›</span>';
+  const crown = rank === 1 ? '<span class="crown" aria-hidden="true">👑</span>' : "";
+  btn.innerHTML = '<span class="rank">' + rank + '</span><span class="name">' + name + '</span>' + crown + valHtml + '<span class="chev" aria-hidden="true">›</span>';
   const panel = document.createElement("div");
   panel.className = "panel";
   panel.innerHTML = panelHtml;
@@ -204,6 +230,16 @@ function weeklyStrainPanel(p) {
     + "<div><b>Total strain:</b> " + total + "</div>";
 }
 
+function ringHtml(value, max, hueFn, display) {
+  if (value === null || value === undefined) return '<span class="val">\u2014</span>';
+  const r = 20, C = 2 * Math.PI * r;
+  const frac = Math.max(0, Math.min(1, value / max));
+  const col = hueFn(frac);
+  const off = (1 - frac) * C;
+  return '<span class="ring"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="20" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="5"/><circle class="arc" cx="26" cy="26" r="20" fill="none" stroke="' + col + '" stroke-width="5" stroke-linecap="round" stroke-dasharray="' + C + '" stroke-dashoffset="' + off + '" transform="rotate(-90 26 26)"/><text x="26" y="30" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">' + display + '</text></svg></span>';
+}
+const recoveryColor = (frac) => 'hsl(' + Math.round(frac * 120) + ', 85%, 55%)';
+const strainColor = (frac) => 'hsl(' + Math.round(215 + frac * 65) + ', 80%, 62%)';
 function renderBoard(container, title, ranked) {
   const sec = document.createElement("div");
   sec.className = "board";
@@ -212,8 +248,10 @@ function renderBoard(container, title, ranked) {
   sec.appendChild(h);
   ranked.forEach((entry, idx) => {
     const [btn, panel] = expandableRow(idx + 1, entry.person.name, entry.valHtml, entry.panelHtml);
+    btn.style.animationDelay = (idx * 50) + "ms";
     if (idx === 0) {
-      btn.querySelector(".val").classList.add("green");
+      const valEl = btn.querySelector(".val");
+      if (valEl) valEl.classList.add("green");
     }
     sec.appendChild(btn);
     sec.appendChild(panel);
@@ -379,7 +417,7 @@ function renderDaily(dayIdx) {
 
   renderBoard(box, "Recovery (Est.)", byVal("recovery", true).map((p) => ({
     person: p,
-    valHtml: '<span class="val">' + show(p.recovery[dayIdx]) + "</span>",
+    valHtml: ringHtml(p.recovery[dayIdx], 100, recoveryColor, show(p.recovery[dayIdx])),
     panelHtml: recoveryPanel(p, dayIdx),
     subline: isToday ? p.hrvVsOwnToday : p.hrvVsOwnYesterday
   })));
@@ -400,7 +438,7 @@ function renderDaily(dayIdx) {
   renderBoard(box, isToday ? "Strain (Est., in progress)" : "Strain (Est.)",
     [...PEOPLE].sort((a, b) => b[strainKey] - a[strainKey]).map((p) => ({
       person: p,
-      valHtml: '<span class="val">' + (p[strainKey] == null ? "—" : "~" + p[strainKey]) + "</span>",
+      valHtml: ringHtml(p[strainKey], 21, strainColor, (p[strainKey] == null ? "—" : "~" + p[strainKey])),
       panelHtml: strainPanel(p, dayIdx)
     })));
 
@@ -426,13 +464,13 @@ function renderWeekly() {
 
   renderBoard(box, "Avg recovery (Est.)", byWeekly("avgRecovery", true).map((p) => ({
     person: p,
-    valHtml: '<span class="val">' + p.weekly.avgRecovery + "</span>",
+    valHtml: ringHtml(p.weekly.avgRecovery, 100, recoveryColor, p.weekly.avgRecovery),
     panelHtml: weeklyRecoveryPanel(p)
   })));
 
   renderBoard(box, "Avg strain (Est.)", [...PEOPLE].sort((a, b) => (b.weekly.avgStrain || 0) - (a.weekly.avgStrain || 0)).map((p) => ({
     person: p,
-    valHtml: '<span class="val">' + (p.weekly.avgStrain == null ? "—" : p.weekly.avgStrain.toFixed(1)) + "</span>",
+    valHtml: ringHtml(p.weekly.avgStrain, 21, strainColor, (p.weekly.avgStrain == null ? "—" : p.weekly.avgStrain.toFixed(1))),
     panelHtml: weeklyStrainPanel(p)
   })));
 
@@ -490,15 +528,41 @@ function renderPeopleStrip(view, dayIdx) {
       const medalText = String(rank);
       const chip = document.createElement("div");
     chip.className = "people-chip";
-    chip.innerHTML = '<div class="avatar-wrap">' + avatarHtml(entry.person.name) + '<span class="medal">' + medalText + '</span></div><span>' + entry.person.name + '</span>';
+    chip.innerHTML = '<div class="avatar-wrap">' + avatarHtml(entry.person.name) + '<span class="medal' + (rank <= 3 ? ' medal-' + rank : '') + '">' + medalText + '</span></div><span>' + entry.person.name + '</span>';
     peopleStrip.appendChild(chip);
   });
+  const race = document.createElement("div");
+  race.className = "points-race";
+  race.innerHTML = scored.map((entry) => '<div class="race-row"><span class="race-name">' + entry.person.name + '</span><div class="race-track"><div class="race-fill" style="width:' + (entry.points / 12 * 100) + '%;background:' + (CHART_COLORS[entry.person.name] || "#fff") + '"></div></div><span class="race-pts">' + entry.points + '/12</span></div>').join("");
+  peopleStrip.appendChild(race);
 }
  let currentDay = 6;
 
 renderDaily(currentDay);
 renderWeekly();
 renderPeopleStrip("daily", currentDay);
+function countUpVals() {
+  if (!document.querySelectorAll || !window.requestAnimationFrame) return;
+  document.querySelectorAll("#daily-boards .val, #weekly-boards .val").forEach((el) => {
+    const txt = el.textContent.trim();
+    const m = txt.match(/^~?([\d,]+(?:\.\d+)?)$/);
+    if (!m) return;
+    const target = parseFloat(m[1].replace(/,/g, ""));
+    const prefix = txt.startsWith("~") ? "~" : "";
+    const decimals = m[1].indexOf(".") >= 0 ? 1 : 0;
+    const start = performance.now();
+    const dur = 700;
+    const step = (t) => {
+      const p = Math.min(1, (t - start) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      const v = target * eased;
+      el.textContent = prefix + (decimals ? v.toFixed(1) : fmt(Math.round(v)));
+      if (p < 1) window.requestAnimationFrame(step);
+    };
+    window.requestAnimationFrame(step);
+  });
+}
+countUpVals();
 
 document.getElementById("day-yesterday").addEventListener("click", () => {
   currentDay = 5;
