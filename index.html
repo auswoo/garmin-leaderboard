@@ -88,8 +88,7 @@
     <div class="info-sheet-head"><h3>How the numbers are computed</h3><button id="info-close" class="info-close" aria-label="Close">×</button></div>
     <p><b>Recovery (Est.)</b> = 50% sleep score + 30% HRV component + 20% Body Battery charged. HRV component = 50 + (last night's HRV &minus; your weekly average HRV) &times; 2, clamped to 0&ndash;100.</p>
 <p><b>Strain (Est.)</b> = min(21, HR load + min(5, steps &divide; 2000) + min(6, strength minutes &divide; 15)), rounded. HR load = min(15, sum(max(0, HR &minus; resting HR) &times; minutes) &divide; 3000) over full-day samples. Strength minutes = strength training only.</p>
-<p><b>Sleep, HRV, Resting HR, Steps, distance, Body Battery</b> are Garmin's own numbers, not calculated here.</p>
-<p><b>Rankings:</b> higher wins, #1 is green. <b>Overall strip:</b> 3/2/1 points per ranked board, ties share, max 12. Daily: Recovery, Sleep, Steps, Strain. Weekly: total Steps, Avg sleep, Avg recovery, Avg strain.</p>
+<p><b>Rankings:</b> higher wins, #1 is green. <b>Overall strip:</b> 3/2/1 points per ranked board, ties share, max 12.</p>
 <p>~ = partial day. &mdash; = nothing recorded, not zero. Weekly averages use recorded days only. Anything (Est.) is modeled, not a Garmin or Whoop score.</p>
 <p id="info-daily-weekly"><b>Daily vs Weekly:</b> Daily defaults to today.</p>
 <p id="info-data"><b>Data:</b> Garmin Personal API. The board refreshes hourly.</p>
@@ -265,23 +264,6 @@ function renderDaily(dayIdx) {
 
   
 
-      {
-        const personalBox = document.createElement("div");
-        personalBox.className = "board";
-        const personalH = document.createElement("h2");
-        personalH.innerHTML = "Resting HR &mdash; personal, not ranked";
-        personalBox.appendChild(personalH);
-        PEOPLE.forEach((p) => {
-          const row = document.createElement("div");
-          row.className = "personal-row";
-          const vals = p.rhr.filter((v) => v !== null && v !== undefined);
-          const avg = vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : "&mdash;";
-          const dayVal = p.rhr[dayIdx];
-          row.innerHTML = "<b>" + p.name + "</b> &middot; " + DAYS[dayIdx] + " " + (dayVal === null || dayVal === undefined ? "&mdash;" : dayVal + " bpm") + " &middot; weekly avg " + (avg === "&mdash;" ? "&mdash;" : avg + " bpm");
-          personalBox.appendChild(row);
-        });
-        box.appendChild(personalBox);
-      }
 }
 function renderWeekly() {
   const box = document.getElementById("weekly-boards");
