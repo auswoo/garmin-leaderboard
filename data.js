@@ -1,80 +1,79 @@
 window.BOARD_DATA = {
  "meta": {
-  "startDate": "2026-10-28",
-  "endDate": "2026-11-03",
+  "startDate": "2026-10-29",
+  "endDate": "2026-11-04",
   "days": [
-   "Oct 28",
    "Oct 29",
    "Oct 30",
    "Oct 31",
    "Nov 1",
    "Nov 2",
-   "Nov 3"
+   "Nov 3",
+   "Nov 4"
   ],
-  "updatedAt": "2026-11-04T07:57:22.268170Z",
-  "updatedTimePT": "11:57 PM PST",
-  "updatedLongPT": "Nov 3, 11:57 PM PST",
+  "updatedAt": "2026-11-04T08:57:22.907096Z",
+  "updatedTimePT": "12:57 AM PST",
+  "updatedLongPT": "Nov 4, 12:57 AM PST",
   "live": true
  },
  "days": [
-  "Oct 28",
   "Oct 29",
   "Oct 30",
   "Oct 31",
   "Nov 1",
   "Nov 2",
-  "Nov 3"
+  "Nov 3",
+  "Nov 4"
  ],
  "people": [
   {
    "name": "Austin",
    "sleep": [
-    null,
     88,
     87,
     92,
     79,
     66,
-    83
+    83,
+    null
    ],
    "recovery": [
-    null,
     82,
     79,
     80,
     59,
     44,
-    65
+    65,
+    null
    ],
    "hrv": [
-    null,
     64,
     62,
     60,
     45,
     36,
-    49
+    49,
+    null
    ],
    "rhr": [
-    60,
     56,
     56,
     56,
     61,
     61,
-    59
+    59,
+    null
    ],
    "steps": [
-    5407,
     6976,
     7201,
     6225,
     8899,
     8599,
-    7243
+    7243,
+    null
    ],
    "stages": [
-    null,
     [
      22,
      55,
@@ -104,14 +103,10 @@ window.BOARD_DATA = {
      15,
      71,
      14
-    ]
+    ],
+    null
    ],
    "battery": [
-    [
-     18,
-     1,
-     25
-    ],
     [
      21,
      80,
@@ -141,25 +136,30 @@ window.BOARD_DATA = {
      11,
      52,
      46
+    ],
+    [
+     null,
+     null,
+     null
     ]
    ],
    "stress": [
-    56,
     33,
     27,
     30,
     42,
     43,
-    36
+    36,
+    null
    ],
    "maxhr": [
-    117,
     125,
     111,
     157,
     162,
     120,
-    102
+    102,
+    null
    ],
    "dist": [
     null,
@@ -171,13 +171,13 @@ window.BOARD_DATA = {
     null
    ],
    "strain": [
-    7,
     10,
     9,
     12,
     15,
     10,
-    8
+    8,
+    null
    ],
    "strength": [
     null,
@@ -188,18 +188,18 @@ window.BOARD_DATA = {
     null,
     null
    ],
-   "strainYesterday": 10,
-   "strainToday": 8,
-   "hrvVsOwnYesterday": "HRV 36 vs own avg 54",
-   "hrvVsOwnToday": "HRV 49 vs own avg 52",
+   "strainYesterday": 8,
+   "strainToday": null,
+   "hrvVsOwnYesterday": "HRV 49 vs own avg 52",
+   "hrvVsOwnToday": "HRV \u2014",
    "weekly": {
-    "steps": 50550,
+    "steps": 45143,
     "dist": 0.0,
     "avgSleep": 82.5,
     "avgRecovery": 68,
     "avgHrv": 52.7,
-    "avgStrain": 10.1,
-    "totalStrain": 71,
+    "avgStrain": 10.7,
+    "totalStrain": 64,
     "lowRhr": 56,
     "bestRec": "Oct 29 (82)",
     "bestSleep": "Oct 31 (92)"
@@ -208,56 +208,51 @@ window.BOARD_DATA = {
   {
    "name": "Jordan",
    "sleep": [
-    78,
     68,
     78,
     74,
     93,
     67,
-    63
+    63,
+    null
    ],
    "recovery": [
-    65,
-    61,
+    60,
     72,
-    68,
+    67,
     83,
-    56,
-    64
+    55,
+    63,
+    null
    ],
    "hrv": [
-    63,
     67,
     73,
     71,
     81,
     59,
-    74
+    74,
+    null
    ],
    "rhr": [
-    53,
     50,
     52,
     53,
     49,
     55,
-    49
+    49,
+    55
    ],
    "steps": [
-    11978,
     13510,
     16817,
     10462,
     9311,
     8638,
-    4731
+    9222,
+    139
    ],
    "stages": [
-    [
-     17,
-     65,
-     18
-    ],
     [
      18,
      62,
@@ -287,14 +282,10 @@ window.BOARD_DATA = {
      22,
      54,
      25
-    ]
+    ],
+    null
    ],
    "battery": [
-    [
-     12,
-     74,
-     75
-    ],
     [
      11,
      68,
@@ -321,28 +312,33 @@ window.BOARD_DATA = {
      55
     ],
     [
-     46,
+     28,
      73,
-     68
+     86
+    ],
+    [
+     27,
+     0,
+     1
     ]
    ],
    "stress": [
-    34,
     31,
     37,
     28,
     35,
     31,
-    21
+    23,
+    25
    ],
    "maxhr": [
-    170,
     112,
     163,
     111,
     111,
     123,
-    125
+    125,
+    85
    ],
    "dist": [
     null,
@@ -354,13 +350,13 @@ window.BOARD_DATA = {
     null
    ],
    "strain": [
-    20,
     16,
     21,
     12,
     12,
     11,
-    8
+    13,
+    0
    ],
    "strength": [
     null,
@@ -371,18 +367,18 @@ window.BOARD_DATA = {
     null,
     null
    ],
-   "strainYesterday": 11,
-   "strainToday": 8,
-   "hrvVsOwnYesterday": "HRV 59 vs own avg 65",
-   "hrvVsOwnToday": "HRV 74 vs own avg 69",
+   "strainYesterday": 13,
+   "strainToday": 0,
+   "hrvVsOwnYesterday": "HRV 74 vs own avg 69",
+   "hrvVsOwnToday": "HRV \u2014",
    "weekly": {
-    "steps": 75447,
+    "steps": 68099,
     "dist": 0.0,
-    "avgSleep": 74.4,
+    "avgSleep": 73.8,
     "avgRecovery": 67,
-    "avgHrv": 69.7,
-    "avgStrain": 14.3,
-    "totalStrain": 100,
+    "avgHrv": 70.8,
+    "avgStrain": 12.1,
+    "totalStrain": 85,
     "lowRhr": 49,
     "bestRec": "Nov 1 (83)",
     "bestSleep": "Nov 1 (93)"
@@ -391,52 +387,51 @@ window.BOARD_DATA = {
   {
    "name": "Ethan",
    "sleep": [
-    null,
     87,
     87,
     37,
     75,
     82,
+    null,
     null
    ],
    "recovery": [
-    null,
     76,
     76,
     25,
     60,
     73,
+    null,
     null
    ],
    "hrv": [
-    null,
     60,
     60,
     37,
     54,
     62,
+    null,
     null
    ],
    "rhr": [
-    52,
     51,
     53,
     67,
     56,
     56,
-    56
+    56,
+    null
    ],
    "steps": [
-    7410,
     6101,
     14559,
     12379,
     11889,
     6760,
-    173
+    173,
+    null
    ],
    "stages": [
-    null,
     [
      25,
      49,
@@ -462,14 +457,10 @@ window.BOARD_DATA = {
      52,
      17
     ],
+    null,
     null
    ],
    "battery": [
-    [
-     5,
-     25,
-     58
-    ],
     [
      11,
      73,
@@ -499,25 +490,30 @@ window.BOARD_DATA = {
      54,
      49,
      4
+    ],
+    [
+     null,
+     null,
+     null
     ]
    ],
    "stress": [
-    36,
     34,
     42,
     57,
     35,
     46,
-    23
+    23,
+    null
    ],
    "maxhr": [
-    120,
     131,
     173,
     147,
     133,
     111,
-    90
+    90,
+    null
    ],
    "dist": [
     null,
@@ -530,12 +526,12 @@ window.BOARD_DATA = {
    ],
    "strain": [
     10,
-    10,
     21,
     16,
     16,
     8,
-    0
+    0,
+    null
    ],
    "strength": [
     null,
@@ -546,18 +542,18 @@ window.BOARD_DATA = {
     null,
     null
    ],
-   "strainYesterday": 8,
-   "strainToday": 0,
-   "hrvVsOwnYesterday": "HRV 62 vs own avg 55",
+   "strainYesterday": 0,
+   "strainToday": null,
+   "hrvVsOwnYesterday": "HRV \u2014",
    "hrvVsOwnToday": "HRV \u2014",
    "weekly": {
-    "steps": 59271,
+    "steps": 51861,
     "dist": 0.0,
     "avgSleep": 73.6,
     "avgRecovery": 62,
     "avgHrv": 54.6,
-    "avgStrain": 11.6,
-    "totalStrain": 81,
+    "avgStrain": 11.8,
+    "totalStrain": 71,
     "lowRhr": 51,
     "bestRec": "Oct 29 (76)",
     "bestSleep": "Oct 29 (87)"
@@ -565,9 +561,9 @@ window.BOARD_DATA = {
   }
  ],
  "summary": [
-  "<b>Jordan leads steps</b> &mdash; 75,447 vs 59,271 this week (1.3\u00d7).",
-  "<b>Austin leads sleep</b> &mdash; avg 82.5 vs 74.4.",
+  "<b>Jordan leads steps</b> &mdash; 68,099 vs 51,861 this week (1.3\u00d7).",
+  "<b>Austin leads sleep</b> &mdash; avg 82.5 vs 73.8.",
   "<b>Austin leads recovery</b> &mdash; avg 68 vs 67.",
-  "<b>Bottom line</b> &mdash; Ethan leads the last full day; Austin leads the week."
+  "<b>Bottom line</b> &mdash; Austin leads the last full day; Austin leads the week."
  ]
 };
