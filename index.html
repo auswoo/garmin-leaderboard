@@ -62,7 +62,7 @@
   .hidden { display: none !important; }
   .row { animation: rowIn 0.35s ease both; }
   @keyframes rowIn { from { opacity: 0; transform: translateY(8px); } }
-  .row.podium-1 { position: relative; }
+  .row.podium-1, .row.podium-2, .row.podium-3 { position: relative; padding-left: 10px; }
   .row.podium-1::before, .row.podium-2::before, .row.podium-3::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; border-radius: 2px; }
   .row.podium-1::before { background: linear-gradient(#ffe27a, #c8963e); }
   .row.podium-2::before { background: linear-gradient(#e8e8ec, #9a9aa2); }
