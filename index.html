@@ -6,10 +6,12 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Descendants">
 <meta name="theme-color" content="#000000">
 <title>Descendants of the Great Great Grandma</title>
   <link rel="apple-touch-icon" href="icon.png">
   <link rel="icon" type="image/png" href="icon.png">
+  <link rel="manifest" href="manifest.webmanifest">
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: #000; color: #e8e8e8; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
@@ -93,6 +95,11 @@
   .info-sheet p { font-size: 14px; line-height: 1.55; color: #aaa; margin-bottom: 10px; }
   .info-sheet p b { color: #ddd; font-weight: 500; }
   @media (min-width: 600px) { .info-backdrop { align-items: center; padding: 24px; } .info-sheet { border-radius: 20px; max-height: 80vh; } }
+  .a2hs-card { position: fixed; left: 12px; right: 12px; bottom: calc(12px + env(safe-area-inset-bottom, 0px)); z-index: 80; background: #111; border: 1px solid rgba(255,255,255,0.14); border-radius: 12px; padding: 12px 14px; display: flex; align-items: center; gap: 10px; font-size: 14px; line-height: 1.45; color: #ddd; }
+  .a2hs-text { flex: 1; }
+  .a2hs-share { width: 16px; height: 16px; vertical-align: -3px; margin: 0 1px; }
+  .a2hs-close { background: none; border: none; color: #888; font-size: 20px; line-height: 1; cursor: pointer; flex-shrink: 0; padding: 2px 4px; }
+  .a2hs-install { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); border-radius: 999px; color: #fff; font-size: 14px; padding: 7px 14px; cursor: pointer; flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -671,6 +678,58 @@ infoBtn.addEventListener("click", openInfo);
 document.getElementById("info-close").addEventListener("click", closeInfo);
 infoBackdrop.addEventListener("click", (e) => { if (e.target === infoBackdrop) closeInfo(); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !infoBackdrop.classList.contains("hidden")) closeInfo(); });
+
+// Add-to-home-screen hint: one-time, mobile only, skipped when installed or dismissed.
+const a2hsIsIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+const a2hsIsAndroid = /Android/i.test(navigator.userAgent);
+let a2hsDeferredPrompt = null;
+let a2hsReady = false;
+let a2hsShown = false;
+function a2hsIsDismissed() {
+  try { return localStorage.getItem("a2hs-dismissed") === "1"; } catch (e) { return false; }
+}
+function a2hsSetDismissed() {
+  try { localStorage.setItem("a2hs-dismissed", "1"); } catch (e) {}
+}
+function a2hsHide() {
+  const el = document.getElementById("a2hs-card");
+  if (el) el.remove();
+}
+function a2hsShow(inner) {
+  if (a2hsShown) return null;
+  a2hsShown = true;
+  const card = document.createElement("div");
+  card.id = "a2hs-card";
+  card.className = "a2hs-card";
+  card.innerHTML = inner + '<button class="a2hs-close" aria-label="Dismiss">\u00d7</button>';
+  document.body.appendChild(card);
+  card.querySelector(".a2hs-close").addEventListener("click", () => { a2hsHide(); a2hsSetDismissed(); });
+  return card;
+}
+function a2hsMaybeShow() {
+  if (a2hsShown || a2hsIsDismissed()) return;
+  if (navigator.standalone || window.matchMedia("(display-mode: standalone)").matches) return;
+  if (a2hsIsIOS) {
+    const shareSvg = '<svg class="a2hs-share" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5aa2ff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="M7 8l5-5 5 5"/><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/></svg>';
+    a2hsShow('<span class="a2hs-text">Add to Home Screen: tap ' + shareSvg + ' Share, then Add to Home Screen.</span>');
+  } else if (a2hsIsAndroid && a2hsDeferredPrompt) {
+    const card = a2hsShow('<span class="a2hs-text">Add this leaderboard to your home screen.</span><button class="a2hs-install">Install</button>');
+    if (card) card.querySelector(".a2hs-install").addEventListener("click", () => {
+      const p = a2hsDeferredPrompt;
+      a2hsDeferredPrompt = null;
+      p.prompt();
+      p.userChoice.then((choice) => { if (choice && choice.outcome === "accepted") a2hsSetDismissed(); a2hsHide(); }).catch(() => { a2hsHide(); });
+    });
+  }
+}
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  a2hsDeferredPrompt = e;
+  if (a2hsReady) a2hsMaybeShow();
+});
+function a2hsStart() { setTimeout(() => { a2hsReady = true; a2hsMaybeShow(); }, 4000); }
+if (document.readyState === "complete") a2hsStart();
+else window.addEventListener("load", a2hsStart);
 </script>
 </body>
 </html>
