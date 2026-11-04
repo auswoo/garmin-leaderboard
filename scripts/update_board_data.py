@@ -204,6 +204,28 @@ def fetch_person(api_key, start, end):
         row["sleep"] = ov.get("value")
         row["stages"] = extract_stages(s)
 
+    # SLEEP TIMELINE PROBE ONLY, Nov 4, 2026: inspect the sleep summary
+    # record shape for a stage-timeline field (for a future REM-timing
+    # chart). Schema and counts only, no values, no timestamps, and this
+    # never affects the returned data or data.js.
+    def _schema(v, depth):
+        if depth <= 0:
+            return "..."
+        if isinstance(v, dict):
+            return {k: _schema(val, depth - 1) for k, val in list(v.items())[:60]}
+        if isinstance(v, list):
+            out = ["list len=%d" % len(v)]
+            if v:
+                out.append(_schema(v[0], depth - 1))
+            return out
+        return type(v).__name__
+    _srecs = rows_of(sleep, "data", "sleepSummaries")
+    if _srecs and isinstance(_srecs[0], dict):
+        print("sleepprobe schema=%s" % _schema(_srecs[0], 3), file=sys.stderr)
+        print("sleepprobe records=%d" % len(_srecs), file=sys.stderr)
+    else:
+        print("sleepprobe no records", file=sys.stderr)
+
     # LIVE, Nov 4, 2026: fetch dailyHeartRate per recorded day and store
     # HR load for the v3b strain formula. Logs derived loads only, never
     # raw heart rates.
