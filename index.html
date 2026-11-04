@@ -87,7 +87,7 @@
   <div id="info-panel" class="info-sheet" role="dialog" aria-modal="true" aria-label="How the numbers are computed">
     <div class="info-sheet-head"><h3>How the numbers are computed</h3><button id="info-close" class="info-close" aria-label="Close">×</button></div>
     <p><b>Recovery (Est.)</b> = 50% sleep score + 30% HRV component + 20% Body Battery charged. HRV component = 50 + (last night's HRV &minus; your own weekly average HRV) &times; 2, clamped to 0&ndash;100. A modeled estimate, not a Garmin score.</p>
-    <p><b>Strain (Est.)</b> = min(21, max(0, steps &divide; 1000 + max(0, max HR &minus; resting HR &minus; 40) &divide; 10 + min(6, strength minutes &divide; 15))), rounded to the nearest whole number. Steps capture volume, peak heart rate captures cardio load (40 bpm of spread counts as no real exertion peak), and strength minutes capture lifting load that steps and heart rate miss. Only strength-training activities count toward the third term, so cardio is not double-counted. The ~ means the day is still partial. Not a Garmin or Whoop number.</p>
+    <p><b>Strain (Est.)</b> = min(21, HR load + min(5, steps &divide; 2000) + min(6, strength minutes &divide; 15)), rounded to the nearest whole number. HR load = min(15, sum(max(0, HR &minus; resting HR) &times; minutes) &divide; 3000) over that day's full-day heart-rate samples, so sustained cardio load counts, not just a peak. Steps capture volume at a capped weight, and strength minutes capture lifting load that steps and heart rate miss. Only strength-training activities count toward the third term, so cardio is not double-counted. The ~ means the day is still partial. Not a Garmin or Whoop number.</p>
     <p><b>Sleep score</b> is Garmin's own 0&ndash;100 score for the night ending that morning. Not calculated here.</p>
     <p><b>HRV</b> is Garmin's last-night average HRV in milliseconds. The line under Recovery compares it to your own 7-day average only. HRV is personal and is never ranked across people.</p>
     <p><b>Resting HR</b> is Garmin's daily resting heart rate in bpm. It is shown as personal context only — each person's value against their own weekly average — and is not ranked across people.</p>
@@ -129,7 +129,7 @@
   <footer>
     <p>Recovery (Est.) = 50% sleep score + 30% HRV vs own baseline + 20% Body Battery charged. Modeled estimate, not a Garmin score.</p>
     <p id="footer-partial">Oct 25 is a partial day.</p>
-    <p>Strain (Est.) = min(21, max(0, steps &divide; 1000 + max(0, max HR &minus; resting HR &minus; 40) &divide; 10 + min(6, strength minutes &divide; 15))), rounded to the nearest whole number. Modeled estimate, not a Garmin or Whoop score.</p>
+    <p>Strain (Est.) = min(21, HR load + min(5, steps &divide; 2000) + min(6, strength minutes &divide; 15)), rounded to the nearest whole number. HR load is full-day heart-rate load capped at 15. Modeled estimate, not a Garmin or Whoop score.</p>
     <p>HRV is personal &mdash; shown only against your own baseline, never ranked.</p>
   </footer>
 </div>
@@ -178,7 +178,7 @@ function stepsPanel(p, i) {
 }
 
 function strainPanel(p, i) {
-  return "<div><b>Max HR:</b> " + show(p.maxhr[i]) + "</div>"
+  return "<div><b>HR load:</b> " + (p.hrload == null || p.hrload[i] == null ? "—" : p.hrload[i].toFixed(2)) + "</div>"
     + "<div><b>Steps:</b> " + (p.steps[i] == null ? "—" : fmt(p.steps[i])) + "</div>"
     + "<div><b>Strength minutes:</b> " + show(p.strength[i]) + "</div>";
 }
