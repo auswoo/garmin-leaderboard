@@ -117,7 +117,6 @@
       <h2>The week so far</h2>
       <div id="summary-body"></div>
     </div>
-    <div id="weekly-tables"></div>
     <div class="board"><h2>Week trends</h2><div id="trend-buttons" class="daytoggle"></div><div id="trend-chart"></div><div id="trend-legend"></div></div>
   </div>
 
@@ -438,22 +437,6 @@ function renderWeekly() {
   })));
 
   
-  const tables = document.getElementById("weekly-tables");
-  tables.innerHTML = "";
-  PEOPLE.forEach((p) => {
-    const wrap = document.createElement("div");
-    wrap.className = "person-table";
-    const h = document.createElement("h3");
-    h.textContent = p.name;
-    wrap.appendChild(h);
-    let html = "<table><tr><th>Day</th><th>Sleep</th><th>Recovery (Est.)</th><th>HRV</th><th>Resting HR</th><th>Steps</th></tr>";
-    DAYS.forEach((d, i) => {
-      html += "<tr><td>" + d + "</td><td>" + show(p.sleep[i]) + "</td><td>" + show(p.recovery[i]) + "</td><td>" + show(p.hrv[i]) + "</td><td>" + show(p.rhr[i]) + "</td><td>" + (p.steps[i] == null ? "—" : fmt(p.steps[i])) + "</td></tr>";
-    });
-    html += "</table>";
-    wrap.innerHTML += html;
-    tables.appendChild(wrap);
-  });
   renderTrendChart(currentTrend);
 }
 
