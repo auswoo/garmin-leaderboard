@@ -32,6 +32,7 @@
   .avatar-fallback { width: 32px; height: 32px; border-radius: 50%; background: rgba(255,255,255,0.12); color: #ccc; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; align-self: center; } 
      .people-strip { display: flex; gap: 20px; margin: 22px 0 0; flex-wrap: wrap; }
     .people-chip { display: flex; align-items: center; gap: 8px; }
+.personal-row { font-size: 15px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.10); color: #ddd; }
     .people-chip span:last-child { font-size: 14px; color: #ccc; } 
   .val { font-size: 30px; font-weight: 600; }
   .val.green { color: #00C805; }
@@ -88,6 +89,7 @@
     <p><b>Steps and distance</b> are Garmin's daily totals; distance is in miles.</p>
     <p><b>Body Battery</b> values are Garmin's. Only the charged value feeds Recovery.</p>
     <p><b>Rankings:</b> higher wins, except Resting HR where lower wins. The #1 value is green.</p>
+<p><b>Overall (top strip):</b> the strip ranks everyone by rank points across all ranked boards in the view you are on: 3 points for 1st, 2 for 2nd, 1 for 3rd on each board, ties share points, maximum 12. Daily uses Recovery, Sleep, Steps, and Strain; Weekly uses total Steps, Avg sleep, Avg recovery, and Avg strain. Resting HR is not ranked and is not counted in the overall score, because it is largely a personal baseline; it is shown as personal context, not as a competition.</p>
     <p><b>Expanded rows</b> show context for that metric only. Recovery expands to its three inputs, Steps expands to distance. Distance never appears under Resting HR.</p>
     <p><b>Missing data:</b> &mdash; means nothing was recorded that day, not zero. Weekly averages use recorded days only.</p>
     <p id="info-daily-weekly"><b>Daily vs Weekly:</b> Daily defaults to today.</p>
@@ -263,13 +265,25 @@ function renderDaily(dayIdx) {
       panelHtml: strainPanel(p, dayIdx)
     })));
 
-  renderBoard(box, "Resting HR", byVal("rhr", false).map((p) => ({
-    person: p,
-    valHtml: '<span class="val">' + show(p.rhr[dayIdx]) + "</span>",
-    panelHtml: rhrPanel(p)
-  })));
-}
+  
 
+      {
+        const personalBox = document.createElement("div");
+        personalBox.className = "board";
+        const personalH = document.createElement("h2");
+        personalH.innerHTML = "Resting HR &mdash; personal, not ranked";
+        personalBox.appendChild(personalH);
+        PEOPLE.forEach((p) => {
+          const row = document.createElement("div");
+          row.className = "personal-row";
+          const vals = p.rhr.filter((v) => v !== null && v !== undefined);
+          const avg = vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : "&mdash;";
+          const dayVal = p.rhr[dayIdx];
+          row.innerHTML = "<b>" + p.name + "</b> &middot; today " + (dayVal === null || dayVal === undefined ? "&mdash;" : dayVal + " bpm") + " &middot; weekly avg " + (avg === "&mdash;" ? "&mdash;" : avg + " bpm");
+          personalBox.appendChild(row);
+        });
+        box.appendChild(personalBox);
+      }
 function renderWeekly() {
   const box = document.getElementById("weekly-boards");
   box.innerHTML = "";
@@ -299,12 +313,7 @@ function renderWeekly() {
     panelHtml: weeklyStrainPanel(p)
   })));
 
-  renderBoard(box, "Lowest resting HR", byWeekly("lowRhr", false).map((p) => ({
-    person: p,
-    valHtml: '<span class="val">' + p.weekly.lowRhr + "</span>",
-    panelHtml: weeklyRhrPanel(p)
-  })));
-
+  
   const tables = document.getElementById("weekly-tables");
   tables.innerHTML = "";
   PEOPLE.forEach((p) => {
@@ -333,30 +342,63 @@ if (META.live) {
   document.getElementById("footer-partial").textContent = DAYS[6] + " is a partial day.";
 }
 const peopleStrip = document.createElement("div");
- peopleStrip.className = "people-strip";
- PEOPLE.forEach((p) => {
-  const chip = document.createElement("div");
-  chip.className = "people-chip";
-  chip.innerHTML = avatarHtml(p.name) + '<span>' + p.name + '</span>';
-  peopleStrip.appendChild(chip);
- });
- document.querySelector(".toggle").before(peopleStrip);
+peopleStrip.className = "people-strip";
+  document.querySelector(".toggle").before(peopleStrip);
+function overallScores(view, dayIdx) {
+  const metrics = view === "weekly" ? [
+    { get: (p) => p.weekly.steps, desc: true },
+    { get: (p) => p.weekly.avgSleep, desc: true },
+    { get: (p) => p.weekly.avgRecovery, desc: true },
+    { get: (p) => p.weekly.avgStrain, desc: true },
+  ] : [
+    { get: (p) => p.recovery[dayIdx], desc: true },
+    { get: (p) => p.sleep[dayIdx], desc: true },
+    { get: (p) => p.steps[dayIdx], desc: true },
+    { get: (p) => (dayIdx === 6 ? p.strainToday : p.strainYesterday), desc: true },
+  ];
+  const points = {};
+  PEOPLE.forEach((p) => { points[p.name] = 0; });
+  metrics.forEach((m) => {
+    const ranked = PEOPLE.map((p) => ({ name: p.name, v: m.get(p) })).filter((e) => e.v !== null && e.v !== undefined);
+    ranked.sort((a, b) => m.desc ? b.v - a.v : a.v - b.v);
+    let lastV = null;
+    let lastPts = 0;
+    let distinct = 0;
+    ranked.forEach((e) => {
+      if (lastV === null || e.v !== lastV) { distinct += 1; lastPts = distinct === 1 ? 3 : distinct === 2 ? 2 : 1; lastV = e.v; }
+      points[e.name] += lastPts;
+    });
+  });
+  return PEOPLE.map((p) => ({ person: p, points: points[p.name] })).sort((a, b) => b.points - a.points);
+}
+function renderPeopleStrip(view, dayIdx) {
+  peopleStrip.innerHTML = "";
+  overallScores(view, dayIdx).forEach((entry) => {
+    const chip = document.createElement("div");
+    chip.className = "people-chip";
+    chip.innerHTML = avatarHtml(entry.person.name) + '<span>' + entry.person.name + ' &middot; ' + entry.points + ' pts</span>';
+    peopleStrip.appendChild(chip);
+  });
+}
  let currentDay = 6;
 
 renderDaily(currentDay);
 renderWeekly();
+renderPeopleStrip("daily", currentDay);
 
 document.getElementById("day-yesterday").addEventListener("click", () => {
   currentDay = 5;
   document.getElementById("day-yesterday").classList.add("active");
   document.getElementById("day-today").classList.remove("active");
   renderDaily(currentDay);
+  renderPeopleStrip("daily", currentDay);
 });
 document.getElementById("day-today").addEventListener("click", () => {
   currentDay = 6;
   document.getElementById("day-today").classList.add("active");
   document.getElementById("day-yesterday").classList.remove("active");
   renderDaily(currentDay);
+  renderPeopleStrip("daily", currentDay);
 });
 document.getElementById("tab-daily").addEventListener("click", () => {
   document.getElementById("tab-daily").classList.add("active");
@@ -365,6 +407,7 @@ document.getElementById("tab-daily").addEventListener("click", () => {
   document.getElementById("tab-weekly").setAttribute("aria-selected", "false");
   document.getElementById("daily-view").classList.remove("hidden");
   document.getElementById("weekly-view").classList.add("hidden");
+  renderPeopleStrip("daily", currentDay);
 });
 document.getElementById("tab-weekly").addEventListener("click", () => {
   document.getElementById("tab-weekly").classList.add("active");
@@ -373,6 +416,7 @@ document.getElementById("tab-weekly").addEventListener("click", () => {
   document.getElementById("tab-daily").setAttribute("aria-selected", "false");
   document.getElementById("weekly-view").classList.remove("hidden");
   document.getElementById("daily-view").classList.add("hidden");
+  renderPeopleStrip("weekly", currentDay);
 });
 const infoBackdrop = document.getElementById("info-backdrop");
 const infoBtn = document.getElementById("info-btn");
