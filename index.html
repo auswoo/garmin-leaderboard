@@ -62,29 +62,22 @@
   .hidden { display: none !important; }
   .row { animation: rowIn 0.35s ease both; }
   @keyframes rowIn { from { opacity: 0; transform: translateY(8px); } }
-  /* Podium bars: each row anchored, 10px left padding so bars clear the rank numbers. Redeploy trigger. */
-  .row.podium-1, .row.podium-2, .row.podium-3 { position: relative; padding-left: 10px; }
-  .row.podium-1::before, .row.podium-2::before, .row.podium-3::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; border-radius: 2px; }
-  .row.podium-1::before { background: linear-gradient(#ffe27a, #c8963e); }
-  .row.podium-2::before { background: linear-gradient(#e8e8ec, #9a9aa2); }
-  .row.podium-3::before { background: linear-gradient(#e8b08a, #8a5a3b); }
-  .row.podium-1 .rank { color: #f5c542; text-shadow: 0 0 12px rgba(245,197,66,0.45); }
-  .row.podium-2 .rank { color: #c9ccd6; }
-  .row.podium-3 .rank { color: #d09a6c; }
-  .crown { font-size: 15px; align-self: center; flex-shrink: 0; }
-  .medal-1 { background: linear-gradient(135deg, #ffe27a, #c8963e); color: #111; border-color: rgba(255,226,122,0.9); box-shadow: 0 0 10px rgba(245,197,66,0.45); }
-  .medal-2 { background: linear-gradient(135deg, #e8e8ec, #9a9aa2); color: #111; border-color: rgba(232,232,236,0.9); }
-  .medal-3 { background: linear-gradient(135deg, #e8b08a, #8a5a3b); color: #111; border-color: rgba(232,176,138,0.9); }
+  .row { position: relative; padding-left: 10px; }
+  .row::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; border-radius: 2px; background: var(--person-color, rgba(255,255,255,0.20)); }
+  .val { font-family: ui-rounded, "SF Pro Rounded", system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+  .ring text { font-family: ui-rounded, "SF Pro Rounded", system-ui, sans-serif; font-variant-numeric: tabular-nums; }
+  .rank, .race-pts, .delta, svg text { font-variant-numeric: tabular-nums; }
+  .valwrap { display: flex; flex-direction: column; align-items: flex-end; align-self: center; }
+  .delta { font-size: 11px; color: #888; margin-top: 2px; }
+  .trend-tooltip { font-size: 13px; color: #ccc; margin-top: 8px; min-height: 20px; }
+  #trend-chart svg { touch-action: pan-y; }
   .ring { width: 52px; height: 52px; flex-shrink: 0; align-self: center; }
   .ring svg { width: 100%; height: 100%; display: block; }
-  .ring .arc { animation: arcIn 0.8s ease both; }
-  @keyframes arcIn { from { stroke-dashoffset: 125.7; } }
   .points-race { grid-column: 1 / -1; margin-top: 10px; display: flex; flex-direction: column; gap: 8px; }
   .race-row { display: flex; align-items: center; gap: 10px; }
   .race-name { width: 56px; font-size: 13px; color: #ccc; flex-shrink: 0; }
   .race-track { flex: 1; height: 10px; border-radius: 999px; background: rgba(255,255,255,0.10); overflow: hidden; }
-  .race-fill { height: 100%; border-radius: 999px; animation: raceGrow 0.7s ease both; }
-  @keyframes raceGrow { from { width: 0; } }
+  .race-fill { height: 100%; border-radius: 999px; }
   .race-pts { font-size: 13px; color: #ddd; width: 36px; text-align: right; flex-shrink: 0; }
   .head { display: flex; align-items: center; justify-content: space-between; }
   .info-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.45); background: none; color: #eee; font-size: 16px; font-weight: 600; cursor: pointer; flex-shrink: 0; }
@@ -133,8 +126,8 @@
     </div>
     <p class="daylabel" id="daylabel">Full day</p>
     <div id="daily-boards"></div>
-    <div class="board"><h2>Heart rate</h2><div id="hr-chart"></div><div id="hr-legend"></div></div>
-    <div class="board"><h2>Sleep schedule</h2><div id="sleep-chart"></div><div id="sleep-legend"></div></div>
+    <div class="board"><h2>Heart rate</h2><div id="hr-chart"></div></div>
+    <div class="board"><h2>Sleep schedule</h2><div id="sleep-chart"></div></div>
   </div>
 
   <div id="weekly-view" class="hidden">
@@ -143,7 +136,7 @@
       <h2>The week so far</h2>
       <div id="summary-body"></div>
     </div>
-    <div class="board"><h2>Week trends</h2><div id="trend-buttons" class="daytoggle"></div><div id="trend-chart"></div><div id="trend-legend"></div></div>
+    <div class="board"><h2>Week trends</h2><div id="trend-buttons" class="daytoggle"></div><div id="trend-chart"></div><div id="trend-tooltip" class="trend-tooltip">Tap or drag the chart to compare a day.</div></div>
   </div>
 
   <footer>
@@ -162,13 +155,14 @@ const fmt = (n) => n.toLocaleString("en-US");
 const show = (v) => (v === null || v === undefined ? "\u2014" : v);
 
 const AVATARS = { "Ethan": "assets/ethan.jpg", "Austin": "assets/austin.jpg", "Jordan": "assets/jordan.jpg" };
+const CHART_COLORS = {"Austin": "#5aa2ff", "Jordan": "#ff8a5c", "Ethan": "#a78bfa"};
  function avatarHtml(name) { if (AVATARS[name]) { return '<img class="avatar" src="' + AVATARS[name] + '" alt="">'; } return '<span class="avatar-fallback">' + name.charAt(0) + '</span>'; }
  function expandableRow(rank, name, valHtml, panelHtml) {
   const btn = document.createElement("button");
-  btn.className = "row" + (rank <= 3 ? " podium-" + rank : "");
+  btn.className = "row";
+  btn.style.setProperty("--person-color", CHART_COLORS[name] || "#888");
   btn.setAttribute("aria-expanded", "false");
-  const crown = rank === 1 ? '<span class="crown" aria-hidden="true">👑</span>' : "";
-  btn.innerHTML = '<span class="rank">' + rank + '</span><span class="name">' + name + '</span>' + crown + valHtml + '<span class="chev" aria-hidden="true">›</span>';
+  btn.innerHTML = '<span class="rank">' + rank + '</span><span class="name">' + name + '</span>' + valHtml + '<span class="chev" aria-hidden="true">›</span>';
   const panel = document.createElement("div");
   panel.className = "panel";
   panel.innerHTML = panelHtml;
@@ -237,7 +231,7 @@ function ringHtml(value, max, hueFn, display) {
   const frac = Math.max(0, Math.min(1, value / max));
   const col = hueFn(frac);
   const off = (1 - frac) * C;
-  return '<span class="ring"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="20" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="5"/><circle class="arc" cx="26" cy="26" r="20" fill="none" stroke="' + col + '" stroke-width="5" stroke-linecap="round" stroke-dasharray="' + C + '" stroke-dashoffset="' + off + '" transform="rotate(-90 26 26)"/><text x="26" y="30" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">' + display + '</text></svg></span>';
+  return '<span class="ring"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="20" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="3.5"/><circle cx="26" cy="26" r="20" fill="none" stroke="' + col + '" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="' + C + '" stroke-dashoffset="' + off + '" transform="rotate(-90 26 26)"/><text x="26" y="30" text-anchor="middle" fill="#fff" font-size="13" font-weight="600">' + display + '</text></svg></span>';
 }
 const recoveryColor = (frac) => 'hsl(' + Math.round(frac * 120) + ', 85%, 55%)';
 const strainColor = (frac) => 'hsl(' + Math.round(215 + frac * 65) + ', 80%, 62%)';
@@ -253,6 +247,8 @@ function renderBoard(container, title, ranked) {
     if (idx === 0) {
       const valEl = btn.querySelector(".val");
       if (valEl) valEl.classList.add("green");
+      const ringText = btn.querySelector(".ring text");
+      if (ringText && ringText.setAttribute) ringText.setAttribute("fill", "#00C805");
     }
     sec.appendChild(btn);
     sec.appendChild(panel);
@@ -267,7 +263,6 @@ function renderBoard(container, title, ranked) {
 }
 
 
-const CHART_COLORS = {"Austin": "#5aa2ff", "Jordan": "#ff8a5c", "Ethan": "#8be36b"};
 function fmtClock(min) {
   const h = Math.floor(min / 60) % 24;
   const m = min % 60;
@@ -278,7 +273,7 @@ function fmtClock(min) {
 function renderHRChart(dayIdx) {
   const el = document.getElementById("hr-chart");
   if (!el) return;
-  const W = 600, H = 220, PL = 36, PR = 10, PT = 10, PB = 24;
+  const W = 600, H = 220, PL = 36, PR = 70, PT = 10, PB = 24;
   const yMin = 40, yMax = 180;
   const x = (min) => PL + (min / 1440) * (W - PL - PR);
   const y = (v) => PT + (1 - (v - yMin) / (yMax - yMin)) * (H - PT - PB);
@@ -292,29 +287,37 @@ function renderHRChart(dayIdx) {
     svg += '<text x="' + (PL - 4) + '" y="' + (y(v) + 4) + '" fill="#888" font-size="11" text-anchor="end">' + v + '</text>';
   });
   PEOPLE.forEach((p) => {
+    const r = p.rhr ? p.rhr[dayIdx] : null;
+    if (r == null) return;
+    const col = CHART_COLORS[p.name] || "#fff";
+    svg += '<line x1="' + PL + '" y1="' + y(r) + '" x2="' + (W - PR) + '" y2="' + y(r) + '" stroke="' + col + '" stroke-opacity="0.35" stroke-dasharray="4 4" stroke-width="1"/>';
+  });
+  PEOPLE.forEach((p) => {
     const series = p.hrSeries ? p.hrSeries[dayIdx] : null;
     if (!series) return;
     const col = CHART_COLORS[p.name] || "#fff";
     let seg = [];
+    let lastX = null, lastY = null;
     const flush = () => {
       if (seg.length > 1) svg += '<polyline points="' + seg.join(" ") + '" fill="none" stroke="' + col + '" stroke-width="2" stroke-linejoin="round"/>';
       seg = [];
     };
     series.forEach((v, i) => {
       if (v == null) { flush(); return; }
-      seg.push(x(i * 30 + 15) + "," + y(v));
+      const px = x(i * 30 + 15), py = y(v);
+      seg.push(px + "," + py);
+      lastX = px; lastY = py;
     });
     flush();
+    if (lastX != null) svg += '<text x="' + (lastX + 6) + '" y="' + (lastY + 4) + '" fill="' + col + '" font-size="12">' + p.name + '</text>';
   });
   svg += '</svg>';
   el.innerHTML = svg;
-  const leg = document.getElementById("hr-legend");
-  if (leg) leg.innerHTML = PEOPLE.map((p) => '<span style="margin-right:14px"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + (CHART_COLORS[p.name] || "#fff") + '"></span> ' + p.name + '</span>').join("");
 }
 function renderSleepChart(dayIdx) {
   const el = document.getElementById("sleep-chart");
   if (!el) return;
-  const W = 600, rowH = 36, PT = 10, PB = 24, PL = 62, PR = 10;
+  const W = 700, rowH = 36, PT = 10, PB = 24, PL = 20, PR = 170;
   const H = PT + PEOPLE.length * rowH + PB;
   const axisStart = 1080;
   const mapMin = (m) => (m >= axisStart ? m - axisStart : m + 360);
@@ -327,30 +330,27 @@ function renderSleepChart(dayIdx) {
   });
   PEOPLE.forEach((p, idx) => {
     const yTop = PT + idx * rowH + 8;
-    svg += '<text x="' + (PL - 6) + '" y="' + (yTop + 14) + '" fill="#ddd" font-size="13" text-anchor="end">' + p.name + '</text>';
     const ss = p.sleepStart ? p.sleepStart[dayIdx] : null;
     const se = p.sleepEnd ? p.sleepEnd[dayIdx] : null;
+    const col = CHART_COLORS[p.name] || "#fff";
     if (ss == null || se == null) {
-      svg += '<text x="' + PL + '" y="' + (yTop + 14) + '" fill="#888" font-size="12">—</text>';
+      svg += '<text x="' + PL + '" y="' + (yTop + 14) + '" fill="#888" font-size="12">' + p.name + ' \u2014</text>';
       return;
     }
     const sx = mapMin(ss), ex = mapMin(se);
-    const col = CHART_COLORS[p.name] || "#fff";
+    let endX;
     if (ex > sx) {
       svg += '<rect x="' + x(sx) + '" y="' + yTop + '" width="' + (x(ex) - x(sx)) + '" height="20" rx="10" fill="' + col + '" opacity="0.85"/>';
+      endX = x(ex);
     } else {
       svg += '<rect x="' + x(sx) + '" y="' + yTop + '" width="' + (x(1080) - x(sx)) + '" height="20" rx="10" fill="' + col + '" opacity="0.85"/>';
       svg += '<rect x="' + x(0) + '" y="' + yTop + '" width="' + (x(ex) - x(0)) + '" height="20" rx="10" fill="' + col + '" opacity="0.85"/>';
+      endX = x(1080);
     }
+    svg += '<text x="' + (endX + 8) + '" y="' + (yTop + 14) + '" font-size="12"><tspan fill="' + col + '">' + p.name + '</tspan><tspan fill="#888"> ' + fmtClock(ss) + ' \u2013 ' + fmtClock(se) + '</tspan></text>';
   });
   svg += '</svg>';
   el.innerHTML = svg;
-  const leg = document.getElementById("sleep-legend");
-  if (leg) leg.innerHTML = PEOPLE.map((p) => {
-    const ss = p.sleepStart ? p.sleepStart[dayIdx] : null;
-    const se = p.sleepEnd ? p.sleepEnd[dayIdx] : null;
-    return '<div><span style="color:' + (CHART_COLORS[p.name] || "#fff") + '">●</span> ' + p.name + ': ' + (ss == null || se == null ? "—" : fmtClock(ss) + " – " + fmtClock(se)) + '</div>';
-  }).join("");
 }
 
 let currentTrend = "recovery";
@@ -376,7 +376,7 @@ function renderTrendChart(metric) {
     if (metric === "steps") { yMin = 0; yMax = Math.ceil(Math.max(...vals) / 5000) * 5000; }
     else { yMin = Math.floor((Math.min(...vals) - 10) / 10) * 10; yMax = Math.ceil((Math.max(...vals) + 10) / 10) * 10; }
   }
-  const W = 600, H = 220, PL = 48, PR = 10, PT = 10, PB = 24;
+  const W = 600, H = 220, PL = 48, PR = 58, PT = 10, PB = 24;
   const x = (i) => PL + (i / 6) * (W - PL - PR);
   const y = (v) => PT + (1 - (v - yMin) / (yMax - yMin)) * (H - PT - PB);
   let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block">';
@@ -389,9 +389,11 @@ function renderTrendChart(metric) {
     svg += '<line x1="' + x(i) + '" y1="' + PT + '" x2="' + x(i) + '" y2="' + (H - PB) + '" stroke="rgba(255,255,255,0.08)"/>';
     svg += '<text x="' + x(i) + '" y="' + (H - 6) + '" fill="#888" font-size="11" text-anchor="middle">' + d + '</text>';
   });
+  svg += '<line id="trend-guide" x1="' + x(0) + '" y1="' + PT + '" x2="' + x(0) + '" y2="' + (H - PB) + '" stroke="rgba(255,255,255,0.25)" stroke-dasharray="3 3" style="display:none"/>';
   PEOPLE.forEach((p) => {
     const col = CHART_COLORS[p.name] || "#fff";
     let seg = [];
+    let lastX = null, lastY = null;
     const flush = () => {
       if (seg.length > 1) svg += '<polyline points="' + seg.join(" ") + '" fill="none" stroke="' + col + '" stroke-width="2" stroke-linejoin="round"/>';
       seg = [];
@@ -399,17 +401,55 @@ function renderTrendChart(metric) {
     for (let i = 0; i < 7; i++) {
       const v = cfg.get(p, i);
       if (v == null) { flush(); continue; }
-      seg.push(x(i) + "," + y(v));
+      const px = x(i), py = y(v);
+      seg.push(px + "," + py);
+      lastX = px; lastY = py;
     }
     flush();
+    if (lastX != null) {
+      svg += '<circle cx="' + lastX + '" cy="' + lastY + '" r="4" fill="' + col + '" stroke="#000" stroke-width="1"/>';
+      svg += '<text x="' + (lastX + 6) + '" y="' + (lastY + 4) + '" fill="' + col + '" font-size="12">' + p.name + '</text>';
+    }
   });
   svg += '</svg>';
   el.innerHTML = svg;
-  const leg = document.getElementById("trend-legend");
-  if (leg) leg.innerHTML = PEOPLE.map((p) => '<span style="margin-right:14px"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:' + (CHART_COLORS[p.name] || "#fff") + '"></span> ' + p.name + '</span>').join("");
+  const svgEl = el.querySelector("svg");
+  const tip = document.getElementById("trend-tooltip");
+  if (svgEl && tip) {
+    const fmtTrend = (v) => (v == null ? "\u2014" : (metric === "steps" ? fmt(v) : String(v)));
+    const scrub = (e) => {
+      const rect = svgEl.getBoundingClientRect();
+      const svgX = (e.clientX - rect.left) / rect.width * W;
+      let i = Math.round((svgX - PL) / (W - PL - PR) * 6);
+      i = Math.max(0, Math.min(6, i));
+      const guide = svgEl.querySelector("#trend-guide");
+      if (guide) { guide.setAttribute("x1", x(i)); guide.setAttribute("x2", x(i)); guide.style.display = "block"; }
+      tip.innerHTML = "<b>" + DAYS[i] + "</b> &nbsp; " + PEOPLE.map((p) => {
+        const col = CHART_COLORS[p.name] || "#fff";
+        return '<span style="color:' + col + '">\u25cf</span> ' + p.name + ' ' + fmtTrend(cfg.get(p, i));
+      }).join(" &nbsp; ");
+    };
+    svgEl.addEventListener("pointerdown", scrub);
+    svgEl.addEventListener("pointermove", scrub);
+    svgEl.addEventListener("pointerleave", () => {
+      const guide = svgEl.querySelector("#trend-guide");
+      if (guide) guide.style.display = "none";
+    });
+  }
 }
+function deltaHtml(curr, prev, label, format) {
+  if (curr == null || prev == null) return "";
+  const diff = curr - prev;
+  const txt = (diff > 0 ? "+" : "") + format(diff);
+  return '<span class="delta">' + txt + " " + label + "</span>";
+}
+function valWrap(inner, delta) {
+  return '<span class="valwrap">' + inner + delta + "</span>";
+}
+const fmtDiff = (d) => (Number.isInteger(d) ? String(d) : d.toFixed(1));
 function renderDaily(dayIdx) {
   const isToday = dayIdx === 6;
+  const deltaLabel = isToday ? "vs yesterday" : "vs prior day";
   document.getElementById("daylabel").textContent = isToday ? "Partial day (as of " + META.updatedTimePT + ")" : "Full day";
   const box = document.getElementById("daily-boards");
   box.innerHTML = "";
@@ -418,20 +458,20 @@ function renderDaily(dayIdx) {
 
   renderBoard(box, "Recovery (Est.)", byVal("recovery", true).map((p) => ({
     person: p,
-    valHtml: ringHtml(p.recovery[dayIdx], 100, recoveryColor, show(p.recovery[dayIdx])),
+    valHtml: valWrap(ringHtml(p.recovery[dayIdx], 100, recoveryColor, show(p.recovery[dayIdx])), deltaHtml(p.recovery[dayIdx], p.recovery[dayIdx - 1], deltaLabel, fmtDiff)),
     panelHtml: recoveryPanel(p, dayIdx),
     subline: isToday ? p.hrvVsOwnToday : p.hrvVsOwnYesterday
   })));
 
   renderBoard(box, "Sleep", byVal("sleep", true).map((p) => ({
     person: p,
-    valHtml: '<span class="val">' + show(p.sleep[dayIdx]) + "</span>",
+    valHtml: valWrap('<span class="val">' + show(p.sleep[dayIdx]) + "</span>", deltaHtml(p.sleep[dayIdx], p.sleep[dayIdx - 1], deltaLabel, fmtDiff)),
     panelHtml: sleepPanel(p, dayIdx)
   })));
 
   renderBoard(box, "Steps", byVal("steps", true).map((p) => ({
     person: p,
-    valHtml: '<span class="val">' + (p.steps[dayIdx] == null ? "—" : fmt(p.steps[dayIdx])) + "</span>",
+    valHtml: valWrap('<span class="val">' + (p.steps[dayIdx] == null ? "—" : fmt(p.steps[dayIdx])) + "</span>", deltaHtml(p.steps[dayIdx], p.steps[dayIdx - 1], deltaLabel, fmt)),
     panelHtml: stepsPanel(p, dayIdx)
   })));
 
@@ -439,7 +479,7 @@ function renderDaily(dayIdx) {
   renderBoard(box, isToday ? "Strain (Est., in progress)" : "Strain (Est.)",
     [...PEOPLE].sort((a, b) => b[strainKey] - a[strainKey]).map((p) => ({
       person: p,
-      valHtml: ringHtml(p[strainKey], 21, strainColor, (p[strainKey] == null ? "—" : "~" + p[strainKey])),
+      valHtml: valWrap(ringHtml(p[strainKey], 21, strainColor, (p[strainKey] == null ? "—" : "~" + p[strainKey])), deltaHtml(p[strainKey], isToday ? p.strainYesterday : p.strain[dayIdx - 1], deltaLabel, fmtDiff)),
       panelHtml: strainPanel(p, dayIdx)
     })));
 
@@ -529,7 +569,7 @@ function renderPeopleStrip(view, dayIdx) {
       const medalText = String(rank);
       const chip = document.createElement("div");
     chip.className = "people-chip";
-    chip.innerHTML = '<div class="avatar-wrap">' + avatarHtml(entry.person.name) + '<span class="medal' + (rank <= 3 ? ' medal-' + rank : '') + '">' + medalText + '</span></div><span>' + entry.person.name + '</span>';
+    chip.innerHTML = '<div class="avatar-wrap">' + avatarHtml(entry.person.name) + '<span class="medal">' + medalText + '</span></div><span>' + entry.person.name + '</span>';
     peopleStrip.appendChild(chip);
   });
   const race = document.createElement("div");
