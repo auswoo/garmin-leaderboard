@@ -20,11 +20,13 @@ Board math (must match the board's info sheet):
     HRV component = 50 + (last night's HRV - person's own window-mean HRV
     rounded to 1 decimal, the weekly average shown on the board) * 2,
     clamped to 0-100. Null if sleep, HRV, or Body Battery charged is missing.
-  - Strain (Est.) = min(21, max(0, steps/1000
-    + max(0, maxHR - restingHR - 40)/10 + min(6, strength_minutes/15))),
-    rounded to the nearest whole number (half up). Strength minutes are not
-    available from these endpoints yet, so that term is 0 for now and the
-    board shows "-" for strength minutes.
+  - Strain (Est., v3b) = min(21, HR load + min(5, steps/2000)
+    + min(6, strength_minutes/15)), rounded to the nearest whole number
+    (half up). HR load = min(15, sum(max(0, HR - restingHR) x minutes)
+    / 3000) over that day's dailyHeartRate samples, minutes between
+          successive samples capped at 30. Strength minutes are not available
+      from these endpoints yet, so that term is 0 for now and the board
+      shows "-" for strength minutes.
   - Weekly aggregates use recorded days only. Weekly strain is the average
     of daily Strain (Est.) over recorded days, with the week's total also
     reported.
@@ -120,24 +122,6 @@ def fetch_person(api_key, start, end):
                 "?startDate=%s&endDate=%s" % (start, end))
     if summaries is None or hrv is None or sleep is None:
         return False, {}
-    # PROBE ONLY, Nov 3, 2026: inspect the dailyHeartRate response shape for a
-    # possible future full-day-HR strain formula. Schema and counts only, no
-    # values are logged, and this never affects the returned data or data.js.
-    hr_probe = get("/wellness-service/wellness/dailyHeartRate?date=%s" % end)
-    if hr_probe is None:
-        print("probe dailyHeartRate: no data", file=sys.stderr)
-    elif isinstance(hr_probe, dict):
-        print("probe dailyHeartRate dict keys=%s" % sorted(hr_probe.keys()), file=sys.stderr)
-        for k, v in hr_probe.items():
-            if isinstance(v, list):
-                print("probe dailyHeartRate list %s len=%d first_keys=%s" % (k, len(v), sorted(v[0].keys()) if v and isinstance(v[0], dict) else []), file=sys.stderr)
-            elif isinstance(v, dict):
-                print("probe dailyHeartRate dict %s keys=%s" % (k, sorted(v.keys())), file=sys.stderr)
-    elif isinstance(hr_probe, list):
-        print("probe dailyHeartRate list len=%d first_keys=%s" % (len(hr_probe), sorted(hr_probe[0].keys()) if hr_probe and isinstance(hr_probe[0], dict) else []), file=sys.stderr)
-    else:
-        print("probe dailyHeartRate type=%s" % type(hr_probe).__name__, file=sys.stderr)
-
     # Log raw record keys only (schema, no values) to aid extraction fixes.
     def first_record_keys(payload, *keys):
         rows = payload
@@ -220,67 +204,61 @@ def fetch_person(api_key, start, end):
         row["sleep"] = ov.get("value")
         row["stages"] = extract_stages(s)
 
-    # BACKTEST ONLY, Nov 3, 2026: compute v3b strain per recorded day from
-    # dailyHeartRate. Logs derived loads and strains only, never raw heart
-    # rates, and never affects the returned days or data.js.
-    for _date, _row in sorted(days.items()):
-        _rhr = _row.get("restingHR")
-        _steps = _row.get("steps")
-        _maxhr = _row.get("maxHR")
-        if _rhr is None:
-            continue
-        _hr = get("/wellness-service/wellness/dailyHeartRate?date=%s" % _date)
+        # LIVE, Nov 4, 2026: fetch dailyHeartRate per recorded day and store
+      # HR load for the v3b strain formula. Logs derived loads only, never
+      # raw heart rates.
+      for _date, _row in sorted(days.items()):
+                _row["hrLoad"] = None
+                _rhr = _row.get("restingHR")
+                if _rhr is None:
+                              continue
+                          _hr = get("/wellness-service/wellness/dailyHeartRate?date=%s" % _date)
         if not isinstance(_hr, dict):
-            print("backtest %s no data" % _date, file=sys.stderr)
-            continue
-        _vals = _hr.get("heartRateValues") or []
+                      print("hrload %s no data" % _date, file=sys.stderr)
+                      continue
+                  _vals = _hr.get("heartRateValues") or []
         _descs = _hr.get("heartRateValueDescriptors") or []
         _hr_idx = None
         _ts_idx = None
         for _d in _descs:
-            if isinstance(_d, dict):
-                _key = str(_d.get("key") or "").lower()
-                if "heart" in _key:
-                    _hr_idx = _d.get("index")
-                elif "time" in _key or "stamp" in _key:
-                    _ts_idx = _d.get("index")
-        if _hr_idx is None or _ts_idx is None:
-            print("backtest %s descriptors=%s" % (_date, [(d.get("index"), d.get("key")) for d in _descs if isinstance(d, dict)]), file=sys.stderr)
-            continue
-        _div = 60000.0
-        _first = None
+                      if isinstance(_d, dict):
+                                        _key = str(_d.get("key") or "").lower()
+                                        if "heart" in _key:
+                                                              _hr_idx = _d.get("index")
+                                        elif "time" in _key or "stamp" in _key:
+                                                              _ts_idx = _d.get("index")
+                                                  if _hr_idx is None or _ts_idx is None:
+                                                                print("hrload %s descriptors unmatched" % _date, file=sys.stderr)
+                                                                continue
+                                                            _div = 60000.0
+                                _first = None
         for _s in _vals:
-            if isinstance(_s, (list, tuple)) and len(_s) > max(_hr_idx, _ts_idx):
-                try:
-                    _first = float(_s[_ts_idx])
-                except (TypeError, ValueError):
+                      if isinstance(_s, (list, tuple)) and len(_s) > max(_hr_idx, _ts_idx):
+                                        try:
+                                                              _first = float(_s[_ts_idx])
+except (TypeError, ValueError):
                     _first = None
                 break
         if _first is not None and _first <= 1e12:
-            _div = 60.0 if _first > 1e9 else 1.0
+                      _div = 60.0 if _first > 1e9 else 1.0
         _excess = 0.0
         _prev_ts = None
         for _s in _vals:
-            if not isinstance(_s, (list, tuple)) or len(_s) <= max(_hr_idx, _ts_idx):
-                continue
-            try:
-                _h = float(_s[_hr_idx])
-                _t = float(_s[_ts_idx])
-            except (TypeError, ValueError):
+                      if not isinstance(_s, (list, tuple)) or len(_s) <= max(_hr_idx, _ts_idx):
+                                        continue
+                                    try:
+                                                      _h = float(_s[_hr_idx])
+                                                      _t = float(_s[_ts_idx])
+except (TypeError, ValueError):
                 continue
             if _prev_ts is not None:
-                _dt = (_t - _prev_ts) / _div
-                if 0 < _dt <= 30:
-                    _excess += max(0.0, _h - _rhr) * _dt
-            _prev_ts = _t
+                              _dt = (_t - _prev_ts) / _div
+                              if 0 < _dt <= 30:
+                                                    _excess += max(0.0, _h - _rhr) * _dt
+                                            _prev_ts = _t
         _load = min(15.0, _excess / 3000.0)
-        if _steps is None or _maxhr is None:
-            print("backtest %s samples=%d hr_load=%.2f v2=None v3b=None" % (_date, len(_vals), _load), file=sys.stderr)
-            continue
-        _v2 = int(round_half_up(min(21, max(0, _steps / 1000.0 + max(0, _maxhr - _rhr - 40) / 10.0))))
-        _v3b = int(round_half_up(min(21, _load + min(5, _steps / 2000.0))))
-        print("backtest %s samples=%d hr_load=%.2f steps=%s v2=%d v3b=%d" % (_date, len(_vals), _load, _steps, _v2, _v3b), file=sys.stderr)
-
+        _row["hrLoad"] = round_half_up(_load, 2)
+        print("hrload %s samples=%d load=%.2f" % (_date, len(_vals), _load), file=sys.stderr)
     return True, days
 
 
@@ -394,6 +372,7 @@ def extract_stages(record):
 def compute_person(name, dates, rows):
     """Build the board's person object from raw day rows (None-padded)."""
     sleep, recovery, hrv, rhr, steps, stages = [], [], [], [], [], []
+    hrload = []
     battery, stress, maxhr, dist = [], [], [], []
     hrv_weekly = []
 
@@ -404,6 +383,7 @@ def compute_person(name, dates, rows):
         hrv_weekly.append(r.get("hrvWeeklyAvg"))
         rhr.append(r.get("restingHR"))
         steps.append(r.get("steps"))
+        hrload.append(r.get("hrLoad"))
         stages.append(r.get("stages"))
         battery.append(r.get("battery") or [None, None, None])
         stress.append(r.get("stress"))
@@ -429,11 +409,12 @@ def compute_person(name, dates, rows):
         recovery.append(int(round_half_up(rec)))
 
     def strain(i):
-        if steps[i] is None or maxhr[i] is None or rhr[i] is None:
+              # v3b: HR load + steps capped at 5. Strength term is 0 for now
+              # (strength minutes not available from these endpoints yet).
+        if steps[i] is None or hrload[i] is None:
             return None
-        val = (steps[i] / 1000.0
-               + max(0, maxhr[i] - rhr[i] - 40) / 10.0)
-        return int(round_half_up(min(21, max(0, val))))
+        val = hrload[i] + min(5, steps[i] / 2000.0)
+              return  int(round_half_up(min(21, max(0, val))))
 
     def hrv_line(i):
         if hrv[i] is None:
@@ -485,6 +466,7 @@ def compute_person(name, dates, rows):
         "maxhr": maxhr,
         "dist": dist,
         "strain": strains,
+              "hrload": hrload,
         "strength": [None] * len(dates),
         "strainYesterday": strain(5),
         "strainToday": strain(6),
