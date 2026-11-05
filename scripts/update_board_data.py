@@ -20,13 +20,11 @@ Board math (must match the board's info sheet):
     HRV component = 50 + (last night's HRV - person's own window-mean HRV
     rounded to 1 decimal, the weekly average shown on the board) * 2,
     clamped to 0-100. Null if sleep, HRV, or Body Battery charged is missing.
-  - Strain (Est., v3b) = min(21, HR load + min(5, steps/2000)
-    + min(6, strength_minutes/15)), rounded to the nearest whole number
-    (half up). HR load = min(15, sum(max(0, HR - restingHR) x minutes)
-    / 3000) over that day's dailyHeartRate samples, minutes between
-    successive samples capped at 30. Strength minutes are not available
-    from these endpoints yet, so that term is 0 for now and the board
-    shows "-" for strength minutes.
+  - Strain (Est., v3b) = min(21, HR load + min(5, steps/2000)),
+    rounded to the nearest whole number (half up). HR load =
+    min(15, sum(max(0, HR - restingHR) x minutes) / 3000) over that
+    day's dailyHeartRate samples, minutes between successive samples
+    capped at 30.
   - Charts: hrSeries is the 30-minute average heart rate per day (48
     buckets, local time, null when no samples); sleepStart/sleepEnd are
     bed/wake minutes-of-day for that night, for the Daily charts.
@@ -301,30 +299,6 @@ def fetch_person(api_key, start, end):
         _row["hrSeries"] = [int(round_half_up(_sums[_b] / _counts[_b])) if _counts[_b] else None for _b in range(48)]
         print("hrseries %s first_min=%s last_min=%s buckets=%d" % (_date, _first_min, _last_min, sum(1 for c in _counts if c)), file=sys.stderr)
 
-    # PROBE, Nov 4, 2026: find where strength-training minutes live.
-    # Tries candidate activity endpoints; logs status + record keys only,
-    # never values. Non-fatal by design: a failed candidate must not fail
-    # the run or change data.js.
-    for _pp in (
-        "/activity-service/activity?startDate=%s&endDate=%s",
-        "/activity-service/activities?startDate=%s&endDate=%s",
-        "/activity-service/activity/list?startDate=%s&endDate=%s",
-        "/activity-service/activities/search?startDate=%s&endDate=%s",
-        "/activity-service/v1/activities?startDate=%s&endDate=%s",
-        "/activitylist-service/activities?startDate=%s&endDate=%s",
-    ):
-        _pr = get(_pp % (start, end))
-        if not isinstance(_pr, dict):
-            print("PROBE %s no-data" % _pp.split("?")[0], file=sys.stderr)
-            continue
-        _rows = []
-        for _v in _pr.values():
-            if isinstance(_v, list) and _v and isinstance(_v[0], dict):
-                _rows = _v
-                break
-        _keys = sorted(_rows[0].keys()) if _rows else []
-        print("PROBE %s rows=%d keys=%s" % (_pp.split("?")[0], len(_rows), _keys), file=sys.stderr)
-
     return True, days
 
 
@@ -481,8 +455,7 @@ def compute_person(name, dates, rows):
         recovery.append(int(round_half_up(rec)))
 
     def strain(i):
-        # v3b: HR load + steps capped at 5. Strength term is 0 for now
-        # (strength minutes not available from these endpoints yet).
+        # v3b: HR load + steps capped at 5.
         if steps[i] is None or hrload[i] is None:
             return None
         val = hrload[i] + min(5, steps[i] / 2000.0)
@@ -542,7 +515,6 @@ def compute_person(name, dates, rows):
         "hrSeries": hrSeries,
         "sleepStart": sleepStart,
         "sleepEnd": sleepEnd,
-        "strength": [None] * len(dates),
         "strainYesterday": strain(5),
         "strainToday": strain(6),
         "hrvVsOwnYesterday": hrv_line(5),
