@@ -116,7 +116,7 @@
   <div id="info-panel" class="info-sheet" role="dialog" aria-modal="true" aria-label="How the numbers are computed">
     <div class="info-sheet-head"><h3>How the numbers are computed</h3><button id="info-close" class="info-close" aria-label="Close">×</button></div>
     <p><b>Recovery (Est.)</b> = 50% sleep score + 30% HRV component + 20% Body Battery charged. HRV component = 50 + (last night's HRV &minus; your weekly average HRV) &times; 2, clamped to 0&ndash;100.</p>
-<p><b>Strain (Est.)</b> = min(21, HR load + min(5, steps &divide; 2000) + min(6, strength minutes &divide; 15)), rounded. HR load = min(15, sum(max(0, HR &minus; resting HR) &times; minutes) &divide; 3000) over full-day samples. Strength minutes = strength training only.</p>
+<p><b>Strain (Est.)</b> = min(21, HR load + min(5, steps &divide; 2000)), rounded. HR load = min(15, sum(max(0, HR &minus; resting HR) &times; minutes) &divide; 3000) over full-day samples.</p>
 <p><b>Rankings:</b> higher wins, #1 is green. <b>Overall strip:</b> 3/2/1 points per ranked board, ties share, max 12. The points race shows each total out of 12.</p>
 <p>~ = partial day. &mdash; = nothing recorded, not zero. Weekly averages use recorded days only. Anything (Est.) is modeled, not a Garmin or Whoop score.</p>
 <p id="info-daily-weekly"><b>Daily vs Weekly:</b> Daily defaults to today.</p>
@@ -199,8 +199,7 @@ function stepsPanel(p, i) {
 
 function strainPanel(p, i) {
   return "<div><b>HR load:</b> " + (p.hrload == null || p.hrload[i] == null ? "—" : p.hrload[i].toFixed(2)) + "</div>"
-    + "<div><b>Steps:</b> " + (p.steps[i] == null ? "—" : fmt(p.steps[i])) + "</div>"
-    + "<div><b>Strength minutes:</b> " + show(p.strength[i]) + "</div>";
+    + "<div><b>Steps:</b> " + (p.steps[i] == null ? "—" : fmt(p.steps[i])) + "</div>";
 }
 
 function rhrPanel(p) {
