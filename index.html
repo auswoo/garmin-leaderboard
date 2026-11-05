@@ -545,6 +545,7 @@ function renderWeekly() {
     '<div class="summary-row"><span class="summary-label">Steps</span><span class="summary-leader">' + summaryLeader((p) => p.weekly.steps, (d) => fmt(d)) + '</span></div>'
     + '<div class="summary-row"><span class="summary-label">Sleep</span><span class="summary-leader">' + summaryLeader((p) => p.weekly.avgSleep, (d) => d.toFixed(1)) + '</span></div>'
     + '<div class="summary-row"><span class="summary-label">Recovery</span><span class="summary-leader">' + summaryLeader((p) => p.weekly.avgRecovery, (d) => (Number.isInteger(d) ? String(d) : d.toFixed(1))) + '</span></div>'
+    + '<div class="summary-row"><span class="summary-label">Strain</span><span class="summary-leader">' + summaryLeader((p) => p.weekly.avgStrain, (d) => (Number.isInteger(d) ? String(d) : d.toFixed(1))) + '</span></div>'
     + '<div class="summary-row"><span class="summary-label">Overall</span><span class="summary-leader">' + overallLeaders.join(" & ") + " " + topPts + "/12</span></div>";
 }
 
