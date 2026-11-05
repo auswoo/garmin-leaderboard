@@ -301,6 +301,30 @@ def fetch_person(api_key, start, end):
         _row["hrSeries"] = [int(round_half_up(_sums[_b] / _counts[_b])) if _counts[_b] else None for _b in range(48)]
         print("hrseries %s first_min=%s last_min=%s buckets=%d" % (_date, _first_min, _last_min, sum(1 for c in _counts if c)), file=sys.stderr)
 
+    # PROBE, Nov 4, 2026: find where strength-training minutes live.
+    # Tries candidate activity endpoints; logs status + record keys only,
+    # never values. Non-fatal by design: a failed candidate must not fail
+    # the run or change data.js.
+    for _pp in (
+        "/activity-service/activity?startDate=%s&endDate=%s",
+        "/activity-service/activities?startDate=%s&endDate=%s",
+        "/activity-service/activity/list?startDate=%s&endDate=%s",
+        "/activity-service/activities/search?startDate=%s&endDate=%s",
+        "/activity-service/v1/activities?startDate=%s&endDate=%s",
+        "/activitylist-service/activities?startDate=%s&endDate=%s",
+    ):
+        _pr = get(_pp % (start, end))
+        if not isinstance(_pr, dict):
+            print("PROBE %s no-data" % _pp.split("?")[0], file=sys.stderr)
+            continue
+        _rows = []
+        for _v in _pr.values():
+            if isinstance(_v, list) and _v and isinstance(_v[0], dict):
+                _rows = _v
+                break
+        _keys = sorted(_rows[0].keys()) if _rows else []
+        print("PROBE %s rows=%d keys=%s" % (_pp.split("?")[0], len(_rows), _keys), file=sys.stderr)
+
     return True, days
 
 
