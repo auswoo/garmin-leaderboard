@@ -11,9 +11,9 @@ window.BOARD_DATA = {
    "Nov 5",
    "Nov 6"
   ],
-  "updatedAt": "2026-11-06T08:57:25.714094Z",
-  "updatedTimePT": "12:57 AM PST",
-  "updatedLongPT": "Nov 6, 12:57 AM PST",
+  "updatedAt": "2026-11-06T09:57:22.085914Z",
+  "updatedTimePT": "1:57 AM PST",
+  "updatedLongPT": "Nov 6, 1:57 AM PST",
   "live": true
  },
  "days": [
@@ -1111,7 +1111,7 @@ window.BOARD_DATA = {
     56,
     54,
     51,
-    61
+    60
    ],
    "steps": [
     12379,
@@ -1187,9 +1187,9 @@ window.BOARD_DATA = {
      73
     ],
     [
-     37,
-     0,
-     1
+     40,
+     4,
+     2
     ]
    ],
    "stress": [
@@ -1199,7 +1199,7 @@ window.BOARD_DATA = {
     41,
     28,
     27,
-    21
+    20
    ],
    "maxhr": [
     147,
@@ -1540,8 +1540,8 @@ window.BOARD_DATA = {
     ],
     [
      70,
-     null,
-     null,
+     67,
+     60,
      null,
      null,
      null,
