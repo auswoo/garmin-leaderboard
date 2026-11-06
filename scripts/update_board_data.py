@@ -12,14 +12,17 @@ Auth flow (Garmin Personal API):
 
 Data window: the last 7 days ending today, America/Los_Angeles. The output
 always has exactly 7 day entries (nulls for missing days) so the board's
-Daily view keeps yesterday at index 5 and today at index 6.
+Daily view keeps yesterday at index 5 and today at index 6. Recovery's HRV
+baseline is separate: the 30-day mean of lastNightAvg HRV, from one extra
+range fetch (Nov 6, 2026).
 
 Board math (must match the board's info sheet):
   - Recovery (Est.) = 50% sleep score + 30% HRV component + 20% Body
     Battery charged, rounded to the nearest whole number (half up).
-    HRV component = 50 + (last night's HRV - person's own window-mean HRV
-    rounded to 1 decimal, the weekly average shown on the board) * 2,
-    clamped to 0-100. Null if sleep, HRV, or Body Battery charged is missing.
+    HRV component = 50 + (last night's HRV - person's own 30-day mean HRV,
+    rounded to 1 decimal) * 2, clamped to 0-100. Null if sleep, HRV, or
+    Body Battery charged is missing. Falls back to the 7-day window mean
+    if the 30-day baseline fetch fails.
   - Strain (Est., v3b) = min(21, HR load + min(5, steps/2000)),
     rounded to the nearest whole number (half up). HR load =
     min(15, sum(max(0, HR - restingHR) x minutes) / 3000) over that
@@ -40,6 +43,9 @@ only, no values) on each run. If a field is absent, the board shows "-" for it.
 Atomicity: if either account's token exchange or any data call fails, the
 script exits non-zero WITHOUT touching data.js, so a partial board is never
 published. An endpoint that succeeds but returns no rows is fine (nulls).
+Exception: the 30-day HRV baseline fetch falls back to the 7-day window
+mean instead of failing the run (the 30-day range is untested; a failed
+baseline fetch must not block the hourly update).
 """
 
 import datetime
@@ -99,6 +105,25 @@ def call(req, timeout=90):
         return 0, "%s: %s" % (type(e).__name__, str(e)[:200])
 
 
+def mean_hrv_baseline(payload):
+    """Mean lastNightAvg HRV over a range payload, rounded to 1 decimal.
+
+    Used for the 30-day recovery baseline (Nov 6, 2026). Returns None when
+    the payload has no usable values, so the caller falls back to the
+    7-day window mean.
+    """
+    rows = payload if isinstance(payload, list) else payload.get("hrvSummaries", [])
+    vals = []
+    if isinstance(rows, list):
+        for s in rows:
+            v = s.get("lastNightAvg") if isinstance(s, dict) else None
+            if isinstance(v, (int, float)):
+                vals.append(v)
+    if not vals:
+        return None
+    return round_half_up(sum(vals) / len(vals), 1)
+
+
 def fetch_person(api_key, start, end):
     """Return (ok, day_rows_dict). ok=False on any transport/auth failure."""
     req = urllib.request.Request(
@@ -110,7 +135,7 @@ def fetch_person(api_key, start, end):
     status, body = call(req)
     if status != 200 or not body or not body.startswith("eyJ"):
         print("token_exchange_failed status=%s" % status, file=sys.stderr)
-        return False, {}
+        return False, {}, None
     token = body.strip()
     headers = {"Authorization": "Bearer " + token, "Accept": "application/json"}
 
@@ -133,7 +158,17 @@ def fetch_person(api_key, start, end):
     sleep = get("/sleep-service/sleep/dailySleepSummariesByDate"
                 "?startDate=%s&endDate=%s" % (start, end))
     if summaries is None or hrv is None or sleep is None:
-        return False, {}
+        return False, {}, None
+    # 30-day HRV baseline for recovery (Nov 6, 2026): one extra range call
+    # over the last 30 days ending today. Only the mean is kept -- the
+    # 30-day rows are NOT merged into `days`, or the heart-rate loop below
+    # would fetch dailyHeartRate for 30 days instead of 7. A failed fetch
+    # falls back to the 7-day window mean (see mean_hrv_baseline).
+    baseline_start = (datetime.date.fromisoformat(end)
+                      - datetime.timedelta(days=29)).isoformat()
+    hrv30 = get("/hrv-service/hrv/daily/%s/%s" % (baseline_start, end))
+    baseline30 = mean_hrv_baseline(hrv30) if hrv30 is not None else None
+    print("hrv_baseline30 mean=%s" % baseline30, file=sys.stderr)
     # Log raw record keys only (schema, no values) to aid extraction fixes.
     def first_record_keys(payload, *keys):
         rows = payload
@@ -299,7 +334,7 @@ def fetch_person(api_key, start, end):
         _row["hrSeries"] = [int(round_half_up(_sums[_b] / _counts[_b])) if _counts[_b] else None for _b in range(48)]
         print("hrseries %s first_min=%s last_min=%s buckets=%d" % (_date, _first_min, _last_min, sum(1 for c in _counts if c)), file=sys.stderr)
 
-    return True, days
+    return True, days, baseline30
 
 
 def extract_steps(summary, movement):
@@ -409,7 +444,7 @@ def extract_stages(record):
     return [int(round_half_up(d / total * 100)) for d in durations]
 
 
-def compute_person(name, dates, rows):
+def compute_person(name, dates, rows, baseline30=None):
     """Build the board's person object from raw day rows (None-padded)."""
     sleep, recovery, hrv, rhr, steps, stages = [], [], [], [], [], []
     battery, stress, maxhr, dist = [], [], [], []
@@ -437,19 +472,22 @@ def compute_person(name, dates, rows):
         sleepEnd.append(r.get("sleepEndMin"))
 
     recorded_hrv = [v for v in hrv if v is not None]
-    # Baseline is the weekly average as displayed on the board (1 decimal),
-    # not the unrounded mean: with the exact mean, Jordan Oct 20 lands on
-    # exactly 48.5, but the board says 48, which the 1-decimal baseline
-    # (48.48) reproduces.
+    # The 7-day window mean, rounded to 1 decimal (the fallback baseline):
+    # with the exact mean, Jordan Oct 20 lands on exactly 48.5, but the
+    # board says 48, which the 1-decimal baseline (48.48) reproduces.
     mean_hrv = (round_half_up(sum(recorded_hrv) / len(recorded_hrv), 1)
                 if recorded_hrv else None)
 
+    # Recovery baseline (Nov 6, 2026): 30-day mean HRV when available,
+    # falling back to the 7-day window mean.
+    baseline = baseline30 if baseline30 is not None else mean_hrv
+
     for i, date in enumerate(dates):
-        if (sleep[i] is None or hrv[i] is None or mean_hrv is None
+        if (sleep[i] is None or hrv[i] is None or baseline is None
                 or battery[i][1] is None):
             recovery.append(None)
             continue
-        component = 50 + (hrv[i] - mean_hrv) * 2
+        component = 50 + (hrv[i] - baseline) * 2
         component = max(0, min(100, component))
         rec = 0.5 * sleep[i] + 0.3 * component + 0.2 * battery[i][1]
         recovery.append(int(round_half_up(rec)))
@@ -464,9 +502,9 @@ def compute_person(name, dates, rows):
     def hrv_line(i):
         if hrv[i] is None:
             return "HRV \u2014"
-        base = hrv_weekly[i]
+        base = baseline
         if base is None:
-            base = mean_hrv
+            base = hrv_weekly[i]
         if base is None:
             return "HRV %s" % hrv[i]
         return "HRV %s vs own avg %d" % (hrv[i], int(round_half_up(base)))
@@ -503,6 +541,7 @@ def compute_person(name, dates, rows):
         "sleep": sleep,
         "recovery": recovery,
         "hrv": hrv,
+        "hrvBaseline30": baseline30,
         "rhr": rhr,
         "steps": steps,
         "stages": stages,
@@ -581,7 +620,7 @@ def main():
         if not api_key:
             print("missing secret %s" % env_var, file=sys.stderr)
             return 2
-        ok, rows = fetch_person(api_key, start, end)
+        ok, rows, baseline30 = fetch_person(api_key, start, end)
         if not ok:
             print("fetch failed for %s, publishing nothing" % name,
                   file=sys.stderr)
@@ -591,10 +630,11 @@ def main():
             "hrv": sum(1 for d in dates if rows.get(d.isoformat(), {}).get("hrv") is not None),
             "steps": sum(1 for d in dates if rows.get(d.isoformat(), {}).get("steps") is not None),
         }
-        print("%s: %d/7 sleep, %d/7 hrv, %d/7 steps"
-              % (name, recorded["sleep"], recorded["hrv"], recorded["steps"]),
+        print("%s: %d/7 sleep, %d/7 hrv, %d/7 steps, baseline30=%s"
+              % (name, recorded["sleep"], recorded["hrv"], recorded["steps"],
+                 baseline30),
               file=sys.stderr)
-        people.append(compute_person(name, dates, rows))
+        people.append(compute_person(name, dates, rows, baseline30))
 
     now_pt = datetime.datetime.now(PT)
     hour12 = now_pt.hour % 12 or 12
