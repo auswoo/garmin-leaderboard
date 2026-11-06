@@ -127,6 +127,7 @@
   <div class="toggle" role="tablist">
     <button id="tab-daily" class="active" role="tab" aria-selected="true">Daily</button>
     <button id="tab-weekly" role="tab" aria-selected="false">Weekly</button>
+    <button id="tab-monthly" role="tab" aria-selected="false">Monthly</button>
   </div>
 
   <div id="daily-view">
@@ -149,12 +150,23 @@
     <div class="board"><h2>Week trends</h2><div id="trend-buttons" class="daytoggle"></div><div id="trend-chart"></div><div id="trend-tooltip" class="trend-tooltip">Tap or drag the chart to compare a day.</div></div>
   </div>
 
+  <div id="monthly-view" class="hidden">
+    <div id="monthly-boards"></div>
+    <div class="summary">
+      <h2>The month so far</h2>
+      <div id="summary-body-monthly"></div>
+    </div>
+    <div class="board"><h2>Month trends</h2><div id="trend-buttons-monthly" class="daytoggle"></div><div id="trend-chart-monthly"></div><div id="trend-tooltip-monthly" class="trend-tooltip">Tap or drag the chart to compare a day.</div></div>
+  </div>
+
 </div>
 
 <script src="data.js"></script>
 <script>
 const BOARD = window.BOARD_DATA;
 const DAYS = BOARD.days;
+const LAST = DAYS.length - 1;
+const PREV = LAST - 1;
 const PEOPLE = BOARD.people;
 const META = BOARD.meta;
 const fmt = (n) => n.toLocaleString("en-US");
@@ -208,16 +220,16 @@ function rhrPanel(p) {
 
 function weeklyStepsPanel(p) {
   const w = p.weekly;
-  return "<div><b>Steps Oct 19&ndash;25:</b> " + p.steps.map((s) => (s == null ? "—" : fmt(s))).join(" &middot; ") + "</div>"
+  return "<div><b>Steps " + DAYS[LAST - 6] + "&ndash;" + DAYS[LAST] + ":</b> " + p.steps.slice(-7).map((s) => (s == null ? "—" : fmt(s))).join(" &middot; ") + "</div>"
     + "<div><b>Total distance:</b> " + w.dist.toFixed(2) + " mi</div>";
 }
 
 function weeklySleepPanel(p) {
-  return "<div><b>Sleep Oct 19&ndash;25:</b> " + p.sleep.map(show).join(" &middot; ") + "</div>";
+  return "<div><b>Sleep " + DAYS[LAST - 6] + "&ndash;" + DAYS[LAST] + ":</b> " + p.sleep.slice(-7).map(show).join(" &middot; ") + "</div>";
 }
 
 function weeklyRecoveryPanel(p) {
-  return "<div><b>Recovery Oct 19&ndash;25:</b> " + p.recovery.map(show).join(" &middot; ") + "</div>";
+  return "<div><b>Recovery " + DAYS[LAST - 6] + "&ndash;" + DAYS[LAST] + ":</b> " + p.recovery.slice(-7).map(show).join(" &middot; ") + "</div>";
 }
 
 function weeklyRhrPanel(p) {
@@ -225,8 +237,29 @@ function weeklyRhrPanel(p) {
 }
 
 function weeklyStrainPanel(p) {
-  const daily = (p.strain || []).map(show).join(" &middot; ");
+  const daily = (p.strain || []).slice(-7).map(show).join(" &middot; ");
   const total = (p.weekly.totalStrain == null ? "—" : p.weekly.totalStrain);
+  return "<div><b>Daily strain:</b> " + daily + "</div>"
+    + "<div><b>Total strain:</b> " + total + "</div>";
+}
+
+function monthlyStepsPanel(p) {
+  const w = p.monthly;
+  return "<div><b>Steps " + DAYS[0] + "&ndash;" + DAYS[LAST] + ":</b> " + p.steps.map((s) => (s == null ? "—" : fmt(s))).join(" &middot; ") + "</div>"
+    + "<div><b>Total distance:</b> " + w.dist.toFixed(2) + " mi</div>";
+}
+
+function monthlySleepPanel(p) {
+  return "<div><b>Sleep " + DAYS[0] + "&ndash;" + DAYS[LAST] + ":</b> " + p.sleep.map(show).join(" &middot; ") + "</div>";
+}
+
+function monthlyRecoveryPanel(p) {
+  return "<div><b>Recovery " + DAYS[0] + "&ndash;" + DAYS[LAST] + ":</b> " + p.recovery.map(show).join(" &middot; ") + "</div>";
+}
+
+function monthlyStrainPanel(p) {
+  const daily = (p.strain || []).map(show).join(" &middot; ");
+  const total = (p.monthly.totalStrain == null ? "—" : p.monthly.totalStrain);
   return "<div><b>Daily strain:</b> " + daily + "</div>"
     + "<div><b>Total strain:</b> " + total + "</div>";
 }
@@ -353,7 +386,12 @@ function renderSleepChart(dayIdx) {
   el.innerHTML = svg;
 }
 
-let currentTrend = "recovery";
+let currentTrend = { weekly: "recovery", monthly: "recovery" };
+function trendIdxs(view) {
+  const n = DAYS.length;
+  if (view === "monthly") return Array.from({ length: n }, (_, i) => i);
+  return Array.from({ length: 7 }, (_, i) => n - 7 + i);
+}
 const TRENDS = {
   recovery: {label: "Recovery", get: (p, i) => p.recovery[i], yMin: 0, yMax: 100},
   sleep: {label: "Sleep", get: (p, i) => p.sleep[i], yMin: 0, yMax: 100},
@@ -361,23 +399,26 @@ const TRENDS = {
   steps: {label: "Steps", get: (p, i) => p.steps[i], yMin: 0, yMax: null},
   hrv: {label: "HRV", get: (p, i) => p.hrv[i], yMin: null, yMax: null}
 };
-function setTrend(metric) { currentTrend = metric; renderTrendChart(metric); }
-function renderTrendChart(metric) {
-  metric = metric || currentTrend;
-  const el = document.getElementById("trend-chart");
+function setTrend(metric, view) { view = view || "weekly"; currentTrend[view] = metric; renderTrendChart(metric, view); }
+function renderTrendChart(metric, view) {
+  view = view || "weekly";
+  metric = metric || currentTrend[view];
+  const el = document.getElementById(view === "monthly" ? "trend-chart-monthly" : "trend-chart");
   if (!el) return;
   const cfg = TRENDS[metric];
-  const btns = document.getElementById("trend-buttons");
-  if (btns) btns.innerHTML = Object.keys(TRENDS).map((k) => '<button class="' + (k === metric ? "active" : "") + '" onclick="setTrend(\'' + k + '\')">' + TRENDS[k].label + '</button>').join("");
+  const btns = document.getElementById(view === "monthly" ? "trend-buttons-monthly" : "trend-buttons");
+  if (btns) btns.innerHTML = Object.keys(TRENDS).map((k) => '<button class="' + (k === metric ? "active" : "") + '" onclick="setTrend(\'' + k + '\', \'' + view + '\')">' + TRENDS[k].label + '</button>').join("");
+  const idxs = trendIdxs(view);
+  const n = idxs.length;
   let yMin = cfg.yMin, yMax = cfg.yMax;
   if (yMin == null || yMax == null) {
     let vals = [];
-    PEOPLE.forEach((p) => { for (let i = 0; i < 7; i++) { const v = cfg.get(p, i); if (v != null) vals.push(v); } });
+    PEOPLE.forEach((p) => { idxs.forEach((di) => { const v = cfg.get(p, di); if (v != null) vals.push(v); }); });
     if (metric === "steps") { yMin = 0; yMax = Math.ceil(Math.max(...vals) / 5000) * 5000; }
     else { yMin = Math.floor((Math.min(...vals) - 10) / 10) * 10; yMax = Math.ceil((Math.max(...vals) + 10) / 10) * 10; }
   }
   const W = 600, H = 220, PL = 48, PR = 58, PT = 10, PB = 24;
-  const x = (i) => PL + (i / 6) * (W - PL - PR);
+  const x = (pos) => PL + (pos / (n - 1)) * (W - PL - PR);
   const y = (v) => PT + (1 - (v - yMin) / (yMax - yMin)) * (H - PT - PB);
   let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block">';
   for (let k = 0; k <= 4; k++) {
@@ -385,9 +426,9 @@ function renderTrendChart(metric) {
     svg += '<line x1="' + PL + '" y1="' + y(v) + '" x2="' + (W - PR) + '" y2="' + y(v) + '" stroke="rgba(255,255,255,0.05)"/>';
     svg += '<text x="' + (PL - 4) + '" y="' + (y(v) + 4) + '" fill="#888" font-size="11" text-anchor="end">' + (metric === "steps" ? Math.round(v).toLocaleString("en-US") : Math.round(v)) + '</text>';
   }
-  DAYS.forEach((d, i) => {
-    svg += '<line x1="' + x(i) + '" y1="' + PT + '" x2="' + x(i) + '" y2="' + (H - PB) + '" stroke="rgba(255,255,255,0.05)"/>';
-    svg += '<text x="' + x(i) + '" y="' + (H - 6) + '" fill="#888" font-size="11" text-anchor="middle">' + d + '</text>';
+  idxs.forEach((di, pos) => {
+    svg += '<line x1="' + x(pos) + '" y1="' + PT + '" x2="' + x(pos) + '" y2="' + (H - PB) + '" stroke="rgba(255,255,255,0.05)"/>';
+    if (view === "weekly" || pos % 5 === 0 || pos === n - 1) svg += '<text x="' + x(pos) + '" y="' + (H - 6) + '" fill="#888" font-size="11" text-anchor="middle">' + DAYS[di] + '</text>';
   });
   svg += '<line id="trend-guide" x1="' + x(0) + '" y1="' + PT + '" x2="' + x(0) + '" y2="' + (H - PB) + '" stroke="rgba(255,255,255,0.25)" stroke-dasharray="3 3" style="display:none"/>';
   const trendLabels = [];
@@ -399,13 +440,13 @@ function renderTrendChart(metric) {
       if (seg.length > 1) svg += '<polyline points="' + seg.join(" ") + '" fill="none" stroke="' + col + '" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
       seg = [];
     };
-    for (let i = 0; i < 7; i++) {
-      const v = cfg.get(p, i);
-      if (v == null) { flush(); continue; }
-      const px = x(i), py = y(v);
+    idxs.forEach((di, pos) => {
+      const v = cfg.get(p, di);
+      if (v == null) { flush(); return; }
+      const px = x(pos), py = y(v);
       seg.push(px + "," + py);
       lastX = px; lastY = py;
-    }
+    });
     flush();
     if (lastX != null) trendLabels.push({ name: p.name, col: col, x: lastX, py: lastY, ly: lastY + 4 });
   });
@@ -426,19 +467,20 @@ function renderTrendChart(metric) {
   svg += '</svg>';
   el.innerHTML = svg;
   const svgEl = el.querySelector("svg");
-  const tip = document.getElementById("trend-tooltip");
+  const tip = document.getElementById(view === "monthly" ? "trend-tooltip-monthly" : "trend-tooltip");
   if (svgEl && tip) {
     const fmtTrend = (v) => (v == null ? "\u2014" : (metric === "steps" ? fmt(v) : String(v)));
     const scrub = (e) => {
       const rect = svgEl.getBoundingClientRect();
       const svgX = (e.clientX - rect.left) / rect.width * W;
-      let i = Math.round((svgX - PL) / (W - PL - PR) * 6);
-      i = Math.max(0, Math.min(6, i));
+      let pos = Math.round((svgX - PL) / (W - PL - PR) * (n - 1));
+      pos = Math.max(0, Math.min(n - 1, pos));
+      const di = idxs[pos];
       const guide = svgEl.querySelector("#trend-guide");
-      if (guide) { guide.setAttribute("x1", x(i)); guide.setAttribute("x2", x(i)); guide.style.display = "block"; }
-      tip.innerHTML = "<b>" + DAYS[i] + "</b> &nbsp; " + PEOPLE.map((p) => {
+      if (guide) { guide.setAttribute("x1", x(pos)); guide.setAttribute("x2", x(pos)); guide.style.display = "block"; }
+      tip.innerHTML = "<b>" + DAYS[di] + "</b> &nbsp; " + PEOPLE.map((p) => {
         const col = CHART_COLORS[p.name] || "#fff";
-        return '<span style="color:' + col + '">\u25cf</span> ' + p.name + ' ' + fmtTrend(cfg.get(p, i));
+        return '<span style="color:' + col + '">\u25cf</span> ' + p.name + ' ' + fmtTrend(cfg.get(p, di));
       }).join(" &nbsp; ");
     };
     svgEl.addEventListener("pointerdown", scrub);
@@ -458,7 +500,7 @@ function deltaHtml(curr, prev, label, format) {
 }
 const fmtDiff = (d) => (Number.isInteger(d) ? String(d) : d.toFixed(1));
 function renderDaily(dayIdx) {
-  const isToday = dayIdx === 6;
+  const isToday = dayIdx === LAST;
   const deltaLabel = isToday ? "vs yesterday" : "vs prior day";
   document.getElementById("daylabel").textContent = isToday ? "Partial day (as of " + META.updatedTimePT + ")" : "Full day";
   const box = document.getElementById("daily-boards");
@@ -530,7 +572,7 @@ function renderWeekly() {
   })));
 
   
-  renderTrendChart(currentTrend);
+  renderTrendChart(currentTrend.weekly, "weekly");
   const summaryLeader = (get, fmtMargin) => {
     const sorted = [...PEOPLE].sort((a, b) => get(b) - get(a));
     const top = get(sorted[0]);
@@ -549,18 +591,71 @@ function renderWeekly() {
     + '<div class="summary-row"><span class="summary-label">Overall</span><span class="summary-leader">' + overallLeaders.join(" & ") + " " + topPts + "/12</span></div>";
 }
 
-document.getElementById("day-yesterday").innerHTML = "Yesterday &middot; " + DAYS[5];
-document.getElementById("day-today").innerHTML = "Today &middot; " + DAYS[6];
-document.getElementById("info-daily-weekly").innerHTML = "<b>Daily vs Weekly:</b> Daily defaults to today (" + DAYS[6] + "), which is partial as of " + META.updatedTimePT + ". Yesterday (" + DAYS[5] + ") is the last full day. Weekly covers " + DAYS[0] + "&ndash;" + DAYS[6] + ".";
+function renderMonthly() {
+  const box = document.getElementById("monthly-boards");
+  box.innerHTML = "";
+  const byMonthly = (key, desc) => [...PEOPLE].sort((a, b) => desc ? b.monthly[key] - a.monthly[key] : a.monthly[key] - b.monthly[key]);
+
+  renderBoard(box, "Avg recovery (Est.)", byMonthly("avgRecovery", true).map((p) => ({
+    person: p,
+    valHtml: ringHtml(p.monthly.avgRecovery, 100, recoveryColor, p.monthly.avgRecovery),
+    panelHtml: monthlyRecoveryPanel(p)
+  })));
+
+  renderBoard(box, "Avg sleep", byMonthly("avgSleep", true).map((p) => ({
+    person: p,
+    valHtml: '<span class="val">' + p.monthly.avgSleep.toFixed(1) + "</span>",
+    panelHtml: monthlySleepPanel(p)
+  })));
+
+  renderBoard(box, "Steps", byMonthly("steps", true).map((p) => ({
+    person: p,
+    valHtml: '<span class="val">' + fmt(p.monthly.steps) + "</span>",
+    panelHtml: monthlyStepsPanel(p)
+  })));
+
+  renderBoard(box, "Avg strain (Est.)", [...PEOPLE].sort((a, b) => (b.monthly.avgStrain || 0) - (a.monthly.avgStrain || 0)).map((p) => ({
+    person: p,
+    valHtml: ringHtml(p.monthly.avgStrain, 21, strainColor, (p.monthly.avgStrain == null ? "—" : String(Math.round(p.monthly.avgStrain)))),
+    panelHtml: monthlyStrainPanel(p)
+  })));
+
+  renderTrendChart(currentTrend.monthly, "monthly");
+  const summaryLeader = (get, fmtMargin) => {
+    const sorted = [...PEOPLE].sort((a, b) => get(b) - get(a));
+    const top = get(sorted[0]);
+    const leaders = sorted.filter((p) => get(p) === top).map((p) => p.name);
+    const second = sorted.find((p) => get(p) < top);
+    return leaders.join(" & ") + (second ? " +" + fmtMargin(top - get(second)) : "");
+  };
+  const monthlyScores = overallScores("monthly", null);
+  const topPts = monthlyScores[0].points;
+  const overallLeaders = monthlyScores.filter((e) => e.points === topPts).map((e) => e.person.name);
+  document.getElementById("summary-body-monthly").innerHTML =
+    '<div class="summary-row"><span class="summary-label">Steps</span><span class="summary-leader">' + summaryLeader((p) => p.monthly.steps, (d) => fmt(d)) + '</span></div>'
+    + '<div class="summary-row"><span class="summary-label">Sleep</span><span class="summary-leader">' + summaryLeader((p) => p.monthly.avgSleep, (d) => d.toFixed(1)) + '</span></div>'
+    + '<div class="summary-row"><span class="summary-label">Recovery</span><span class="summary-leader">' + summaryLeader((p) => p.monthly.avgRecovery, (d) => (Number.isInteger(d) ? String(d) : d.toFixed(1))) + '</span></div>'
+    + '<div class="summary-row"><span class="summary-label">Strain</span><span class="summary-leader">' + summaryLeader((p) => p.monthly.avgStrain, (d) => (Number.isInteger(d) ? String(d) : d.toFixed(1))) + '</span></div>'
+    + '<div class="summary-row"><span class="summary-label">Overall</span><span class="summary-leader">' + overallLeaders.join(" & ") + " " + topPts + "/12</span></div>";
+}
+
+document.getElementById("day-yesterday").innerHTML = "Yesterday &middot; " + DAYS[PREV];
+document.getElementById("day-today").innerHTML = "Today &middot; " + DAYS[LAST];
+document.getElementById("info-daily-weekly").innerHTML = "<b>Daily vs Weekly vs Monthly:</b> Daily defaults to today (" + DAYS[LAST] + "), which is partial as of " + META.updatedTimePT + ". Yesterday (" + DAYS[PREV] + ") is the last full day. Weekly covers " + DAYS[LAST - 6] + "&ndash;" + DAYS[LAST] + ". Monthly covers " + DAYS[0] + "&ndash;" + DAYS[LAST] + ".";
 if (META.live) {
-  document.getElementById("sub-line").textContent = DAYS[0] + "–" + DAYS[6] + ", " + META.endDate.slice(0, 4) + " · Updated " + META.updatedTimePT;
-  document.getElementById("info-data").innerHTML = "<b>Data:</b> Garmin Personal API, " + DAYS[0] + "&ndash;" + DAYS[6] + ". The board refreshes hourly.";
+  document.getElementById("sub-line").textContent = DAYS[0] + "–" + DAYS[LAST] + ", " + META.endDate.slice(0, 4) + " · Updated " + META.updatedTimePT;
+  document.getElementById("info-data").innerHTML = "<b>Data:</b> Garmin Personal API, " + DAYS[0] + "&ndash;" + DAYS[LAST] + ". The board refreshes hourly.";
 }
 const peopleStrip = document.createElement("div");
 peopleStrip.className = "people-strip";
   document.querySelector(".toggle").before(peopleStrip);
 function overallScores(view, dayIdx) {
-  const metrics = view === "weekly" ? [
+  const metrics = view === "monthly" ? [
+    { get: (p) => p.monthly.steps, desc: true },
+    { get: (p) => p.monthly.avgSleep, desc: true },
+    { get: (p) => p.monthly.avgRecovery, desc: true },
+    { get: (p) => p.monthly.avgStrain, desc: true },
+  ] : view === "weekly" ? [
     { get: (p) => p.weekly.steps, desc: true },
     { get: (p) => p.weekly.avgSleep, desc: true },
     { get: (p) => p.weekly.avgRecovery, desc: true },
@@ -569,7 +664,7 @@ function overallScores(view, dayIdx) {
     { get: (p) => p.recovery[dayIdx], desc: true },
     { get: (p) => p.sleep[dayIdx], desc: true },
     { get: (p) => p.steps[dayIdx], desc: true },
-    { get: (p) => (dayIdx === 6 ? p.strainToday : p.strainYesterday), desc: true },
+    { get: (p) => (dayIdx === LAST ? p.strainToday : p.strainYesterday), desc: true },
   ];
   const points = {};
   PEOPLE.forEach((p) => { points[p.name] = 0; });
@@ -602,14 +697,15 @@ function renderPeopleStrip(view, dayIdx) {
   race.innerHTML = ranked.map((entry) => '<div class="race-row"><span class="race-rank">' + entry.rank + '</span>' + avatarHtml(entry.person.name) + '<span class="race-name">' + entry.person.name + '</span><div class="race-track"><div class="race-fill" style="width:' + (entry.points / 12 * 100) + '%;background:' + (CHART_COLORS[entry.person.name] || "#fff") + '"></div></div><span class="race-pts">' + entry.points + '/12</span></div>').join("");
   peopleStrip.appendChild(race);
 }
- let currentDay = 6;
+ let currentDay = LAST;
 
 renderDaily(currentDay);
 renderWeekly();
+renderMonthly();
 renderPeopleStrip("daily", currentDay);
 function countUpVals() {
   if (!document.querySelectorAll || !window.requestAnimationFrame) return;
-  document.querySelectorAll("#daily-boards .val, #weekly-boards .val").forEach((el) => {
+  document.querySelectorAll("#daily-boards .val, #weekly-boards .val, #monthly-boards .val").forEach((el) => {
     const txt = el.textContent.trim();
     const m = txt.match(/^~?([\d,]+(?:\.\d+)?)$/);
     if (!m) return;
@@ -631,37 +727,30 @@ function countUpVals() {
 countUpVals();
 
 document.getElementById("day-yesterday").addEventListener("click", () => {
-  currentDay = 5;
+  currentDay = PREV;
   document.getElementById("day-yesterday").classList.add("active");
   document.getElementById("day-today").classList.remove("active");
   renderDaily(currentDay);
   renderPeopleStrip("daily", currentDay);
 });
 document.getElementById("day-today").addEventListener("click", () => {
-  currentDay = 6;
+  currentDay = LAST;
   document.getElementById("day-today").classList.add("active");
   document.getElementById("day-yesterday").classList.remove("active");
   renderDaily(currentDay);
   renderPeopleStrip("daily", currentDay);
 });
-document.getElementById("tab-daily").addEventListener("click", () => {
-  document.getElementById("tab-daily").classList.add("active");
-  document.getElementById("tab-daily").setAttribute("aria-selected", "true");
-  document.getElementById("tab-weekly").classList.remove("active");
-  document.getElementById("tab-weekly").setAttribute("aria-selected", "false");
-  document.getElementById("daily-view").classList.remove("hidden");
-  document.getElementById("weekly-view").classList.add("hidden");
-  renderPeopleStrip("daily", currentDay);
-});
-document.getElementById("tab-weekly").addEventListener("click", () => {
-  document.getElementById("tab-weekly").classList.add("active");
-  document.getElementById("tab-weekly").setAttribute("aria-selected", "true");
-  document.getElementById("tab-daily").classList.remove("active");
-  document.getElementById("tab-daily").setAttribute("aria-selected", "false");
-  document.getElementById("weekly-view").classList.remove("hidden");
-  document.getElementById("daily-view").classList.add("hidden");
-  renderPeopleStrip("weekly", currentDay);
-});
+function setTab(view) {
+  ["daily", "weekly", "monthly"].forEach((v) => {
+    document.getElementById("tab-" + v).classList.toggle("active", v === view);
+    document.getElementById("tab-" + v).setAttribute("aria-selected", v === view ? "true" : "false");
+    document.getElementById(v + "-view").classList.toggle("hidden", v !== view);
+  });
+  renderPeopleStrip(view, currentDay);
+}
+document.getElementById("tab-daily").addEventListener("click", () => setTab("daily"));
+document.getElementById("tab-weekly").addEventListener("click", () => setTab("weekly"));
+document.getElementById("tab-monthly").addEventListener("click", () => setTab("monthly"));
 const infoBackdrop = document.getElementById("info-backdrop");
 const infoBtn = document.getElementById("info-btn");
 function openInfo() {
