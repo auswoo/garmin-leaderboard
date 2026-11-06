@@ -34,9 +34,9 @@ window.BOARD_DATA = {
    "Nov 5",
    "Nov 6"
   ],
-  "updatedAt": "2026-11-06T20:57:42.944025Z",
-  "updatedTimePT": "12:57 PM PST",
-  "updatedLongPT": "Nov 6, 12:57 PM PST",
+  "updatedAt": "2026-11-06T21:57:37.481741Z",
+  "updatedTimePT": "1:57 PM PST",
+  "updatedLongPT": "Nov 6, 1:57 PM PST",
   "live": true
  },
  "days": [
@@ -233,7 +233,7 @@ window.BOARD_DATA = {
     7664,
     7962,
     8918,
-    407
+    2187
    ],
    "stages": [
     [
@@ -530,9 +530,9 @@ window.BOARD_DATA = {
      63
     ],
     [
-     83,
+     59,
      67,
-     7
+     31
     ]
    ],
    "stress": [
@@ -565,7 +565,7 @@ window.BOARD_DATA = {
     37,
     36,
     28,
-    16
+    21
    ],
    "maxhr": [
     104,
@@ -597,7 +597,7 @@ window.BOARD_DATA = {
     102,
     119,
     99,
-    90
+    98
    ],
    "dist": [
     null,
@@ -661,7 +661,7 @@ window.BOARD_DATA = {
     11,
     12,
     11,
-    1
+    4
    ],
    "hrload": [
     7.06,
@@ -693,7 +693,7 @@ window.BOARD_DATA = {
     6.72,
     7.63,
     6.74,
-    1.26
+    2.84
    ],
    "hrSeries": [
     [
@@ -2165,15 +2165,15 @@ window.BOARD_DATA = {
      68,
      69,
      73,
-     null,
-     null,
-     null,
-     null,
-     null,
-     null,
-     null,
-     null,
-     null,
+     73,
+     74,
+     76,
+     76,
+     74,
+     72,
+     69,
+     79,
+     79,
      null,
      null,
      null,
@@ -2262,29 +2262,29 @@ window.BOARD_DATA = {
     471
    ],
    "strainYesterday": 11,
-   "strainToday": 1,
+   "strainToday": 4,
    "hrvVsOwnYesterday": "HRV 60 vs own avg 59",
    "hrvVsOwnToday": "HRV 58 vs own avg 59",
    "weekly": {
-    "steps": 48674,
+    "steps": 50454,
     "dist": 0.0,
     "avgSleep": 81.9,
     "avgRecovery": 63,
     "avgHrv": 51.7,
-    "avgStrain": 10.1,
-    "totalStrain": 71,
+    "avgStrain": 10.6,
+    "totalStrain": 74,
     "lowRhr": 56,
     "bestRec": "Oct 31 (76)",
     "bestSleep": "Oct 31 (92)"
    },
    "monthly": {
-    "steps": 219682,
+    "steps": 221462,
     "dist": 0.0,
     "avgSleep": 85.5,
     "avgRecovery": 72,
     "avgHrv": 58.6,
-    "avgStrain": 11.0,
-    "totalStrain": 331,
+    "avgStrain": 11.1,
+    "totalStrain": 334,
     "lowRhr": 50,
     "bestRec": "Oct 14 (87)",
     "bestSleep": "Oct 22 (98)"
