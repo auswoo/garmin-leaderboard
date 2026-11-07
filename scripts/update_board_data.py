@@ -103,42 +103,6 @@ def interp_value(pts, minute):
             return v0 + (v1 - v0) * (minute - m0) / (m1 - m0)
     return pts[-1][1]
 
-def probe_bb_values(label, payload):
-    """Log Body Battery timeline density for a probe payload: record count,
-    values-array length, and first/last minute-of-day. Schema only."""
-    try:
-        if payload is None:
-            print("PROBE2 %s no response" % label, file=sys.stderr)
-            return
-        recs = payload if isinstance(payload, list) else []
-        if isinstance(payload, dict):
-            for _k in ("bodyBatteryReports", "reports", "data"):
-                if isinstance(payload.get(_k), list):
-                    recs = payload[_k]
-                    break
-        print("PROBE2 %s records=%d" % (label, len(recs)), file=sys.stderr)
-        for _rec in recs[:2]:
-            if not isinstance(_rec, dict):
-                continue
-            _arr = _rec.get("bodyBatteryValuesArray") or []
-            _mins = []
-            for _s in _arr:
-                if isinstance(_s, (list, tuple)) and len(_s) >= 1:
-                    try:
-                        _t = float(_s[0])
-                    except (TypeError, ValueError):
-                        continue
-                    _sec = _t / 1000.0 if _t > 1e12 else (_t if _t > 1e9 else _t * 60.0)
-                    _ldt = datetime.datetime.fromtimestamp(_sec, tz=PT)
-                    _mins.append(_ldt.hour * 60 + _ldt.minute)
-            _mins.sort()
-            print("PROBE2 %s values=%d first_min=%s last_min=%s" % (
-                label, len(_arr), _mins[0] if _mins else None,
-                _mins[-1] if _mins else None), file=sys.stderr)
-    except Exception as _e:
-        print("PROBE2 %s error %s" % (label, type(_e).__name__), file=sys.stderr)
-
-
 
 def day_label(date):
     return "%s %d" % (MONTHS[date.month - 1], date.day)
@@ -410,19 +374,6 @@ def fetch_person(api_key, start, end):
                     _series[_b] = int(round_half_up(_iv)) if _iv is not None else None
         _row["batterySeries"] = _series
     print("batteryseries records=%d days_with_points=%d" % (len(_bb_by_date), _bb_days_with_points), file=sys.stderr)
-
-    # PROBE v2 (Nov 6, 2026, temporary): density check. Single-day
-    # reports call + daily stress call for yesterday (a full day).
-    # Never affects the run outcome.
-    try:
-        _p_yday = (datetime.date.fromisoformat(end) - datetime.timedelta(days=1)).isoformat()
-        _single = get("/wellness-service/wellness/bodyBattery/reports/daily"
-                      "?startDate=%s&endDate=%s" % (_p_yday, _p_yday))
-        probe_bb_values("single-day", _single)
-        _stress = get("/wellness-service/wellness/dailyStress?date=%s" % _p_yday)
-        probe_bb_values("stress", _stress)
-    except Exception as _e:
-        print("PROBE2 call error %s" % type(_e).__name__, file=sys.stderr)
 
     return True, days
 
