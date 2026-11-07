@@ -152,6 +152,7 @@
     <p class="daylabel" id="daylabel">Full day</p>
     <div id="daily-boards"></div>
     <div class="board"><h2>Heart rate</h2><div id="hr-chart"></div></div>
+    <div class="board"><h2>Body Battery</h2><div id="battery-chart"></div></div>
     <div class="board"><h2>Sleep schedule</h2><div id="sleep-chart"></div></div>
   </div>
 
@@ -343,6 +344,44 @@ function renderHRChart(dayIdx) {
   });
   PEOPLE.forEach((p) => {
     const series = p.hrSeries ? p.hrSeries[dayIdx] : null;
+    if (!series) return;
+    const col = CHART_COLORS[p.name] || "#fff";
+    let seg = [];
+    let lastX = null, lastY = null;
+    const flush = () => {
+      if (seg.length > 1) svg += '<polyline points="' + seg.join(" ") + '" fill="none" stroke="' + col + '" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>';
+      seg = [];
+    };
+    series.forEach((v, i) => {
+      if (v == null) { flush(); return; }
+      const px = x(i * 30 + 15), py = y(v);
+      seg.push(px + "," + py);
+      lastX = px; lastY = py;
+    });
+    flush();
+    if (lastX != null) svg += '<text x="' + (lastX + 6) + '" y="' + (lastY + 4) + '" fill="' + col + '" font-size="12">' + p.name + '</text>';
+  });
+  svg += '</svg>';
+  el.innerHTML = svg;
+}
+function renderBatteryChart(dayIdx) {
+  const el = document.getElementById("battery-chart");
+  if (!el) return;
+  const W = 600, H = shortLandscape() ? 140 : 220, PL = 36, PR = 70, PT = 10, PB = 24;
+  const yMin = 0, yMax = 100;
+  const x = (min) => PL + (min / 1440) * (W - PL - PR);
+  const y = (v) => PT + (1 - (v - yMin) / (yMax - yMin)) * (H - PT - PB);
+  let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block">';
+  [["12am", 0], ["6am", 360], ["12pm", 720], ["6pm", 1080], ["12am", 1440]].forEach(([label, m]) => {
+    svg += '<line x1="' + x(m) + '" y1="' + PT + '" x2="' + x(m) + '" y2="' + (H - PB) + '" stroke="rgba(255,255,255,0.07)"/>';
+    svg += '<text x="' + x(m) + '" y="' + (H - 6) + '" fill="#888" font-size="11" text-anchor="middle">' + label + '</text>';
+  });
+  [0, 25, 50, 75, 100].forEach((v) => {
+    svg += '<line x1="' + PL + '" y1="' + y(v) + '" x2="' + (W - PR) + '" y2="' + y(v) + '" stroke="rgba(255,255,255,0.05)"/>';
+    svg += '<text x="' + (PL - 4) + '" y="' + (y(v) + 4) + '" fill="#888" font-size="11" text-anchor="end">' + v + '</text>';
+  });
+  PEOPLE.forEach((p) => {
+    const series = p.batterySeries ? p.batterySeries[dayIdx] : null;
     if (!series) return;
     const col = CHART_COLORS[p.name] || "#fff";
     let seg = [];
@@ -556,6 +595,7 @@ function renderDaily(dayIdx) {
     })));
 
   renderHRChart(dayIdx);
+  renderBatteryChart(dayIdx);
   renderSleepChart(dayIdx);
 }
 function renderWeekly() {
@@ -726,7 +766,7 @@ LANDSCAPE_SHORT.addEventListener("change", () => {
   lastShortLandscape = now;
   const activeTab = document.querySelector(".toggle button.active");
   const view = activeTab ? activeTab.id.replace("tab-", "") : "daily";
-  if (view === "daily") { renderHRChart(currentDay); renderSleepChart(currentDay); }
+  if (view === "daily") { renderHRChart(currentDay); renderBatteryChart(currentDay); renderSleepChart(currentDay); }
   else if (view === "weekly") renderTrendChart(currentTrend.weekly, "weekly");
   else renderTrendChart(currentTrend.monthly, "monthly");
 });
