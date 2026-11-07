@@ -302,35 +302,6 @@ def fetch_person(api_key, start, end):
         _row["hrSeries"] = [int(round_half_up(_sums[_b] / _counts[_b])) if _counts[_b] else None for _b in range(48)]
         print("hrseries %s first_min=%s last_min=%s buckets=%d" % (_date, _first_min, _last_min, sum(1 for c in _counts if c)), file=sys.stderr)
 
-    # PROBE (Nov 6, 2026, temporary): does the Personal API expose a Body
-    # Battery timeline for a Daily chart like the HR chart? Logs schema
-    # only (keys/counts, never values). Never affects the run outcome.
-    try:
-        _p_end = datetime.date.fromisoformat(end)
-        _p_start = _p_end - datetime.timedelta(days=2)
-        _bb = get("/wellness-service/wellness/bodyBattery/reports/daily"
-                  "?startDate=%s&endDate=%s" % (_p_start.isoformat(),
-                                                 _p_end.isoformat()))
-        if _bb is None:
-            print("PROBE bodyBattery no response", file=sys.stderr)
-        elif isinstance(_bb, list):
-            print("PROBE bodyBattery list len=%d" % len(_bb), file=sys.stderr)
-            for _rec in _bb[:3]:
-                if not isinstance(_rec, dict):
-                    print("PROBE bodyBattery record type=%s" % type(_rec).__name__, file=sys.stderr)
-                    continue
-                print("PROBE bodyBattery record keys=%s" % sorted(_rec.keys()), file=sys.stderr)
-                _arr = _rec.get("bodyBatteryValuesArray")
-                if isinstance(_arr, list):
-                    _entry_len = (len(_arr[0]) if _arr and isinstance(_arr[0], (list, tuple)) else None)
-                    print("PROBE bodyBattery values len=%d entry_len=%s" % (len(_arr), _entry_len), file=sys.stderr)
-        elif isinstance(_bb, dict):
-            print("PROBE bodyBattery dict keys=%s" % sorted(_bb.keys()), file=sys.stderr)
-        else:
-            print("PROBE bodyBattery type=%s" % type(_bb).__name__, file=sys.stderr)
-    except Exception as _e:
-        print("PROBE bodyBattery error %s" % type(_e).__name__, file=sys.stderr)
-
     return True, days
 
 
