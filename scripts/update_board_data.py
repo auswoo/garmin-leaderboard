@@ -29,8 +29,11 @@ Board math (must match the board's info sheet):
     day's dailyHeartRate samples, minutes between successive samples
     capped at 30.
   - Charts: hrSeries is the 30-minute average heart rate per day (48
-    buckets, local time, null when no samples); sleepStart/sleepEnd are
-    bed/wake minutes-of-day for that night, for the Daily charts.
+    buckets, local time, null when no samples); batterySeries is the
+    30-minute Body Battery level per day (48 buckets, linearly
+    interpolated between the sparse recorded points, null when a day has
+    no points); sleepStart/sleepEnd are bed/wake minutes-of-day for that
+    night, for the Daily charts.
   - Weekly aggregates use recorded days only. Weekly strain is the average
     of daily Strain (Est.) over recorded days, with the week's total also
     reported.
@@ -81,6 +84,24 @@ def round_half_up(x, ndigits=0):
     """Round half up (matches JS Math.round for non-negative values)."""
     factor = 10 ** ndigits
     return math.floor(x * factor + 0.5) / factor
+
+
+def interp_value(pts, minute):
+    """Linear interpolation of a sparse [(minute, value)] timeline at
+    `minute`, flat outside the recorded range (Body Battery is logged
+    only at change points, ~6/day, so most buckets are interpolated)."""
+    if not pts:
+        return None
+    if minute <= pts[0][0]:
+        return pts[0][1]
+    if minute >= pts[-1][0]:
+        return pts[-1][1]
+    for (m0, v0), (m1, v1) in zip(pts, pts[1:]):
+        if m0 <= minute <= m1:
+            if m1 == m0:
+                return v0
+            return v0 + (v1 - v0) * (minute - m0) / (m1 - m0)
+    return pts[-1][1]
 
 
 def day_label(date):
@@ -302,6 +323,58 @@ def fetch_person(api_key, start, end):
         _row["hrSeries"] = [int(round_half_up(_sums[_b] / _counts[_b])) if _counts[_b] else None for _b in range(48)]
         print("hrseries %s first_min=%s last_min=%s buckets=%d" % (_date, _first_min, _last_min, sum(1 for c in _counts if c)), file=sys.stderr)
 
+    # Body Battery timeline for the Daily chart (Nov 6, 2026): one range
+    # call; each day's record carries bodyBatteryValuesArray as
+    # [timestamp, value] pairs (sparse -- logged at change points,
+    # ~6/day, confirmed by probe run 42329886320). Best-effort: a failed
+    # fetch or a day with no points yields all-null buckets and never
+    # fails the run.
+    _bb = get("/wellness-service/wellness/bodyBattery/reports/daily"
+              "?startDate=%s&endDate=%s" % (start, end))
+    _bb_by_date = {}
+    _bb_records = _bb if isinstance(_bb, list) else []
+    if isinstance(_bb, dict):
+        for _k in ("bodyBatteryReports", "reports", "data"):
+            if isinstance(_bb.get(_k), list):
+                _bb_records = _bb[_k]
+                break
+    for _rec in _bb_records:
+        if isinstance(_rec, dict) and _rec.get("date"):
+            _bb_by_date[_rec["date"]] = _rec
+    _bb_days_with_points = 0
+    for _date, _row in sorted(days.items()):
+        _series = [None] * 48
+        _rec = _bb_by_date.get(_date)
+        if isinstance(_rec, dict):
+            _arr = _rec.get("bodyBatteryValuesArray") or []
+            _ts_idx, _val_idx = 0, 1
+            for _d in (_rec.get("bodyBatteryValueDescriptorDTOList") or []):
+                if isinstance(_d, dict):
+                    _key = str(_d.get("key") or "").lower()
+                    if "time" in _key or "stamp" in _key:
+                        _ts_idx = _d.get("index")
+                    elif "batter" in _key or "value" in _key:
+                        _val_idx = _d.get("index")
+            _pts = []
+            for _s in _arr:
+                if isinstance(_s, (list, tuple)) and len(_s) > max(_ts_idx, _val_idx):
+                    try:
+                        _t = float(_s[_ts_idx])
+                        _v = float(_s[_val_idx])
+                    except (TypeError, ValueError):
+                        continue
+                    _sec = _t / 1000.0 if _t > 1e12 else (_t if _t > 1e9 else _t * 60.0)
+                    _ldt = datetime.datetime.fromtimestamp(_sec, tz=PT)
+                    _pts.append((_ldt.hour * 60 + _ldt.minute, _v))
+            _pts.sort()
+            if _pts:
+                _bb_days_with_points += 1
+                for _b in range(48):
+                    _iv = interp_value(_pts, _b * 30 + 15)
+                    _series[_b] = int(round_half_up(_iv)) if _iv is not None else None
+        _row["batterySeries"] = _series
+    print("batteryseries records=%d days_with_points=%d" % (len(_bb_by_date), _bb_days_with_points), file=sys.stderr)
+
     return True, days
 
 
@@ -418,6 +491,7 @@ def compute_person(name, dates, rows):
     battery, stress, maxhr, dist = [], [], [], []
     hrload = []
     hrSeries = []
+    batterySeries = []
     sleepStart = []
     sleepEnd = []
     hrv_weekly = []
@@ -436,6 +510,7 @@ def compute_person(name, dates, rows):
         dist.append(r.get("dist"))
         hrload.append(r.get("hrLoad"))
         hrSeries.append(r.get("hrSeries"))
+        batterySeries.append(r.get("batterySeries"))
         sleepStart.append(r.get("sleepStartMin"))
         sleepEnd.append(r.get("sleepEndMin"))
 
@@ -525,6 +600,7 @@ def compute_person(name, dates, rows):
         "strain": strains,
         "hrload": hrload,
         "hrSeries": hrSeries,
+        "batterySeries": batterySeries,
         "sleepStart": sleepStart,
         "sleepEnd": sleepEnd,
         "strainYesterday": strain(len(dates) - 2),
