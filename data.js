@@ -34,9 +34,9 @@ window.BOARD_DATA = {
    "Nov 7",
    "Nov 8"
   ],
-  "updatedAt": "2026-11-08T12:57:32.987796Z",
-  "updatedTimePT": "4:57 AM PST",
-  "updatedLongPT": "Nov 8, 4:57 AM PST",
+  "updatedAt": "2026-11-08T13:57:31.156955Z",
+  "updatedTimePT": "5:57 AM PST",
+  "updatedLongPT": "Nov 8, 5:57 AM PST",
   "live": true
  },
  "days": [
@@ -7665,7 +7665,7 @@ window.BOARD_DATA = {
     8189,
     6774,
     9009,
-    2651
+    3231
    ],
    "stages": [
     [
@@ -7989,7 +7989,7 @@ window.BOARD_DATA = {
     27,
     36,
     39,
-    82
+    79
    ],
    "maxhr": [
     122,
@@ -8085,7 +8085,7 @@ window.BOARD_DATA = {
     13,
     14,
     16,
-    4
+    6
    ],
    "hrload": [
     9.42,
@@ -8117,7 +8117,7 @@ window.BOARD_DATA = {
     8.64,
     10.76,
     11.69,
-    2.2
+    3.93
    ],
    "hrSeries": [
     [
@@ -9575,14 +9575,14 @@ window.BOARD_DATA = {
      96,
      97,
      101,
-     107,
-     null,
-     null,
-     83,
+     105,
+     96,
+     91,
+     85,
      82,
-     78,
-     null,
-     null,
+     79,
+     77,
+     85,
      null,
      null,
      null,
@@ -11076,7 +11076,7 @@ window.BOARD_DATA = {
      13,
      11,
      8,
-     7,
+     6,
      5,
      5,
      5,
@@ -11188,29 +11188,29 @@ window.BOARD_DATA = {
     null
    ],
    "strainYesterday": 16,
-   "strainToday": 4,
+   "strainToday": 6,
    "hrvVsOwnYesterday": "HRV 66 vs own avg 62",
    "hrvVsOwnToday": "HRV \u2014",
    "weekly": {
-    "steps": 47341,
+    "steps": 47921,
     "dist": 0.0,
     "avgSleep": 79.7,
     "avgRecovery": 68,
     "avgHrv": 62.5,
-    "avgStrain": 11.7,
-    "totalStrain": 82,
+    "avgStrain": 12.0,
+    "totalStrain": 84,
     "lowRhr": 51,
     "bestRec": "Nov 7 (75)",
     "bestSleep": "Nov 3 (86)"
    },
    "monthly": {
-    "steps": 246969,
+    "steps": 247549,
     "dist": 0.0,
     "avgSleep": 76.8,
     "avgRecovery": 66,
     "avgHrv": 62.4,
-    "avgStrain": 13.0,
-    "totalStrain": 390,
+    "avgStrain": 13.1,
+    "totalStrain": 392,
     "lowRhr": 47,
     "bestRec": "Oct 12 (83)",
     "bestSleep": "Oct 12 (97)"
