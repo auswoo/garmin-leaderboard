@@ -142,6 +142,7 @@
     <button id="tab-daily" class="active" role="tab" aria-selected="true">Daily</button>
     <button id="tab-weekly" role="tab" aria-selected="false">Weekly</button>
     <button id="tab-monthly" role="tab" aria-selected="false">Monthly</button>
+    <button id="tab-avatars" role="tab" aria-selected="false">Avatars</button>
   </div>
 
   <div id="daily-view">
@@ -818,6 +819,7 @@ function setTab(view) {
 document.getElementById("tab-daily").addEventListener("click", () => setTab("daily"));
 document.getElementById("tab-weekly").addEventListener("click", () => setTab("weekly"));
 document.getElementById("tab-monthly").addEventListener("click", () => setTab("monthly"));
+document.getElementById("tab-avatars").addEventListener("click", () => { location.href = "avatars.html"; });
 const infoBackdrop = document.getElementById("info-backdrop");
 const infoBtn = document.getElementById("info-btn");
 function openInfo() {
