@@ -125,15 +125,6 @@
     .sprite { transition: none !important; }
     .zzz { animation: none !important; opacity: 0.55; }
   }
-  .cards { margin-top: 16px; }
-  .card { padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.10); }
-  .card:last-child { border-bottom: none; }
-  .card-head { display: flex; align-items: baseline; gap: 10px; }
-  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; align-self: center; }
-  .card-name { font-size: 17px; font-weight: 600; }
-  .card-state { font-size: 15px; color: #ccc; margin-left: auto; text-align: right; }
-  .card-nums { font-size: 13px; color: #888; margin-top: 6px; }
-  .card-stale { font-size: 12px; color: #666; margin-top: 4px; }
   @media (orientation: landscape) and (max-height: 500px) {
     .sprite-row { height: 160px; }
     .wrap { max-width: 960px; padding: 16px 24px 32px; padding-top: calc(16px + env(safe-area-inset-top)); padding-left: calc(24px + env(safe-area-inset-left)); padding-right: calc(24px + env(safe-area-inset-right)); }
@@ -189,14 +180,13 @@
     <div class="board"><h2>Heart rate</h2><div id="hr-chart"></div></div>
     <div class="board"><h2>Body Battery</h2><div id="battery-chart"></div></div>
     <div class="board"><h2>Sleep schedule</h2><div id="sleep-chart"></div></div>
-    <div class="board" id="body-battery-board"><h2>Body Battery</h2>
+    <div class="board" id="body-battery-board"><h2>Current Body Battery</h2>
       <div class="stage" id="stage">
         <div class="sprite-row" id="sprite-row"></div>
         <div class="ground"></div>
         <div class="label-row" id="label-row"></div>
       </div>
       <p class="bb-legend">75+ Locked in &middot; 40&ndash;74 Steady &middot; 15&ndash;39 Drained &middot; under 15 Wiped out</p>
-      <div class="cards" id="avatars-cards"></div>
     </div>
   </div>
 
@@ -814,15 +804,6 @@ function avatarLatest(arr, idx) {
   }
   return { value: null, day: null };
 }
-function avatarStaleLine(sl, rc) {
-  const sDate = (sl.value !== null && sl.day !== null && sl.day !== LAST) ? DAYS[sl.day] : null;
-  const rDate = (rc.value !== null && rc.day !== null && rc.day !== LAST) ? DAYS[rc.day] : null;
-  if (sDate && rDate && sDate === rDate) return "Sleep and recovery from " + sDate;
-  if (sDate && rDate) return "Sleep from " + sDate + " · Recovery from " + rDate;
-  if (sDate) return "Sleep from " + sDate;
-  if (rDate) return "Recovery from " + rDate;
-  return "";
-}
 function avatarPlaceZzz(col, img) {
   const zzz = col._zzz;
   if (!zzz || !img.naturalWidth) return;
@@ -841,23 +822,19 @@ function repositionAvatarsZzz() {
 function renderAvatars() {
   const spriteRow = document.getElementById("sprite-row");
   const labelRow = document.getElementById("label-row");
-  const cards = document.getElementById("avatars-cards");
-  if (!spriteRow || !labelRow || !cards) return;
+  if (!spriteRow || !labelRow) return;
   spriteRow.innerHTML = "";
   labelRow.innerHTML = "";
-  cards.innerHTML = "";
   avatarCols.length = 0;
   PEOPLE.forEach((p) => {
     const bb = avatarLatest((p.battery || []).map((b) => b ? b[0] : null), LAST);
-    const sl = avatarLatest(p.sleep || [], LAST);
-    const rc = avatarLatest(p.recovery || [], LAST);
-    const battery = bb.value, sleep = sl.value, recovery = rc.value;
-    let state, key;
-    if (battery === null) { state = "No data yet"; key = "steady"; }
-    else if (battery < 15) { state = "Wiped out"; key = "wiped"; }
-    else if (battery >= 75) { state = "Locked in"; key = "locked"; }
-    else if (battery >= 40) { state = "Steady"; key = "steady"; }
-    else { state = "Drained"; key = "drained"; }
+    const battery = bb.value;
+    let key;
+    if (battery === null) { key = "steady"; }
+    else if (battery < 15) { key = "wiped"; }
+    else if (battery >= 75) { key = "locked"; }
+    else if (battery >= 40) { key = "steady"; }
+    else { key = "drained"; }
     const color = CHART_COLORS[p.name] || "#888";
     const col = document.createElement("div");
     col.className = "col";
@@ -896,17 +873,6 @@ function renderAvatars() {
       + '<span class="batt">' + show(battery) + '%</span>'
       + '<span class="battbar"><span class="battfill" style="width:' + battPct + '%;background:' + color + '"></span></span>';
     labelRow.appendChild(label);
-    const stale = avatarStaleLine(sl, rc);
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerHTML = '<div class="card-head"><span class="dot" style="background:' + color + '"></span>'
-      + '<span class="card-name">' + p.name + '</span>'
-      + '<span class="card-state">' + state + '</span></div>'
-      + '<div class="card-nums">Battery ' + show(battery)
-      + ' · Sleep ' + show(sleep)
-      + ' · Recovery ' + show(recovery) + '</div>'
-      + (stale ? '<div class="card-stale">' + stale + '</div>' : '');
-    cards.appendChild(card);
     const sprites = AVATAR_SPRITES[p.name];
     if (sprites) {
       const cur = imgA.classList.contains("on") ? imgA : imgB;
