@@ -36,6 +36,7 @@
   .walker.down { height: 42%; animation: none; }
   .walker.down .bob { animation: none; }
   .walker.down .walker-inner { transform: rotate(90deg) translateX(-50%); transform-origin: 50% 100%; }
+  .walker.down-left .walker-inner { transform: rotate(-90deg) translateX(50%); }
   .walker.down .walker-inner .zzz { display: block; }
   .walker.still { animation: none; }
   .walker.still .bob { animation: none; }
@@ -115,7 +116,7 @@
 
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  BOARD.people.forEach(function (p) {
+  BOARD.people.forEach(function (p, pi) {
     var bb = latest((p.battery || []).map(function (b) { return b ? b[0] : null; }), LAST);
     var sl = latest(p.sleep || [], LAST);
     var rc = latest(p.recovery || [], LAST);
@@ -142,7 +143,8 @@
 
     if (CHARS[p.name]) {
       var walker = document.createElement("div");
-      walker.className = "walker" + (down ? " down" : (speed === 0 ? " still" : ""));
+      var downClass = down ? " down" + (pi === BOARD.people.length - 1 ? " down-left" : "") : (speed === 0 ? " still" : "");
+      walker.className = "walker" + downClass;
       var bob = document.createElement("div");
       bob.className = "bob";
       var inner = document.createElement("div");
