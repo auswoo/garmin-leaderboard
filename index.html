@@ -102,12 +102,11 @@
   .a2hs-close { background: none; border: none; color: #888; font-size: 20px; line-height: 1; cursor: pointer; flex-shrink: 0; padding: 2px 4px; }
   .a2hs-install { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); border-radius: 999px; color: #fff; font-size: 14px; padding: 7px 14px; cursor: pointer; flex-shrink: 0; }
   /* Avatars stage shown in the Daily tab */
-  .stage { position: relative; margin-top: 12px; border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; overflow: hidden; background: #000; }
+  .stage { position: relative; margin-top: 12px; border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; overflow: hidden; background: #000; padding-top: 32px; }
   .sprite-row { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); height: 192px; }
   .col { position: relative; }
-  .glow { position: absolute; left: 50%; top: 50%; width: 170px; height: 230px; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none; }
   .sprite-wrap { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
-  .sprite { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; opacity: 0; transition: opacity 0.3s ease; }
+  .sprite { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; object-position: center bottom; opacity: 0; transition: opacity 0.3s ease; background: #000; }
   .sprite.on { opacity: 1; }
   .shadow { position: absolute; left: 50%; bottom: 1px; width: 110px; height: 12px; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(ellipse at center, rgba(255,255,255,0.08), rgba(255,255,255,0) 70%); pointer-events: none; }
   .zzz { display: none; position: absolute; left: 50%; transform: translateX(-50%); font-size: 13px; letter-spacing: 2px; color: #999; white-space: nowrap; pointer-events: none; animation: zzzUp 2.8s ease-in-out infinite; }
@@ -120,7 +119,7 @@
   .label .batt { font-size: 13px; color: #888; margin-top: 2px; }
   .battbar { display: block; width: 64px; height: 4px; border-radius: 999px; background: rgba(255,255,255,0.12); margin-top: 5px; overflow: hidden; }
   .battfill { display: block; height: 100%; border-radius: 999px; }
-  .bb-legend { font-size: 12px; color: #666; margin-top: 12px; }
+  .bb-legend { font-size: 12px; color: #666; margin-top: 12px; white-space: nowrap; }
   @media (prefers-reduced-motion: reduce) {
     .sprite { transition: none !important; }
     .zzz { animation: none !important; opacity: 0.55; }
@@ -179,15 +178,15 @@
     <div id="daily-boards"></div>
     <div class="board"><h2>Heart rate</h2><div id="hr-chart"></div></div>
     <div class="board"><h2>Body Battery</h2><div id="battery-chart"></div></div>
-    <div class="board"><h2>Sleep schedule</h2><div id="sleep-chart"></div></div>
-    <div class="board" id="body-battery-board"><h2>Current Body Battery</h2>
+    <div class="board" id="body-battery-board"><h2>Right Now</h2>
       <div class="stage" id="stage">
         <div class="sprite-row" id="sprite-row"></div>
         <div class="ground"></div>
         <div class="label-row" id="label-row"></div>
       </div>
-      <p class="bb-legend">75+ Locked in &middot; 40&ndash;74 Steady &middot; 15&ndash;39 Drained &middot; under 15 Wiped out</p>
+      <p class="bb-legend">75+ Locked in &middot; 40&ndash;74 Steady &middot; 15&ndash;39 Drained &middot; &lt;15 Wiped out</p>
     </div>
+    <div class="board"><h2>Sleep schedule</h2><div id="sleep-chart"></div></div>
   </div>
 
   <div id="weekly-view" class="hidden">
@@ -354,6 +353,28 @@ function fmtClock(min) {
   const hh = h % 12 === 0 ? 12 : h % 12;
   return hh + (m ? ":" + String(m).padStart(2, "0") : "") + ap;
 }
+function placeEndLabels(items, H, withDot) {
+  // items: [{name, col, x, py}] — py is the last point's y; label baseline starts at py+4.
+  // Nudges labels apart so none overlap (min 14px between baselines), like the trend chart.
+  const GAP = 14;
+  const sorted = items.slice().sort((a, b) => a.py - b.py);
+  sorted.forEach((it) => { it.ly = it.py + 4; });
+  for (let i = 1; i < sorted.length; i++) {
+    if (sorted[i].ly - sorted[i - 1].ly < GAP) sorted[i].ly = sorted[i - 1].ly + GAP;
+  }
+  if (sorted.length) {
+    const over = sorted[sorted.length - 1].ly - (H - 6);
+    if (over > 0) sorted.forEach((l) => { l.ly -= over; });
+    sorted.forEach((l) => { l.ly = Math.max(12, Math.min(H - 6, l.ly)); });
+  }
+  let out = "";
+  sorted.forEach((l) => {
+    if (withDot) out += '<circle cx="' + l.x + '" cy="' + l.py + '" r="4" fill="' + l.col + '" stroke="#000" stroke-width="1"/>';
+    if (l.ly !== l.py + 4) out += '<line x1="' + (l.x + 4) + '" y1="' + l.py + '" x2="' + (l.x + 6) + '" y2="' + (l.ly - 4) + '" stroke="' + l.col + '" stroke-opacity="0.5" stroke-width="1"/>';
+    out += '<text x="' + (l.x + 6) + '" y="' + l.ly + '" fill="' + l.col + '" font-size="12">' + l.name + '</text>';
+  });
+  return out;
+}
 function renderHRChart(dayIdx) {
   const el = document.getElementById("hr-chart");
   if (!el) return;
@@ -376,6 +397,7 @@ function renderHRChart(dayIdx) {
     const col = CHART_COLORS[p.name] || "#fff";
     svg += '<line x1="' + PL + '" y1="' + y(r) + '" x2="' + (W - PR) + '" y2="' + y(r) + '" stroke="' + col + '" stroke-opacity="0.35" stroke-dasharray="4 4" stroke-width="1"/>';
   });
+  const hrLabels = [];
   PEOPLE.forEach((p) => {
     const series = p.hrSeries ? p.hrSeries[dayIdx] : null;
     if (!series) return;
@@ -393,8 +415,9 @@ function renderHRChart(dayIdx) {
       lastX = px; lastY = py;
     });
     flush();
-    if (lastX != null) svg += '<text x="' + (lastX + 6) + '" y="' + (lastY + 4) + '" fill="' + col + '" font-size="12">' + p.name + '</text>';
+    if (lastX != null) hrLabels.push({ name: p.name, col: col, x: lastX, py: lastY });
   });
+  svg += placeEndLabels(hrLabels, H, false);
   svg += '</svg>';
   el.innerHTML = svg;
 }
@@ -414,6 +437,7 @@ function renderBatteryChart(dayIdx) {
     svg += '<line x1="' + PL + '" y1="' + y(v) + '" x2="' + (W - PR) + '" y2="' + y(v) + '" stroke="rgba(255,255,255,0.05)"/>';
     svg += '<text x="' + (PL - 4) + '" y="' + (y(v) + 4) + '" fill="#888" font-size="11" text-anchor="end">' + v + '</text>';
   });
+  const battLabels = [];
   PEOPLE.forEach((p) => {
     const series = p.batterySeries ? p.batterySeries[dayIdx] : null;
     if (!series) return;
@@ -431,8 +455,9 @@ function renderBatteryChart(dayIdx) {
       lastX = px; lastY = py;
     });
     flush();
-    if (lastX != null) svg += '<text x="' + (lastX + 6) + '" y="' + (lastY + 4) + '" fill="' + col + '" font-size="12">' + p.name + '</text>';
+    if (lastX != null) battLabels.push({ name: p.name, col: col, x: lastX, py: lastY });
   });
+  svg += placeEndLabels(battLabels, H, true);
   svg += '</svg>';
   el.innerHTML = svg;
 }
@@ -443,32 +468,42 @@ function renderSleepChart(dayIdx) {
   const H = PT + PEOPLE.length * rowH + PB;
   const axisStart = 1080;
   const mapMin = (m) => (m >= axisStart ? m - axisStart : m + 360);
-  const x = (v) => PL + (v / 1080) * (W - PL - PR);
+  // X-range fits the nights actually shown: earliest bedtime - 1h to latest wake + 1h.
+  let winStart = 0, winEnd = 1080;
+  const spans = [];
+  PEOPLE.forEach((p) => {
+    const ss = p.sleepStart ? p.sleepStart[dayIdx] : null;
+    const se = p.sleepEnd ? p.sleepEnd[dayIdx] : null;
+    if (ss == null || se == null) { spans.push(null); return; }
+    let s = mapMin(ss), e = mapMin(se);
+    if (e <= s) e += 1080;
+    spans.push([s, e]);
+  });
+  const have = spans.filter((s) => s);
+  if (have.length) {
+    winStart = Math.min(...have.map((s) => s[0])) - 60;
+    winEnd = Math.max(...have.map((s) => s[1])) + 60;
+  }
+  const range = winEnd - winStart;
+  const x = (v) => PL + ((v - winStart) / range) * (W - PL - PR);
   let svg = '<svg viewBox="0 0 ' + W + ' ' + H + '" style="width:100%;height:auto;display:block">';
-  [0, 180, 360, 540, 720, 900, 1080].forEach((v) => {
+  for (let v = Math.ceil(winStart / 180) * 180; v <= winEnd; v += 180) {
     const m = (axisStart + v) % 1440;
     svg += '<line x1="' + x(v) + '" y1="' + PT + '" x2="' + x(v) + '" y2="' + (PT + PEOPLE.length * rowH) + '" stroke="rgba(255,255,255,0.07)"/>';
     svg += '<text x="' + x(v) + '" y="' + (H - 6) + '" fill="#888" font-size="11" text-anchor="middle">' + fmtClock(m) + '</text>';
-  });
+  }
   PEOPLE.forEach((p, idx) => {
     const yTop = PT + idx * rowH + 8;
     const ss = p.sleepStart ? p.sleepStart[dayIdx] : null;
     const se = p.sleepEnd ? p.sleepEnd[dayIdx] : null;
     const col = CHART_COLORS[p.name] || "#fff";
     if (ss == null || se == null) {
-      svg += '<text x="' + PL + '" y="' + (yTop + 14) + '" fill="#888" font-size="12">' + p.name + ' \u2014</text>';
+      svg += '<text x="' + PL + '" y="' + (yTop + 14) + '" font-size="12"><tspan fill="' + col + '">' + p.name + '</tspan><tspan fill="#888"> \u00b7 no sleep data yet</tspan></text>';
       return;
     }
-    const sx = mapMin(ss), ex = mapMin(se);
-    let endX;
-    if (ex > sx) {
-      svg += '<rect x="' + x(sx) + '" y="' + yTop + '" width="' + (x(ex) - x(sx)) + '" height="20" rx="10" fill="' + col + '" opacity="0.85"/>';
-      endX = x(ex);
-    } else {
-      svg += '<rect x="' + x(sx) + '" y="' + yTop + '" width="' + (x(1080) - x(sx)) + '" height="20" rx="10" fill="' + col + '" opacity="0.85"/>';
-      svg += '<rect x="' + x(0) + '" y="' + yTop + '" width="' + (x(ex) - x(0)) + '" height="20" rx="10" fill="' + col + '" opacity="0.85"/>';
-      endX = x(1080);
-    }
+    const span = spans[idx];
+    svg += '<rect x="' + x(span[0]) + '" y="' + yTop + '" width="' + (x(span[1]) - x(span[0])) + '" height="20" rx="10" fill="' + col + '" opacity="0.85"/>';
+    const endX = x(span[1]);
     svg += '<text x="' + (endX + 8) + '" y="' + (yTop + 14) + '" font-size="12"><tspan fill="' + col + '">' + p.name + '</tspan><tspan fill="#888"> ' + fmtClock(ss) + ' \u2013 ' + fmtClock(se) + '</tspan></text>';
   });
   svg += '</svg>';
@@ -839,10 +874,6 @@ function renderAvatars() {
     const col = document.createElement("div");
     col.className = "col";
     col._key = key;
-    const glow = document.createElement("div");
-    glow.className = "glow";
-    glow.style.background = "radial-gradient(ellipse at center, " + color + "1A 0%, rgba(0,0,0,0) 70%)";
-    col.appendChild(glow);
     const wrap = document.createElement("div");
     wrap.className = "sprite-wrap";
     const imgA = document.createElement("img");
