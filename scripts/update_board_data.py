@@ -31,9 +31,9 @@ Board math (must match the board's info sheet):
   - Charts: hrSeries is the 30-minute average heart rate per day (48
     buckets, local time, null when no samples); batterySeries is the
     30-minute Body Battery level per day (48 buckets, linearly
-    interpolated between the sparse recorded points, null when a day has
-    no points); sleepStart/sleepEnd are bed/wake minutes-of-day for that
-    night, for the Daily charts.
+    interpolated between the sparse recorded points, null outside the
+    recorded range); sleepStart/sleepEnd are bed/wake minutes-of-day
+    for that night, for the Daily charts.
   - Weekly aggregates use recorded days only. Weekly strain is the average
     of daily Strain (Est.) over recorded days, with the week's total also
     reported.
@@ -88,14 +88,14 @@ def round_half_up(x, ndigits=0):
 
 def interp_value(pts, minute):
     """Linear interpolation of a sparse [(minute, value)] timeline at
-    `minute`, flat outside the recorded range (Body Battery is logged
-    only at change points, ~6/day, so most buckets are interpolated)."""
+    `minute`; None outside the recorded range, so the chart ends at the
+    last logged point instead of holding it flat to midnight (Body
+    Battery is logged only at change points, ~6/day, so most buckets
+    are interpolated)."""
     if not pts:
         return None
-    if minute <= pts[0][0]:
-        return pts[0][1]
-    if minute >= pts[-1][0]:
-        return pts[-1][1]
+    if minute < pts[0][0] or minute > pts[-1][0]:
+        return None
     for (m0, v0), (m1, v1) in zip(pts, pts[1:]):
         if m0 <= minute <= m1:
             if m1 == m0:
