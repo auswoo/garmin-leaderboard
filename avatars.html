@@ -35,7 +35,7 @@
   .walker-inner .zzz { display: none; position: absolute; top: -6px; right: -8px; font-size: 16px; color: #fff; letter-spacing: 1px; text-shadow: 0 1px 4px rgba(0,0,0,0.6); animation: zzz 2.4s ease-in-out infinite; }
   .walker.down { height: 42%; animation: none; }
   .walker.down .bob { animation: none; }
-  .walker.down .walker-inner { transform: rotate(90deg); transform-origin: 50% 100%; }
+  .walker.down .walker-inner { transform: rotate(90deg) translateX(-50%); transform-origin: 50% 100%; }
   .walker.down .walker-inner .zzz { display: block; }
   .walker.still { animation: none; }
   .walker.still .bob { animation: none; }
@@ -163,12 +163,12 @@
       tag.textContent = p.name;
       walker.appendChild(tag);
       if (speed > 0 && !reduced) {
-        var bobSecs = Math.min(2.0, 0.5 / speed);
-        var swaySecs = Math.min(3.0, 1.0 / speed);
+        var bobSecs = Math.min(1.4, 0.35 / speed);
+        var swaySecs = Math.min(2.2, 0.7 / speed);
         walker.style.animationDuration = swaySecs + "s";
         bob.style.animationDuration = bobSecs + "s";
-        walker.style.setProperty("--sway", (3 + 7 * speed).toFixed(1) + "px");
-        bob.style.setProperty("--bob", (3 + 9 * speed).toFixed(1) + "px");
+        walker.style.setProperty("--sway", (8 + 32 * speed).toFixed(1) + "px");
+        bob.style.setProperty("--bob", (5 + 15 * speed).toFixed(1) + "px");
       } else {
         walker.classList.add("still");
       }
