@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Descendants">
+<meta name="theme-color" content="#000000">
+<title>Avatars · Descendants of the Great Great Grandma</title>
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" type="image/png" href="icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #000; color: #e8e8e8; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 28px 20px 48px; padding-top: calc(28px + env(safe-area-inset-top)); }
+  h1 { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; }
+  .sub { color: #888; font-size: 13px; margin-top: 6px; }
+  .head { display: flex; align-items: center; justify-content: space-between; }
+  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: #888; margin: 0 0 6px; white-space: nowrap; }
+  @media (max-width: 400px) { .eyebrow { letter-spacing: 0.08em; } }
+  .backlink { background: none; border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; color: #aaa; font-size: 13px; padding: 6px 12px; cursor: pointer; text-decoration: none; flex-shrink: 0; }
+  .top-scrim { position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top, 0px); background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100; }
+  .scene { position: relative; margin-top: 26px; border-top: 1px solid rgba(255,255,255,0.14); border-bottom: 1px solid rgba(255,255,255,0.14); overflow: hidden; }
+  .lane { position: relative; height: 110px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+  .lane:last-child { border-bottom: none; }
+  .walker { position: absolute; top: 50%; left: 6px; transform: translateY(-50%); width: 84px; text-align: center; animation: walk linear infinite alternate; }
+  .walker-inner { display: inline-block; transition: transform 0.4s ease; }
+  .walker img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; display: block; margin: 0 auto; border: 2px solid var(--person-color, #888); animation: bob ease-in-out infinite alternate; }
+  .walker .walker-name { font-size: 13px; color: #ddd; margin-top: 6px; }
+  .walker .zzz { display: none; position: absolute; top: -8px; right: 2px; font-size: 15px; color: #888; letter-spacing: 1px; animation: zzz 2.4s ease-in-out infinite; }
+  .walker.down { animation: none; }
+  .walker.down .walker-inner { transform: rotate(90deg); }
+  .walker.down img { animation: none; }
+  .walker.down .zzz { display: block; }
+  .walker.still { animation: none; }
+  .walker.still img { animation: none; }
+  @keyframes walk { from { left: 6px; } to { left: calc(100% - 90px); } }
+  @keyframes bob { from { transform: translateY(0); } to { transform: translateY(calc(-1 * var(--bob, 6px))); } }
+  @keyframes zzz { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) {
+    .walker, .walker img, .walker .zzz { animation: none !important; }
+  }
+  .cards { margin-top: 26px; }
+  .card { padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.10); }
+  .card:last-child { border-bottom: none; }
+  .card-head { display: flex; align-items: baseline; gap: 10px; }
+  .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; align-self: center; }
+  .card-name { font-size: 17px; font-weight: 600; }
+  .card-state { font-size: 15px; color: #ccc; margin-left: auto; text-align: right; }
+  .card-nums { font-size: 13px; color: #888; margin-top: 6px; }
+  .how { margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.14); padding-top: 16px; }
+  .how p { font-size: 12px; color: #666; line-height: 1.5; margin-bottom: 8px; }
+  @media (orientation: landscape) and (max-height: 500px) {
+    .wrap { max-width: 960px; padding: 16px 24px 32px; padding-top: calc(16px + env(safe-area-inset-top)); }
+    .lane { height: 92px; }
+  }
+</style>
+</head>
+<body>
+<div class="top-scrim"></div>
+<div class="wrap">
+  <p class="eyebrow">Descendants of the Great Great Grandma</p>
+  <div class="head">
+    <h1>Avatars</h1>
+    <a class="backlink" href="index.html">&lsaquo; Leaderboard</a>
+  </div>
+  <p class="sub" id="sub-line"></p>
+
+  <div class="scene" id="scene"></div>
+  <div class="cards" id="cards"></div>
+
+  <div class="how">
+    <p>Pace and posture follow today's Body Battery: 75&ndash;100 is locked in and fast, 40&ndash;74 a steady stroll, 15&ndash;39 slow and slouched, under 15 lying down. A short night (sleep under 65) or low recovery (under 60) slows things down further.</p>
+    <p>Sleep and recovery shown are the latest recorded — usually last night — since they often haven't synced yet in the morning. Body Battery is today's latest value.</p>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+(function () {
+  var BOARD = window.BOARD_DATA;
+  var scene = document.getElementById("scene");
+  var cards = document.getElementById("cards");
+  if (!BOARD || !BOARD.people) {
+    document.getElementById("sub-line").textContent = "No data yet — check back after the next refresh.";
+    return;
+  }
+  var DAYS = BOARD.days;
+  var LAST = DAYS.length - 1;
+  var META = BOARD.meta;
+  document.getElementById("sub-line").textContent = DAYS[0] + "–" + DAYS[LAST] + ", " + META.endDate.slice(0, 4) + " · Updated " + META.updatedLongPT;
+
+  var AVATARS = { "Ethan": "assets/ethan.jpg", "Austin": "assets/austin.jpg", "Jordan": "assets/jordan.jpg" };
+  var COLORS = { "Austin": "#5aa2ff", "Jordan": "#ff8a5c", "Ethan": "#a78bfa" };
+  var show = function (v) { return (v === null || v === undefined ? "—" : v); };
+  var num = function (v, day) { return show(v) + (v !== null && v !== undefined && day !== LAST ? " · " + DAYS[day] : ""); };
+
+  // Latest recorded value of an array, scanning back from today.
+  function latest(arr, idx) {
+    for (var i = idx; i >= 0; i--) {
+      var v = arr[i];
+      if (v !== null && v !== undefined) return { value: v, day: i };
+    }
+    return { value: null, day: null };
+  }
+
+  BOARD.people.forEach(function (p) {
+    var bb = latest((p.battery || []).map(function (b) { return b ? b[0] : null; }), LAST);
+    var sl = latest(p.sleep || [], LAST);
+    var rc = latest(p.recovery || [], LAST);
+    var battery = bb.value, sleep = sl.value, recovery = rc.value;
+
+    var state, tilt, speed;
+    if (battery === null) {
+      state = "No data yet"; tilt = 0; speed = 0;
+    } else if (battery < 15) {
+      state = "Wiped out"; tilt = 0; speed = 0;
+    } else {
+      speed = battery / 100;
+      if (sleep !== null && sleep < 65) speed *= 0.7;
+      if (recovery !== null && recovery < 60) speed *= 0.85;
+      speed = Math.max(0.05, Math.min(1, speed));
+      if (battery >= 75) { state = "Locked in"; tilt = 0; }
+      else if (battery >= 40) { state = "Steady"; tilt = -5; }
+      else { state = "Running low"; tilt = -13; }
+    }
+
+    var lane = document.createElement("div");
+    lane.className = "lane";
+    var walker = document.createElement("div");
+    walker.className = "walker";
+    walker.style.setProperty("--person-color", COLORS[p.name] || "#888");
+    var inner = document.createElement("div");
+    inner.className = "walker-inner";
+    if (tilt) inner.style.transform = "rotate(" + tilt + "deg)";
+    var img = document.createElement("img");
+    img.src = AVATARS[p.name] || "";
+    img.alt = p.name;
+    if (speed > 0) {
+      var walkSecs = Math.min(60, 12 / speed);
+      var bobSecs = Math.min(2.5, 0.6 / speed);
+      walker.style.animationDuration = walkSecs + "s";
+      img.style.animationDuration = bobSecs + "s";
+      img.style.setProperty("--bob", (3 + 5 * speed).toFixed(1) + "px");
+    } else {
+      walker.classList.add(battery === null ? "still" : "down");
+    }
+    var zzz = document.createElement("span");
+    zzz.className = "zzz";
+    zzz.textContent = "Zzz";
+    inner.appendChild(img);
+    var nm = document.createElement("div");
+    nm.className = "walker-name";
+    nm.textContent = p.name;
+    walker.appendChild(inner);
+    walker.appendChild(zzz);
+    walker.appendChild(nm);
+    lane.appendChild(walker);
+    scene.appendChild(lane);
+
+    var card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML = '<div class="card-head"><span class="dot" style="background:' + (COLORS[p.name] || "#888") + '"></span>'
+      + '<span class="card-name">' + p.name + '</span>'
+      + '<span class="card-state">' + state + '</span></div>'
+      + '<div class="card-nums">Battery ' + num(battery, bb.day)
+      + ' · Sleep ' + num(sleep, sl.day)
+      + ' · Recovery ' + num(recovery, rc.day) + '</div>';
+    cards.appendChild(card);
+  });
+})();
+</script>
+</body>
+</html>
