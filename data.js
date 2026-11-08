@@ -34,9 +34,9 @@ window.BOARD_DATA = {
    "Nov 7",
    "Nov 8"
   ],
-  "updatedAt": "2026-11-08T19:57:33.799635Z",
-  "updatedTimePT": "11:57 AM PST",
-  "updatedLongPT": "Nov 8, 11:57 AM PST",
+  "updatedAt": "2026-11-08T20:57:40.236565Z",
+  "updatedTimePT": "12:57 PM PST",
+  "updatedLongPT": "Nov 8, 12:57 PM PST",
   "live": true
  },
  "days": [
@@ -233,7 +233,7 @@ window.BOARD_DATA = {
     8918,
     7255,
     8320,
-    65
+    739
    ],
    "stages": [
     [
@@ -530,9 +530,9 @@ window.BOARD_DATA = {
      38
     ],
     [
-     98,
+     83,
      84,
-     2
+     17
     ]
    ],
    "stress": [
@@ -565,7 +565,7 @@ window.BOARD_DATA = {
     28,
     33,
     42,
-    10
+    14
    ],
    "maxhr": [
     161,
@@ -597,7 +597,7 @@ window.BOARD_DATA = {
     99,
     105,
     126,
-    76
+    86
    ],
    "dist": [
     null,
@@ -661,7 +661,7 @@ window.BOARD_DATA = {
     11,
     12,
     13,
-    1
+    2
    ],
    "hrload": [
     7.18,
@@ -693,7 +693,7 @@ window.BOARD_DATA = {
     6.74,
     7.93,
     8.95,
-    0.99
+    1.89
    ],
    "hrSeries": [
     [
@@ -2166,13 +2166,13 @@ window.BOARD_DATA = {
      55,
      60,
      66,
-     67,
-     null,
-     null,
-     null,
-     null,
-     null,
-     null,
+     69,
+     69,
+     68,
+     68,
+     74,
+     71,
+     63,
      null,
      null,
      null,
@@ -2199,8 +2199,8 @@ window.BOARD_DATA = {
    ],
    "batterySeries": [
     [
-     13,
-     13,
+     null,
+     null,
      17,
      21,
      26,
@@ -2245,8 +2245,8 @@ window.BOARD_DATA = {
      31,
      29,
      28,
-     27,
-     27
+     null,
+     null
     ],
     [
      29,
@@ -2296,7 +2296,7 @@ window.BOARD_DATA = {
      38,
      36,
      34,
-     33
+     null
     ],
     [
      37,
@@ -2346,7 +2346,7 @@ window.BOARD_DATA = {
      30,
      28,
      27,
-     26
+     null
     ],
     [
      31,
@@ -2395,8 +2395,8 @@ window.BOARD_DATA = {
      28,
      26,
      24,
-     22,
-     22
+     null,
+     null
     ],
     [
      25,
@@ -2445,8 +2445,8 @@ window.BOARD_DATA = {
      29,
      27,
      25,
-     25,
-     25
+     null,
+     null
     ],
     [
      39,
@@ -2499,8 +2499,8 @@ window.BOARD_DATA = {
      19
     ],
     [
-     15,
-     15,
+     null,
+     null,
      16,
      21,
      26,
@@ -2549,7 +2549,7 @@ window.BOARD_DATA = {
      26
     ],
     [
-     24,
+     null,
      26,
      31,
      35,
@@ -2599,9 +2599,9 @@ window.BOARD_DATA = {
      19
     ],
     [
-     17,
-     17,
-     17,
+     null,
+     null,
+     null,
      20,
      24,
      29,
@@ -2643,10 +2643,10 @@ window.BOARD_DATA = {
      26,
      25,
      23,
-     23,
-     23,
-     23,
-     23
+     null,
+     null,
+     null,
+     null
     ],
     [
      42,
@@ -2695,8 +2695,8 @@ window.BOARD_DATA = {
      30,
      28,
      26,
-     26,
-     26
+     null,
+     null
     ],
     [
      33,
@@ -2746,7 +2746,7 @@ window.BOARD_DATA = {
      29,
      27,
      25,
-     24
+     null
     ],
     [
      27,
@@ -2796,7 +2796,7 @@ window.BOARD_DATA = {
      29,
      28,
      26,
-     25
+     null
     ],
     [
      28,
@@ -2844,9 +2844,9 @@ window.BOARD_DATA = {
      19,
      16,
      14,
-     13,
-     13,
-     13
+     null,
+     null,
+     null
     ],
     [
      19,
@@ -2899,7 +2899,7 @@ window.BOARD_DATA = {
      25
     ],
     [
-     24,
+     null,
      27,
      31,
      35,
@@ -2946,10 +2946,10 @@ window.BOARD_DATA = {
      20,
      18,
      16,
-     15
+     null
     ],
     [
-     14,
+     null,
      17,
      21,
      26,
@@ -2995,8 +2995,8 @@ window.BOARD_DATA = {
      29,
      27,
      25,
-     24,
-     24
+     null,
+     null
     ],
     [
      24,
@@ -3043,10 +3043,10 @@ window.BOARD_DATA = {
      14,
      13,
      11,
-     10,
-     10,
-     10,
-     10
+     null,
+     null,
+     null,
+     null
     ],
     [
      18,
@@ -3093,48 +3093,48 @@ window.BOARD_DATA = {
      28,
      26,
      25,
-     25,
-     25,
-     25,
-     25
+     null,
+     null,
+     null,
+     null
     ],
     [
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
-     42,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
      40,
      38,
      36,
@@ -3195,8 +3195,8 @@ window.BOARD_DATA = {
      21,
      19,
      18,
-     17,
-     17
+     null,
+     null
     ],
     [
      23,
@@ -3246,7 +3246,7 @@ window.BOARD_DATA = {
      28,
      26,
      24,
-     23
+     null
     ],
     [
      27,
@@ -3299,10 +3299,10 @@ window.BOARD_DATA = {
      20
     ],
     [
-     11,
-     11,
-     11,
-     11,
+     null,
+     null,
+     null,
+     null,
      13,
      16,
      19,
@@ -3346,7 +3346,7 @@ window.BOARD_DATA = {
      10,
      9,
      7,
-     7
+     null
     ],
     [
      8,
@@ -3388,15 +3388,15 @@ window.BOARD_DATA = {
      7,
      6,
      5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
     ],
     [
      7,
@@ -3446,10 +3446,10 @@ window.BOARD_DATA = {
      13,
      11,
      10,
-     10
+     null
     ],
     [
-     11,
+     null,
      15,
      19,
      24,
@@ -3494,9 +3494,9 @@ window.BOARD_DATA = {
      16,
      15,
      13,
-     12,
-     12,
-     12
+     null,
+     null,
+     null
     ],
     [
      16,
@@ -3549,7 +3549,7 @@ window.BOARD_DATA = {
      23
     ],
     [
-     22,
+     null,
      26,
      30,
      35,
@@ -3599,9 +3599,9 @@ window.BOARD_DATA = {
      14
     ],
     [
-     5,
-     5,
-     5,
+     null,
+     null,
+     null,
      5,
      7,
      8,
@@ -3644,59 +3644,59 @@ window.BOARD_DATA = {
      15,
      13,
      12,
-     12,
-     12,
-     12
+     null,
+     null,
+     null
     ],
     [
      19,
      25,
      31,
-     36,
-     42,
-     48,
-     54,
-     60,
-     66,
-     71,
+     37,
+     43,
+     49,
+     55,
+     62,
+     68,
+     72,
      77,
-     83,
-     88,
-     93,
-     96,
+     81,
+     85,
+     89,
+     94,
+     98,
+     100,
      99,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100,
-     100
+     97,
+     94,
+     92,
+     90,
+     88,
+     86,
+     83,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
     ]
    ],
    "sleepStart": [
@@ -3764,29 +3764,29 @@ window.BOARD_DATA = {
     541
    ],
    "strainYesterday": 13,
-   "strainToday": 1,
+   "strainToday": 2,
    "hrvVsOwnYesterday": "HRV 42 vs own avg 58",
    "hrvVsOwnToday": "HRV 62 vs own avg 58",
    "weekly": {
-    "steps": 48783,
+    "steps": 49457,
     "dist": 0.0,
     "avgSleep": 78.3,
     "avgRecovery": 62,
     "avgHrv": 51.6,
-    "avgStrain": 10.3,
-    "totalStrain": 72,
+    "avgStrain": 10.4,
+    "totalStrain": 73,
     "lowRhr": 54,
     "bestRec": "Nov 8 (81)",
     "bestSleep": "Nov 8 (93)"
    },
    "monthly": {
-    "steps": 217951,
+    "steps": 218625,
     "dist": 0.0,
     "avgSleep": 84.3,
     "avgRecovery": 71,
     "avgHrv": 57.8,
     "avgStrain": 11.1,
-    "totalStrain": 332,
+    "totalStrain": 333,
     "lowRhr": 50,
     "bestRec": "Oct 14 (88)",
     "bestSleep": "Oct 22 (98)"
@@ -5964,9 +5964,9 @@ window.BOARD_DATA = {
      19,
      17,
      15,
-     14,
-     14,
-     14
+     null,
+     null,
+     null
     ],
     [
      22,
@@ -6066,12 +6066,12 @@ window.BOARD_DATA = {
      35,
      32,
      30,
-     28
+     null
     ],
     [
-     23,
-     23,
-     23,
+     null,
+     null,
+     null,
      23,
      28,
      33,
@@ -6119,7 +6119,7 @@ window.BOARD_DATA = {
      22
     ],
     [
-     19,
+     null,
      19,
      25,
      30,
@@ -6166,7 +6166,7 @@ window.BOARD_DATA = {
      9,
      7,
      5,
-     5
+     null
     ],
     [
      6,
@@ -6189,41 +6189,41 @@ window.BOARD_DATA = {
      42,
      45,
      48,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50,
-     50
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
     ],
     [
-     29,
-     29,
-     29,
-     29,
-     29,
+     null,
+     null,
+     null,
+     null,
+     null,
      32,
      38,
      44,
@@ -6269,9 +6269,9 @@ window.BOARD_DATA = {
      19
     ],
     [
-     16,
-     16,
-     16,
+     null,
+     null,
+     null,
      17,
      22,
      27,
@@ -6315,8 +6315,8 @@ window.BOARD_DATA = {
      27,
      25,
      23,
-     23,
-     23
+     null,
+     null
     ],
     [
      26,
@@ -6369,8 +6369,8 @@ window.BOARD_DATA = {
      26
     ],
     [
-     22,
-     22,
+     null,
+     null,
      26,
      31,
      37,
@@ -6416,12 +6416,12 @@ window.BOARD_DATA = {
      16,
      14,
      11,
-     10
+     null
     ],
     [
-     7,
-     7,
-     7,
+     null,
+     null,
+     null,
      8,
      12,
      16,
@@ -6469,8 +6469,8 @@ window.BOARD_DATA = {
      10
     ],
     [
-     9,
-     9,
+     null,
+     null,
      13,
      19,
      24,
@@ -6569,9 +6569,9 @@ window.BOARD_DATA = {
      19
     ],
     [
-     14,
-     14,
-     14,
+     null,
+     null,
+     null,
      18,
      21,
      25,
@@ -6609,14 +6609,14 @@ window.BOARD_DATA = {
      9,
      7,
      6,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
     ],
     [
      8,
@@ -6665,8 +6665,8 @@ window.BOARD_DATA = {
      32,
      30,
      28,
-     28,
-     28
+     null,
+     null
     ],
     [
      31,
@@ -6715,11 +6715,11 @@ window.BOARD_DATA = {
      30,
      28,
      26,
-     25,
-     25
+     null,
+     null
     ],
     [
-     26,
+     null,
      28,
      33,
      38,
@@ -6766,13 +6766,13 @@ window.BOARD_DATA = {
      30,
      27,
      24,
-     22
+     null
     ],
     [
-     16,
-     16,
-     16,
-     16,
+     null,
+     null,
+     null,
+     null,
      18,
      21,
      24,
@@ -6816,11 +6816,11 @@ window.BOARD_DATA = {
      18,
      16,
      15,
-     14
+     null
     ],
     [
-     11,
-     11,
+     null,
+     null,
      15,
      20,
      25,
@@ -6866,10 +6866,10 @@ window.BOARD_DATA = {
      17,
      15,
      13,
-     12
+     null
     ],
     [
-     11,
+     null,
      13,
      17,
      21,
@@ -6919,8 +6919,8 @@ window.BOARD_DATA = {
      11
     ],
     [
-     9,
-     9,
+     null,
+     null,
      13,
      19,
      25,
@@ -6966,12 +6966,12 @@ window.BOARD_DATA = {
      14,
      12,
      10,
-     9
+     null
     ],
     [
-     5,
-     5,
-     5,
+     null,
+     null,
+     null,
      9,
      14,
      19,
@@ -7016,11 +7016,11 @@ window.BOARD_DATA = {
      25,
      24,
      22,
-     22
+     null
     ],
     [
-     26,
-     26,
+     null,
+     null,
      29,
      34,
      40,
@@ -7066,12 +7066,12 @@ window.BOARD_DATA = {
      18,
      16,
      14,
-     13
+     null
     ],
     [
-     8,
-     8,
-     8,
+     null,
+     null,
+     null,
      8,
      12,
      16,
@@ -7112,18 +7112,18 @@ window.BOARD_DATA = {
      34,
      31,
      29,
-     27,
-     27,
-     27,
-     27,
-     27
+     null,
+     null,
+     null,
+     null,
+     null
     ],
     [
-     39,
-     39,
-     39,
-     39,
-     39,
+     null,
+     null,
+     null,
+     null,
+     null,
      41,
      46,
      51,
@@ -7166,11 +7166,11 @@ window.BOARD_DATA = {
      38,
      34,
      31,
-     28
+     null
     ],
     [
-     26,
-     26,
+     null,
+     null,
      27,
      33,
      39,
@@ -7216,7 +7216,7 @@ window.BOARD_DATA = {
      21,
      19,
      17,
-     16
+     null
     ],
     [
      18,
@@ -7269,7 +7269,7 @@ window.BOARD_DATA = {
      12
     ],
     [
-     11,
+     null,
      14,
      18,
      21,
@@ -7316,7 +7316,7 @@ window.BOARD_DATA = {
      9,
      7,
      6,
-     5
+     null
     ],
     [
      7,
@@ -7369,8 +7369,8 @@ window.BOARD_DATA = {
      23
     ],
     [
-     21,
-     21,
+     null,
+     null,
      22,
      24,
      27,
@@ -7388,35 +7388,35 @@ window.BOARD_DATA = {
      88,
      91,
      94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94,
-     94
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
     ]
    ],
    "sleepStart": [
@@ -9631,11 +9631,11 @@ window.BOARD_DATA = {
    ],
    "batterySeries": [
     [
-     6,
-     6,
-     6,
-     6,
-     6,
+     null,
+     null,
+     null,
+     null,
+     null,
      7,
      14,
      20,
@@ -9681,11 +9681,11 @@ window.BOARD_DATA = {
      32
     ],
     [
-     24,
-     24,
-     24,
-     24,
-     24,
+     null,
+     null,
+     null,
+     null,
+     null,
      26,
      30,
      34,
@@ -9731,10 +9731,10 @@ window.BOARD_DATA = {
      48
     ],
     [
-     33,
-     33,
-     33,
-     33,
+     null,
+     null,
+     null,
+     null,
      35,
      40,
      45,
@@ -9828,7 +9828,7 @@ window.BOARD_DATA = {
      33,
      30,
      28,
-     26
+     null
     ],
     [
      28,
@@ -9928,7 +9928,7 @@ window.BOARD_DATA = {
      14,
      13,
      11,
-     11
+     null
     ],
     [
      12,
@@ -9977,8 +9977,8 @@ window.BOARD_DATA = {
      9,
      8,
      6,
-     5,
-     5
+     null,
+     null
     ],
     [
      6,
@@ -10081,8 +10081,8 @@ window.BOARD_DATA = {
      26
     ],
     [
-     23,
-     23,
+     null,
+     null,
      27,
      32,
      36,
@@ -10177,8 +10177,8 @@ window.BOARD_DATA = {
      33,
      31,
      29,
-     28,
-     28
+     null,
+     null
     ],
     [
      30,
@@ -10226,9 +10226,9 @@ window.BOARD_DATA = {
      23,
      21,
      19,
-     19,
-     19,
-     19
+     null,
+     null,
+     null
     ],
     [
      22,
@@ -10277,8 +10277,8 @@ window.BOARD_DATA = {
      31,
      29,
      26,
-     26,
-     26
+     null,
+     null
     ],
     [
      31,
@@ -10327,8 +10327,8 @@ window.BOARD_DATA = {
      20,
      18,
      16,
-     14,
-     14
+     null,
+     null
     ],
     [
      15,
@@ -10378,11 +10378,11 @@ window.BOARD_DATA = {
      34,
      31,
      28,
-     26
+     null
     ],
     [
-     22,
-     22,
+     null,
+     null,
      23,
      28,
      33,
@@ -10426,13 +10426,13 @@ window.BOARD_DATA = {
      20,
      18,
      16,
-     15,
-     15,
-     15
+     null,
+     null,
+     null
     ],
     [
-     11,
-     11,
+     null,
+     null,
      12,
      15,
      18,
@@ -10481,8 +10481,8 @@ window.BOARD_DATA = {
      21
     ],
     [
-     14,
-     14,
+     null,
+     null,
      14,
      19,
      24,
@@ -10569,19 +10569,19 @@ window.BOARD_DATA = {
      12,
      9,
      6,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
     ],
     [
-     5,
+     null,
      6,
      11,
      16,
@@ -10713,22 +10713,22 @@ window.BOARD_DATA = {
      7,
      6,
      5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
-     5
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
     ],
     [
      6,
@@ -10781,12 +10781,12 @@ window.BOARD_DATA = {
      17
     ],
     [
-     5,
-     5,
-     5,
-     5,
-     5,
-     5,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
      7,
      12,
      17,
@@ -10831,10 +10831,10 @@ window.BOARD_DATA = {
      9
     ],
     [
-     5,
-     5,
-     5,
-     5,
+     null,
+     null,
+     null,
+     null,
      7,
      11,
      14,
@@ -10878,7 +10878,7 @@ window.BOARD_DATA = {
      12,
      10,
      8,
-     8
+     null
     ],
     [
      10,
@@ -10927,15 +10927,15 @@ window.BOARD_DATA = {
      29,
      28,
      26,
-     25,
-     25
+     null,
+     null
     ],
     [
-     23,
-     23,
-     23,
-     23,
-     23,
+     null,
+     null,
+     null,
+     null,
+     null,
      24,
      28,
      32,
@@ -10981,7 +10981,7 @@ window.BOARD_DATA = {
      39
     ],
     [
-     36,
+     null,
      39,
      43,
      47,
@@ -11028,7 +11028,7 @@ window.BOARD_DATA = {
      24,
      22,
      21,
-     20
+     null
     ],
     [
      19,
@@ -11078,7 +11078,7 @@ window.BOARD_DATA = {
      20,
      18,
      16,
-     14
+     null
     ],
     [
      13,
@@ -11102,33 +11102,33 @@ window.BOARD_DATA = {
      12,
      13,
      15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15,
-     15
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null,
+     null
     ]
    ],
    "sleepStart": [
@@ -11226,7 +11226,7 @@ window.BOARD_DATA = {
   }
  ],
  "summary": [
-  "<b>Jordan leads steps</b> &mdash; 72,942 vs 48,783 this week (1.5\u00d7).",
+  "<b>Jordan leads steps</b> &mdash; 72,942 vs 49,457 this week (1.5\u00d7).",
   "<b>Ethan leads sleep</b> &mdash; avg 79.7 vs 78.3.",
   "<b>Ethan leads recovery</b> &mdash; avg 68 vs 63.",
   "<b>Bottom line</b> &mdash; Ethan leads the last full day; Ethan leads the week."
