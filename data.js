@@ -34,9 +34,9 @@ window.BOARD_DATA = {
    "Nov 7",
    "Nov 8"
   ],
-  "updatedAt": "2026-11-08T11:57:32.868598Z",
-  "updatedTimePT": "3:57 AM PST",
-  "updatedLongPT": "Nov 8, 3:57 AM PST",
+  "updatedAt": "2026-11-08T12:57:32.987796Z",
+  "updatedTimePT": "4:57 AM PST",
+  "updatedLongPT": "Nov 8, 4:57 AM PST",
   "live": true
  },
  "days": [
@@ -7665,7 +7665,7 @@ window.BOARD_DATA = {
     8189,
     6774,
     9009,
-    1402
+    2651
    ],
    "stages": [
     [
@@ -7989,7 +7989,7 @@ window.BOARD_DATA = {
     27,
     36,
     39,
-    87
+    82
    ],
    "maxhr": [
     122,
@@ -8085,7 +8085,7 @@ window.BOARD_DATA = {
     13,
     14,
     16,
-    2
+    4
    ],
    "hrload": [
     9.42,
@@ -8117,7 +8117,7 @@ window.BOARD_DATA = {
     8.64,
     10.76,
     11.69,
-    1.69
+    2.2
    ],
    "hrSeries": [
     [
@@ -9578,9 +9578,9 @@ window.BOARD_DATA = {
      107,
      null,
      null,
-     null,
-     null,
-     null,
+     83,
+     82,
+     78,
      null,
      null,
      null,
@@ -11074,9 +11074,9 @@ window.BOARD_DATA = {
     ],
     [
      13,
-     12,
-     9,
-     6,
+     11,
+     8,
+     7,
      5,
      5,
      5,
@@ -11188,29 +11188,29 @@ window.BOARD_DATA = {
     null
    ],
    "strainYesterday": 16,
-   "strainToday": 2,
+   "strainToday": 4,
    "hrvVsOwnYesterday": "HRV 66 vs own avg 62",
    "hrvVsOwnToday": "HRV \u2014",
    "weekly": {
-    "steps": 46092,
+    "steps": 47341,
     "dist": 0.0,
     "avgSleep": 79.7,
     "avgRecovery": 68,
     "avgHrv": 62.5,
-    "avgStrain": 11.4,
-    "totalStrain": 80,
+    "avgStrain": 11.7,
+    "totalStrain": 82,
     "lowRhr": 51,
     "bestRec": "Nov 7 (75)",
     "bestSleep": "Nov 3 (86)"
    },
    "monthly": {
-    "steps": 245720,
+    "steps": 246969,
     "dist": 0.0,
     "avgSleep": 76.8,
     "avgRecovery": 66,
     "avgHrv": 62.4,
-    "avgStrain": 12.9,
-    "totalStrain": 388,
+    "avgStrain": 13.0,
+    "totalStrain": 390,
     "lowRhr": 47,
     "bestRec": "Oct 12 (83)",
     "bestSleep": "Oct 12 (97)"
