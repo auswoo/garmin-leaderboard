@@ -23,26 +23,28 @@
   @media (max-width: 400px) { .eyebrow { letter-spacing: 0.08em; } }
   .backlink { background: none; border: 1px solid rgba(255,255,255,0.18); border-radius: 999px; color: #aaa; font-size: 13px; padding: 6px 12px; cursor: pointer; text-decoration: none; flex-shrink: 0; }
   .top-scrim { position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top, 0px); background: rgba(0,0,0,0.85); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100; }
-  .scene { position: relative; margin-top: 26px; border-top: 1px solid rgba(255,255,255,0.14); border-bottom: 1px solid rgba(255,255,255,0.14); overflow: hidden; }
-  .lane { position: relative; height: 110px; border-bottom: 1px solid rgba(255,255,255,0.08); }
-  .lane:last-child { border-bottom: none; }
-  .walker { position: absolute; top: 50%; left: 6px; transform: translateY(-50%); width: 84px; text-align: center; animation: walk linear infinite alternate; }
-  .walker-inner { display: inline-block; transition: transform 0.4s ease; }
-  .walker img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; display: block; margin: 0 auto; border: 2px solid var(--person-color, #888); animation: bob ease-in-out infinite alternate; }
-  .walker .walker-name { font-size: 13px; color: #ddd; margin-top: 6px; }
-  .walker .zzz { display: none; position: absolute; top: -8px; right: 2px; font-size: 15px; color: #888; letter-spacing: 1px; animation: zzz 2.4s ease-in-out infinite; }
+
+  .scene { position: relative; margin-top: 26px; border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; overflow: hidden; background: url("assets/room.jpg") center / cover no-repeat; aspect-ratio: 3 / 2; }
+  .walker { position: absolute; bottom: 3%; height: 46%; text-align: center; animation: bob ease-in-out infinite alternate; }
+  .walker img { height: 100%; width: auto; display: block; margin: 0 auto; transition: transform 0.25s ease; }
+  .walker-inner { height: 100%; transition: transform 0.4s ease; position: relative; }
+  .walker .nametag { position: absolute; left: 50%; top: -26px; transform: translateX(-50%); font-size: 12px; font-weight: 600; color: #fff; background: rgba(0,0,0,0.55); padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+  .walker-inner .zzz { display: none; position: absolute; top: -6px; right: -8px; font-size: 16px; color: #fff; letter-spacing: 1px; text-shadow: 0 1px 4px rgba(0,0,0,0.6); animation: zzz 2.4s ease-in-out infinite; }
   .walker.down { animation: none; }
-  .walker.down .walker-inner { transform: rotate(90deg); }
-  .walker.down img { animation: none; }
-  .walker.down .zzz { display: block; }
+  .walker.down .walker-inner { transform: rotate(90deg); transform-origin: 50% 100%; }
+  .walker.down img { transition: none; }
+  .walker.down .walker-inner .zzz { display: block; }
   .walker.still { animation: none; }
-  .walker.still img { animation: none; }
-  @keyframes walk { from { left: 6px; } to { left: calc(100% - 90px); } }
-  @keyframes bob { from { transform: translateY(0); } to { transform: translateY(calc(-1 * var(--bob, 6px))); } }
+  @keyframes bob { from { transform: translateY(0); } to { transform: translateY(calc(-1 * var(--bob, 5px))); } }
   @keyframes zzz { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+  .placeholder { position: absolute; bottom: 3%; height: 46%; width: 70px; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; opacity: 0.55; }
+  .placeholder .ph-head { width: 26px; height: 26px; border-radius: 50%; border: 2px dashed rgba(255,255,255,0.6); }
+  .placeholder .ph-body { width: 44px; height: 74px; margin-top: 6px; border: 2px dashed rgba(255,255,255,0.6); border-radius: 22px 22px 6px 6px; display: flex; align-items: center; justify-content: center; font-size: 18px; color: rgba(255,255,255,0.8); }
+  .placeholder .nametag { position: absolute; left: 50%; top: -26px; transform: translateX(-50%); font-size: 12px; font-weight: 600; color: #fff; background: rgba(0,0,0,0.55); padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
   @media (prefers-reduced-motion: reduce) {
-    .walker, .walker img, .walker .zzz { animation: none !important; }
+    .walker, .walker .zzz { animation: none !important; }
   }
+
   .cards { margin-top: 26px; }
   .card { padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.10); }
   .card:last-child { border-bottom: none; }
@@ -55,7 +57,6 @@
   .how p { font-size: 12px; color: #666; line-height: 1.5; margin-bottom: 8px; }
   @media (orientation: landscape) and (max-height: 500px) {
     .wrap { max-width: 960px; padding: 16px 24px 32px; padding-top: calc(16px + env(safe-area-inset-top)); }
-    .lane { height: 92px; }
   }
 </style>
 </head>
@@ -93,12 +94,11 @@
   var META = BOARD.meta;
   document.getElementById("sub-line").textContent = DAYS[0] + "–" + DAYS[LAST] + ", " + META.endDate.slice(0, 4) + " · Updated " + META.updatedLongPT;
 
-  var AVATARS = { "Ethan": "assets/ethan.jpg", "Austin": "assets/austin.jpg", "Jordan": "assets/jordan.jpg" };
+  var CHARS = { "Austin": "assets/austin-character.png", "Ethan": "assets/ethan-character.png" };
   var COLORS = { "Austin": "#5aa2ff", "Jordan": "#ff8a5c", "Ethan": "#a78bfa" };
   var show = function (v) { return (v === null || v === undefined ? "—" : v); };
   var num = function (v, day) { return show(v) + (v !== null && v !== undefined && day !== LAST ? " · " + DAYS[day] : ""); };
 
-  // Latest recorded value of an array, scanning back from today.
   function latest(arr, idx) {
     for (var i = idx; i >= 0; i--) {
       var v = arr[i];
@@ -107,59 +107,70 @@
     return { value: null, day: null };
   }
 
-  BOARD.people.forEach(function (p) {
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var walkers = [];
+
+  BOARD.people.forEach(function (p, pi) {
     var bb = latest((p.battery || []).map(function (b) { return b ? b[0] : null; }), LAST);
     var sl = latest(p.sleep || [], LAST);
     var rc = latest(p.recovery || [], LAST);
     var battery = bb.value, sleep = sl.value, recovery = rc.value;
 
-    var state, tilt, speed;
+    var state, tilt, speed, down;
     if (battery === null) {
-      state = "No data yet"; tilt = 0; speed = 0;
+      state = "No data yet"; tilt = 0; speed = 0; down = false;
     } else if (battery < 15) {
-      state = "Wiped out"; tilt = 0; speed = 0;
+      state = "Wiped out"; tilt = 0; speed = 0; down = true;
     } else {
       speed = battery / 100;
       if (sleep !== null && sleep < 65) speed *= 0.7;
       if (recovery !== null && recovery < 60) speed *= 0.85;
       speed = Math.max(0.05, Math.min(1, speed));
+      down = false;
       if (battery >= 75) { state = "Locked in"; tilt = 0; }
       else if (battery >= 40) { state = "Steady"; tilt = -5; }
       else { state = "Running low"; tilt = -13; }
     }
 
-    var lane = document.createElement("div");
-    lane.className = "lane";
-    var walker = document.createElement("div");
-    walker.className = "walker";
-    walker.style.setProperty("--person-color", COLORS[p.name] || "#888");
-    var inner = document.createElement("div");
-    inner.className = "walker-inner";
-    if (tilt) inner.style.transform = "rotate(" + tilt + "deg)";
-    var img = document.createElement("img");
-    img.src = AVATARS[p.name] || "";
-    img.alt = p.name;
-    if (speed > 0) {
-      var walkSecs = Math.min(60, 12 / speed);
-      var bobSecs = Math.min(2.5, 0.6 / speed);
-      walker.style.animationDuration = walkSecs + "s";
-      img.style.animationDuration = bobSecs + "s";
-      img.style.setProperty("--bob", (3 + 5 * speed).toFixed(1) + "px");
+    if (CHARS[p.name]) {
+      var walker = document.createElement("div");
+      walker.className = "walker" + (down ? " down" : (speed === 0 ? " still" : ""));
+      var inner = document.createElement("div");
+      inner.className = "walker-inner";
+      if (tilt) inner.style.transform = "rotate(" + tilt + "deg)";
+      var img = document.createElement("img");
+      img.src = CHARS[p.name];
+      img.alt = p.name;
+      inner.appendChild(img);
+      var zzz = document.createElement("span");
+      zzz.className = "zzz";
+      zzz.textContent = "Zzz";
+      inner.appendChild(zzz);
+      var tag = document.createElement("span");
+      tag.className = "nametag";
+      tag.textContent = p.name;
+      walker.appendChild(inner);
+      walker.appendChild(tag);
+      if (speed > 0 && !reduced) {
+        var bobSecs = Math.min(2.5, 0.6 / speed);
+        walker.style.animationDuration = bobSecs + "s";
+        walker.style.setProperty("--bob", (3 + 5 * speed).toFixed(1) + "px");
+      } else {
+        walker.classList.add("still");
+      }
+      scene.appendChild(walker);
+      var startX = pi === 0 ? 0.08 : 0.62;
+      walkers.push({ el: walker, img: img, x: null, startFrac: startX, dir: pi === 0 ? 1 : -1, speed: speed, down: down });
     } else {
-      walker.classList.add(battery === null ? "still" : "down");
+      // No character image yet — dashed placeholder standing in the room.
+      var ph = document.createElement("div");
+      ph.className = "placeholder";
+      ph.style.left = "46%";
+      ph.innerHTML = '<span class="nametag">' + p.name + '</span><div class="ph-head"></div><div class="ph-body">?</div>';
+      scene.appendChild(ph);
+      if (battery !== null && battery < 15) state = "Wiped out";
+      else state = "Avatar coming soon";
     }
-    var zzz = document.createElement("span");
-    zzz.className = "zzz";
-    zzz.textContent = "Zzz";
-    inner.appendChild(img);
-    var nm = document.createElement("div");
-    nm.className = "walker-name";
-    nm.textContent = p.name;
-    walker.appendChild(inner);
-    walker.appendChild(zzz);
-    walker.appendChild(nm);
-    lane.appendChild(walker);
-    scene.appendChild(lane);
 
     var card = document.createElement("div");
     card.className = "card";
@@ -171,6 +182,38 @@
       + ' · Recovery ' + num(recovery, rc.day) + '</div>';
     cards.appendChild(card);
   });
+
+  // Walk the characters around the room. Speed in px/s scales with energy.
+  function layout() {
+    var W = scene.clientWidth;
+    walkers.forEach(function (w) {
+      if (w.x === null) w.x = w.startFrac * Math.max(0, W - w.el.offsetWidth);
+      if (w.down) { w.el.style.left = "8px"; return; }
+      w.el.style.left = w.x + "px";
+    });
+  }
+  layout();
+  window.addEventListener("resize", layout);
+
+  var last = null;
+  function tick(ts) {
+    if (last === null) last = ts;
+    var dt = Math.min(0.1, (ts - last) / 1000);
+    last = ts;
+    var W = scene.clientWidth;
+    walkers.forEach(function (w) {
+      if (w.down || w.speed === 0 || reduced) return;
+      var maxX = Math.max(0, W - w.el.offsetWidth);
+      var step = 34 * w.speed * dt;
+      w.x += w.dir * step;
+      if (w.x <= 0) { w.x = 0; w.dir = 1; }
+      if (w.x >= maxX) { w.x = maxX; w.dir = -1; }
+      w.el.style.left = w.x + "px";
+      w.img.style.transform = w.dir === 1 ? "scaleX(1)" : "scaleX(-1)";
+    });
+    requestAnimationFrame(tick);
+  }
+  if (!reduced) requestAnimationFrame(tick);
 })();
 </script>
 </body>
