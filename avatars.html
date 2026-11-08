@@ -94,7 +94,7 @@
   var META = BOARD.meta;
   document.getElementById("sub-line").textContent = DAYS[0] + "–" + DAYS[LAST] + ", " + META.endDate.slice(0, 4) + " · Updated " + META.updatedLongPT;
 
-  var CHARS = { "Austin": "assets/austin-character.png", "Ethan": "assets/ethan-character.png" };
+  var CHARS = { "Austin": "assets/austin-character.png", "Jordan": "assets/jordan-character.png", "Ethan": "assets/ethan-character.png" };
   var COLORS = { "Austin": "#5aa2ff", "Jordan": "#ff8a5c", "Ethan": "#a78bfa" };
   var show = function (v) { return (v === null || v === undefined ? "—" : v); };
   var num = function (v, day) { return show(v) + (v !== null && v !== undefined && day !== LAST ? " · " + DAYS[day] : ""); };
@@ -159,8 +159,9 @@
         walker.classList.add("still");
       }
       scene.appendChild(walker);
-      var startX = pi === 0 ? 0.08 : 0.62;
-      walkers.push({ el: walker, img: img, x: null, startFrac: startX, dir: pi === 0 ? 1 : -1, speed: speed, down: down });
+      var starts = [0.05, 0.38, 0.70];
+      var startX = starts[pi] !== undefined ? starts[pi] : 0.1 * pi;
+      walkers.push({ el: walker, img: img, x: null, startFrac: startX, dir: pi % 2 === 0 ? 1 : -1, speed: speed, down: down });
     } else {
       // No character image yet — dashed placeholder standing in the room.
       var ph = document.createElement("div");
