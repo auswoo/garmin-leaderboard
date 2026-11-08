@@ -101,8 +101,8 @@
   .a2hs-share { width: 16px; height: 16px; vertical-align: -3px; margin: 0 1px; }
   .a2hs-close { background: none; border: none; color: #888; font-size: 20px; line-height: 1; cursor: pointer; flex-shrink: 0; padding: 2px 4px; }
   .a2hs-install { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); border-radius: 999px; color: #fff; font-size: 14px; padding: 7px 14px; cursor: pointer; flex-shrink: 0; }
-  /* Avatars tab stage (moved from the old standalone avatars.html) */
-  .stage { position: relative; margin-top: 26px; border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; overflow: hidden; background: #000; }
+  /* Avatars stage shown in the Daily tab */
+  .stage { position: relative; margin-top: 12px; border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; overflow: hidden; background: #000; }
   .sprite-row { position: relative; display: grid; grid-template-columns: repeat(3, 1fr); height: 192px; }
   .col { position: relative; }
   .glow { position: absolute; left: 50%; top: 50%; width: 170px; height: 230px; transform: translate(-50%, -50%); border-radius: 50%; pointer-events: none; }
@@ -112,17 +112,20 @@
   .shadow { position: absolute; left: 50%; bottom: 1px; width: 110px; height: 12px; transform: translateX(-50%); border-radius: 50%; background: radial-gradient(ellipse at center, rgba(255,255,255,0.08), rgba(255,255,255,0) 70%); pointer-events: none; }
   .zzz { display: none; position: absolute; left: 50%; transform: translateX(-50%); font-size: 13px; letter-spacing: 2px; color: #999; white-space: nowrap; pointer-events: none; animation: zzzUp 2.8s ease-in-out infinite; }
   @keyframes zzzUp { 0% { opacity: 0; transform: translate(-50%, 8px); } 35% { opacity: 0.65; } 100% { opacity: 0; transform: translate(-50%, -16px); } }
-  .ground { position: absolute; left: 0; right: 0; bottom: 48px; height: 1px; background: rgba(255,255,255,0.14); }
-  .label-row { display: grid; grid-template-columns: repeat(3, 1fr); height: 48px; }
+  .ground { position: absolute; left: 0; right: 0; bottom: 60px; height: 1px; background: rgba(255,255,255,0.14); }
+  .label-row { display: grid; grid-template-columns: repeat(3, 1fr); height: 60px; }
   .label { display: flex; flex-direction: column; align-items: center; justify-content: center; }
   .label .name { font-size: 15px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
   .label .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
   .label .batt { font-size: 13px; color: #888; margin-top: 2px; }
+  .battbar { display: block; width: 64px; height: 4px; border-radius: 999px; background: rgba(255,255,255,0.12); margin-top: 5px; overflow: hidden; }
+  .battfill { display: block; height: 100%; border-radius: 999px; }
+  .bb-legend { font-size: 12px; color: #666; margin-top: 12px; }
   @media (prefers-reduced-motion: reduce) {
     .sprite { transition: none !important; }
     .zzz { animation: none !important; opacity: 0.55; }
   }
-  .cards { margin-top: 26px; }
+  .cards { margin-top: 16px; }
   .card { padding: 14px 0; border-bottom: 1px solid rgba(255,255,255,0.10); }
   .card:last-child { border-bottom: none; }
   .card-head { display: flex; align-items: baseline; gap: 10px; }
@@ -131,8 +134,6 @@
   .card-state { font-size: 15px; color: #ccc; margin-left: auto; text-align: right; }
   .card-nums { font-size: 13px; color: #888; margin-top: 6px; }
   .card-stale { font-size: 12px; color: #666; margin-top: 4px; }
-  .how { margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.14); padding-top: 16px; }
-  .how p { font-size: 12px; color: #666; line-height: 1.5; margin-bottom: 8px; }
   @media (orientation: landscape) and (max-height: 500px) {
     .sprite-row { height: 160px; }
     .wrap { max-width: 960px; padding: 16px 24px 32px; padding-top: calc(16px + env(safe-area-inset-top)); padding-left: calc(24px + env(safe-area-inset-left)); padding-right: calc(24px + env(safe-area-inset-right)); }
@@ -176,7 +177,6 @@
     <button id="tab-daily" class="active" role="tab" aria-selected="true">Daily</button>
     <button id="tab-weekly" role="tab" aria-selected="false">Weekly</button>
     <button id="tab-monthly" role="tab" aria-selected="false">Monthly</button>
-    <button id="tab-avatars" role="tab" aria-selected="false">Avatars</button>
   </div>
 
   <div id="daily-view">
@@ -189,6 +189,15 @@
     <div class="board"><h2>Heart rate</h2><div id="hr-chart"></div></div>
     <div class="board"><h2>Body Battery</h2><div id="battery-chart"></div></div>
     <div class="board"><h2>Sleep schedule</h2><div id="sleep-chart"></div></div>
+    <div class="board" id="body-battery-board"><h2>Body Battery</h2>
+      <div class="stage" id="stage">
+        <div class="sprite-row" id="sprite-row"></div>
+        <div class="ground"></div>
+        <div class="label-row" id="label-row"></div>
+      </div>
+      <p class="bb-legend">75+ Locked in &middot; 40&ndash;74 Steady &middot; 15&ndash;39 Drained &middot; under 15 Wiped out</p>
+      <div class="cards" id="avatars-cards"></div>
+    </div>
   </div>
 
   <div id="weekly-view" class="hidden">
@@ -207,19 +216,6 @@
       <div id="summary-body-monthly"></div>
     </div>
     <div class="board"><h2>Month trends</h2><div id="trend-buttons-monthly" class="daytoggle"></div><div id="trend-chart-monthly"></div><div id="trend-tooltip-monthly" class="trend-tooltip">Tap or drag the chart to compare a day.</div></div>
-  </div>
-
-  <div id="avatars-view" class="hidden">
-    <div class="stage" id="stage">
-      <div class="sprite-row" id="sprite-row"></div>
-      <div class="ground"></div>
-      <div class="label-row" id="label-row"></div>
-    </div>
-    <div class="cards" id="avatars-cards"></div>
-    <div class="how">
-      <p>Your avatar's pose follows your Body Battery: 75 and up stands tall and locked in, 40–74 is steady, 15–39 is drained and slouched, under 15 is wiped out and lying down.</p>
-      <p>Sleep and recovery shown are the latest recorded — usually last night — since they often haven't synced yet in the morning. Body Battery is today's latest value.</p>
-    </div>
   </div>
 
 </div>
@@ -606,6 +602,8 @@ function renderDaily(dayIdx) {
   const isToday = dayIdx === LAST;
   const deltaLabel = isToday ? "vs yesterday" : "vs prior day";
   document.getElementById("daylabel").textContent = isToday ? "Partial day (as of " + META.updatedTimePT + ")" : "Full day";
+  const bbBoard = document.getElementById("body-battery-board");
+  if (bbBoard) bbBoard.classList.toggle("hidden", !isToday);
   const box = document.getElementById("daily-boards");
   box.innerHTML = "";
 
@@ -893,8 +891,10 @@ function renderAvatars() {
     avatarCols.push(col);
     const label = document.createElement("div");
     label.className = "label";
+    const battPct = (battery === null || battery === undefined) ? 0 : Math.max(0, Math.min(100, battery));
     label.innerHTML = '<span class="name"><span class="dot" style="background:' + color + '"></span>' + p.name + '</span>'
-      + '<span class="batt">' + show(battery) + '%</span>';
+      + '<span class="batt">' + show(battery) + '%</span>'
+      + '<span class="battbar"><span class="battfill" style="width:' + battPct + '%;background:' + color + '"></span></span>';
     labelRow.appendChild(label);
     const stale = avatarStaleLine(sl, rc);
     const card = document.createElement("div");
@@ -924,6 +924,8 @@ function renderAvatars() {
     }
   });
   window.addEventListener("resize", repositionAvatarsZzz);
+  const bbBoard = document.getElementById("body-battery-board");
+  if (bbBoard) bbBoard.classList.toggle("hidden", currentDay !== LAST);
 }
 
 renderDaily(currentDay);
@@ -940,8 +942,7 @@ LANDSCAPE_SHORT.addEventListener("change", () => {
   const view = activeTab ? activeTab.id.replace("tab-", "") : "daily";
   if (view === "daily") { renderHRChart(currentDay); renderBatteryChart(currentDay); renderSleepChart(currentDay); }
   else if (view === "weekly") renderTrendChart(currentTrend.weekly, "weekly");
-  else if (view === "monthly") renderTrendChart(currentTrend.monthly, "monthly");
-  else if (view === "avatars") repositionAvatarsZzz();
+  else renderTrendChart(currentTrend.monthly, "monthly");
 });
 function countUpVals() {
   if (!document.querySelectorAll || !window.requestAnimationFrame) return;
@@ -980,28 +981,26 @@ document.getElementById("day-today").addEventListener("click", () => {
   renderDaily(currentDay);
   renderPeopleStrip("daily", currentDay);
 });
-const TABS = ["daily", "weekly", "monthly", "avatars"];
+const TABS = ["daily", "weekly", "monthly"];
+function tabFromHash() {
+  const h = (location.hash || "").slice(1);
+  if (h === "avatars") { history.replaceState(null, "", "#daily"); return "daily"; }
+  return TABS.includes(h) ? h : "daily";
+}
 function setTab(view, push) {
   TABS.forEach((v) => {
     document.getElementById("tab-" + v).classList.toggle("active", v === view);
     document.getElementById("tab-" + v).setAttribute("aria-selected", v === view ? "true" : "false");
     document.getElementById(v + "-view").classList.toggle("hidden", v !== view);
   });
-  peopleStrip.classList.toggle("hidden", view === "avatars");
-  if (view !== "avatars") renderPeopleStrip(view, currentDay);
-  if (view === "avatars") repositionAvatarsZzz();
+  renderPeopleStrip(view, currentDay);
   if (push) history.pushState(null, "", "#" + view);
 }
 document.getElementById("tab-daily").addEventListener("click", () => setTab("daily", true));
 document.getElementById("tab-weekly").addEventListener("click", () => setTab("weekly", true));
 document.getElementById("tab-monthly").addEventListener("click", () => setTab("monthly", true));
-document.getElementById("tab-avatars").addEventListener("click", () => setTab("avatars", true));
-window.addEventListener("hashchange", () => {
-  const v = (location.hash || "").slice(1);
-  if (TABS.includes(v)) setTab(v, false);
-});
-const initialTab = TABS.includes((location.hash || "").slice(1)) ? location.hash.slice(1) : "daily";
-setTab(initialTab, false);
+window.addEventListener("hashchange", () => setTab(tabFromHash(), false));
+setTab(tabFromHash(), false);
 const infoBackdrop = document.getElementById("info-backdrop");
 const infoBtn = document.getElementById("info-btn");
 function openInfo() {
