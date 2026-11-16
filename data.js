@@ -34,9 +34,9 @@ window.BOARD_DATA = {
    "Nov 15",
    "Nov 16"
   ],
-  "updatedAt": "2026-11-16T10:57:33.625109Z",
-  "updatedTimePT": "2:57 AM PST",
-  "updatedLongPT": "Nov 16, 2:57 AM PST",
+  "updatedAt": "2026-11-16T11:57:41.383139Z",
+  "updatedTimePT": "3:57 AM PST",
+  "updatedLongPT": "Nov 16, 3:57 AM PST",
   "live": true
  },
  "days": [
@@ -7563,7 +7563,7 @@ window.BOARD_DATA = {
     5567,
     10301,
     4760,
-    1328
+    1780
    ],
    "stages": [
     [
@@ -7848,9 +7848,9 @@ window.BOARD_DATA = {
      75
     ],
     [
-     31,
+     29,
      0,
-     6
+     8
     ]
    ],
    "stress": [
@@ -7883,7 +7883,7 @@ window.BOARD_DATA = {
     25,
     27,
     26,
-    42
+    43
    ],
    "maxhr": [
     112,
@@ -8011,7 +8011,7 @@ window.BOARD_DATA = {
     7.32,
     8.19,
     9.06,
-    0.95
+    1.22
    ],
    "hrSeries": [
     [
@@ -9421,8 +9421,8 @@ window.BOARD_DATA = {
      70,
      70,
      64,
-     78,
-     null,
+     80,
+     65,
      null,
      null,
      null,
@@ -10870,11 +10870,11 @@ window.BOARD_DATA = {
     ],
     [
      36,
-     35,
+     34,
      33,
      32,
-     null,
-     null,
+     31,
+     30,
      null,
      null,
      null,
@@ -10988,7 +10988,7 @@ window.BOARD_DATA = {
    "hrvVsOwnYesterday": "HRV 74 vs own avg 63",
    "hrvVsOwnToday": "HRV \u2014",
    "weekly": {
-    "steps": 52660,
+    "steps": 53112,
     "dist": 0.0,
     "avgSleep": 73.3,
     "avgRecovery": 65,
@@ -11000,7 +11000,7 @@ window.BOARD_DATA = {
     "bestSleep": "Nov 10 (88)"
    },
    "monthly": {
-    "steps": 240395,
+    "steps": 240847,
     "dist": 0.0,
     "avgSleep": 76.4,
     "avgRecovery": 66,
@@ -11014,7 +11014,7 @@ window.BOARD_DATA = {
   }
  ],
  "summary": [
-  "<b>Jordan leads steps</b> &mdash; 90,318 vs 52,660 this week (1.7\u00d7).",
+  "<b>Jordan leads steps</b> &mdash; 90,318 vs 53,112 this week (1.7\u00d7).",
   "<b>Austin leads sleep</b> &mdash; avg 83.7 vs 73.3.",
   "<b>Austin leads recovery</b> &mdash; avg 69 vs 65.",
   "<b>Bottom line</b> &mdash; Jordan leads the last full day; Austin leads the week."
