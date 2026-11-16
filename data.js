@@ -34,9 +34,9 @@ window.BOARD_DATA = {
    "Nov 14",
    "Nov 15"
   ],
-  "updatedAt": "2026-11-16T00:57:38.842076Z",
-  "updatedTimePT": "4:57 PM PST",
-  "updatedLongPT": "Nov 15, 4:57 PM PST",
+  "updatedAt": "2026-11-16T01:57:36.219662Z",
+  "updatedTimePT": "5:57 PM PST",
+  "updatedLongPT": "Nov 15, 5:57 PM PST",
   "live": true
  },
  "days": [
@@ -233,7 +233,7 @@ window.BOARD_DATA = {
     5472,
     6200,
     6456,
-    3511
+    4946
    ],
    "stages": [
     [
@@ -530,9 +530,9 @@ window.BOARD_DATA = {
      61
     ],
     [
-     38,
+     29,
      62,
-     33
+     42
     ]
    ],
    "stress": [
@@ -565,7 +565,7 @@ window.BOARD_DATA = {
     35,
     29,
     36,
-    29
+    31
    ],
    "maxhr": [
     119,
@@ -661,7 +661,7 @@ window.BOARD_DATA = {
     10,
     11,
     11,
-    6
+    8
    ],
    "hrload": [
     7.11,
@@ -693,7 +693,7 @@ window.BOARD_DATA = {
     7.7,
     7.87,
     7.61,
-    4.01
+    5.04
    ],
    "hrSeries": [
     [
@@ -2177,12 +2177,12 @@ window.BOARD_DATA = {
      77,
      72,
      68,
+     71,
      70,
-     null,
-     null,
-     null,
-     null,
-     null,
+     79,
+     81,
+     85,
+     89,
      null,
      null,
      null,
@@ -3654,15 +3654,15 @@ window.BOARD_DATA = {
      20,
      25,
      29,
-     33,
+     34,
      38,
-     42,
+     43,
      47,
-     51,
-     55,
-     59,
-     63,
-     67,
+     52,
+     56,
+     61,
+     64,
+     68,
      71,
      68,
      65,
@@ -3670,20 +3670,20 @@ window.BOARD_DATA = {
      59,
      56,
      53,
-     52,
      50,
-     49,
      47,
      46,
-     44,
+     45,
      43,
-     41,
+     42,
      40,
-     38,
-     null,
-     null,
-     null,
-     null,
+     39,
+     37,
+     36,
+     34,
+     33,
+     31,
+     30,
      null,
      null,
      null,
@@ -3764,29 +3764,29 @@ window.BOARD_DATA = {
     437
    ],
    "strainYesterday": 11,
-   "strainToday": 6,
+   "strainToday": 8,
    "hrvVsOwnYesterday": "HRV 48 vs own avg 56",
    "hrvVsOwnToday": "HRV 53 vs own avg 56",
    "weekly": {
-    "steps": 42466,
+    "steps": 43901,
     "dist": 0.0,
     "avgSleep": 84.6,
     "avgRecovery": 69,
     "avgHrv": 54.6,
-    "avgStrain": 10.4,
-    "totalStrain": 73,
+    "avgStrain": 10.7,
+    "totalStrain": 75,
     "lowRhr": 53,
     "bestRec": "Nov 13 (79)",
     "bestSleep": "Nov 13 (98)"
    },
    "monthly": {
-    "steps": 209195,
+    "steps": 210630,
     "dist": 0.0,
     "avgSleep": 83.3,
     "avgRecovery": 70,
     "avgHrv": 56.1,
-    "avgStrain": 11.0,
-    "totalStrain": 331,
+    "avgStrain": 11.1,
+    "totalStrain": 333,
     "lowRhr": 52,
     "bestRec": "Oct 22 (85)",
     "bestSleep": "Oct 22 (98)"
