@@ -34,9 +34,9 @@ window.BOARD_DATA = {
    "Nov 15",
    "Nov 16"
   ],
-  "updatedAt": "2026-11-16T11:57:41.383139Z",
-  "updatedTimePT": "3:57 AM PST",
-  "updatedLongPT": "Nov 16, 3:57 AM PST",
+  "updatedAt": "2026-11-16T13:32:31.166046Z",
+  "updatedTimePT": "5:32 AM PST",
+  "updatedLongPT": "Nov 16, 5:32 AM PST",
   "live": true
  },
  "days": [
@@ -7563,7 +7563,7 @@ window.BOARD_DATA = {
     5567,
     10301,
     4760,
-    1780
+    2123
    ],
    "stages": [
     [
@@ -7848,9 +7848,9 @@ window.BOARD_DATA = {
      75
     ],
     [
-     29,
+     28,
      0,
-     8
+     9
     ]
    ],
    "stress": [
@@ -7883,7 +7883,7 @@ window.BOARD_DATA = {
     25,
     27,
     26,
-    43
+    39
    ],
    "maxhr": [
     112,
@@ -7979,7 +7979,7 @@ window.BOARD_DATA = {
     10,
     13,
     11,
-    2
+    3
    ],
    "hrload": [
     9.19,
@@ -8011,7 +8011,7 @@ window.BOARD_DATA = {
     7.32,
     8.19,
     9.06,
-    1.22
+    1.47
    ],
    "hrSeries": [
     [
@@ -9422,9 +9422,9 @@ window.BOARD_DATA = {
      70,
      64,
      80,
-     65,
-     null,
-     null,
+     64,
+     64,
+     77,
      null,
      null,
      null,
@@ -10872,12 +10872,12 @@ window.BOARD_DATA = {
      36,
      34,
      33,
-     32,
+     33,
      31,
      30,
-     null,
-     null,
-     null,
+     29,
+     29,
+     28,
      null,
      null,
      null,
@@ -10984,29 +10984,29 @@ window.BOARD_DATA = {
     null
    ],
    "strainYesterday": 11,
-   "strainToday": 2,
+   "strainToday": 3,
    "hrvVsOwnYesterday": "HRV 74 vs own avg 63",
    "hrvVsOwnToday": "HRV \u2014",
    "weekly": {
-    "steps": 53112,
+    "steps": 53455,
     "dist": 0.0,
     "avgSleep": 73.3,
     "avgRecovery": 65,
     "avgHrv": 63.0,
-    "avgStrain": 11.7,
-    "totalStrain": 82,
+    "avgStrain": 11.9,
+    "totalStrain": 83,
     "lowRhr": 48,
     "bestRec": "Nov 10 (78)",
     "bestSleep": "Nov 10 (88)"
    },
    "monthly": {
-    "steps": 240847,
+    "steps": 241190,
     "dist": 0.0,
     "avgSleep": 76.4,
     "avgRecovery": 66,
     "avgHrv": 62.6,
     "avgStrain": 13.0,
-    "totalStrain": 376,
+    "totalStrain": 377,
     "lowRhr": 48,
     "bestRec": "Oct 23 (81)",
     "bestSleep": "Oct 19 (94)"
@@ -11014,7 +11014,7 @@ window.BOARD_DATA = {
   }
  ],
  "summary": [
-  "<b>Jordan leads steps</b> &mdash; 90,318 vs 53,112 this week (1.7\u00d7).",
+  "<b>Jordan leads steps</b> &mdash; 90,318 vs 53,455 this week (1.7\u00d7).",
   "<b>Austin leads sleep</b> &mdash; avg 83.7 vs 73.3.",
   "<b>Austin leads recovery</b> &mdash; avg 69 vs 65.",
   "<b>Bottom line</b> &mdash; Jordan leads the last full day; Austin leads the week."
