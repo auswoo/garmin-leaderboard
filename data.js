@@ -34,9 +34,9 @@ window.BOARD_DATA = {
    "Nov 17",
    "Nov 18"
   ],
-  "updatedAt": "2026-11-18T10:57:24.358910Z",
-  "updatedTimePT": "2:57 AM PST",
-  "updatedLongPT": "Nov 18, 2:57 AM PST",
+  "updatedAt": "2026-11-18T11:57:35.524940Z",
+  "updatedTimePT": "3:57 AM PST",
+  "updatedLongPT": "Nov 18, 3:57 AM PST",
   "live": true
  },
  "days": [
@@ -7661,7 +7661,7 @@ window.BOARD_DATA = {
     4760,
     4446,
     8220,
-    866
+    1024
    ],
    "stages": [
     null,
@@ -7942,9 +7942,9 @@ window.BOARD_DATA = {
      76
     ],
     [
-     32,
+     28,
      5,
-     4
+     8
     ]
    ],
    "stress": [
@@ -7977,7 +7977,7 @@ window.BOARD_DATA = {
     26,
     42,
     25,
-    21
+    24
    ],
    "maxhr": [
     108,
@@ -8105,7 +8105,7 @@ window.BOARD_DATA = {
     9.06,
     5.41,
     9.05,
-    0.55
+    0.86
    ],
    "hrSeries": [
     [
@@ -9515,9 +9515,9 @@ window.BOARD_DATA = {
      69,
      67,
      69,
-     74,
-     null,
-     null,
+     71,
+     69,
+     67,
      null,
      null,
      null,
@@ -10965,11 +10965,11 @@ window.BOARD_DATA = {
     [
      33,
      36,
-     35,
+     36,
      34,
      33,
-     null,
-     null,
+     32,
+     30,
      null,
      null,
      null,
@@ -11082,7 +11082,7 @@ window.BOARD_DATA = {
    "hrvVsOwnYesterday": "HRV 71 vs own avg 62",
    "hrvVsOwnToday": "HRV \u2014",
    "weekly": {
-    "steps": 42458,
+    "steps": 42616,
     "dist": 0.0,
     "avgSleep": 69.2,
     "avgRecovery": 62,
@@ -11094,7 +11094,7 @@ window.BOARD_DATA = {
     "bestSleep": "Nov 13 (87)"
    },
    "monthly": {
-    "steps": 233422,
+    "steps": 233580,
     "dist": 0.0,
     "avgSleep": 76.0,
     "avgRecovery": 66,
@@ -11108,7 +11108,7 @@ window.BOARD_DATA = {
   }
  ],
  "summary": [
-  "<b>Jordan leads steps</b> &mdash; 106,753 vs 42,458 this week (2.5\u00d7).",
+  "<b>Jordan leads steps</b> &mdash; 106,753 vs 42,616 this week (2.5\u00d7).",
   "<b>Austin leads sleep</b> &mdash; avg 86.8 vs 76.3.",
   "<b>Austin leads recovery</b> &mdash; avg 70 vs 65.",
   "<b>Bottom line</b> &mdash; Ethan leads the last full day; Austin leads the week."
