@@ -34,9 +34,9 @@ window.BOARD_DATA = {
    "Nov 17",
    "Nov 18"
   ],
-  "updatedAt": "2026-11-18T22:57:40.685330Z",
-  "updatedTimePT": "2:57 PM PST",
-  "updatedLongPT": "Nov 18, 2:57 PM PST",
+  "updatedAt": "2026-11-18T23:57:51.405151Z",
+  "updatedTimePT": "3:57 PM PST",
+  "updatedLongPT": "Nov 18, 3:57 PM PST",
   "live": true
  },
  "days": [
@@ -233,7 +233,7 @@ window.BOARD_DATA = {
     6628,
     6851,
     8239,
-    2706
+    2927
    ],
    "stages": [
     [
@@ -530,9 +530,9 @@ window.BOARD_DATA = {
      67
     ],
     [
-     42,
+     37,
      61,
-     34
+     39
     ]
    ],
    "stress": [
@@ -565,7 +565,7 @@ window.BOARD_DATA = {
     31,
     32,
     33,
-    29
+    31
    ],
    "maxhr": [
     101,
@@ -597,7 +597,7 @@ window.BOARD_DATA = {
     116,
     115,
     121,
-    98
+    101
    ],
    "dist": [
     null,
@@ -693,7 +693,7 @@ window.BOARD_DATA = {
     6.85,
     8.46,
     8.23,
-    3.45
+    4.0
    ],
    "hrSeries": [
     [
@@ -2175,8 +2175,8 @@ window.BOARD_DATA = {
      85,
      90,
      90,
-     85,
-     null,
+     86,
+     89,
      null,
      null,
      null,
@@ -3650,34 +3650,34 @@ window.BOARD_DATA = {
     ],
     [
      17,
-     22,
+     21,
      26,
      30,
-     35,
+     34,
      39,
      43,
-     48,
-     52,
-     55,
-     59,
-     63,
+     47,
+     51,
+     56,
+     60,
+     64,
      67,
      71,
      75,
      73,
      71,
-     69,
-     67,
+     68,
+     66,
      64,
      62,
      59,
      56,
-     54,
+     53,
      51,
      48,
-     46,
-     43,
-     null,
+     45,
+     42,
+     39,
      null,
      null,
      null,
@@ -3768,7 +3768,7 @@ window.BOARD_DATA = {
    "hrvVsOwnYesterday": "HRV 54 vs own avg 56",
    "hrvVsOwnToday": "HRV 54 vs own avg 56",
    "weekly": {
-    "steps": 42552,
+    "steps": 42773,
     "dist": 0.0,
     "avgSleep": 87.0,
     "avgRecovery": 70,
@@ -3780,7 +3780,7 @@ window.BOARD_DATA = {
     "bestSleep": "Nov 13 (98)"
    },
    "monthly": {
-    "steps": 205740,
+    "steps": 205961,
     "dist": 0.0,
     "avgSleep": 83.7,
     "avgRecovery": 70,
