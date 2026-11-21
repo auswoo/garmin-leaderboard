@@ -34,9 +34,9 @@ window.BOARD_DATA = {
    "Nov 19",
    "Nov 20"
   ],
-  "updatedAt": "2026-11-21T01:57:42.107540Z",
-  "updatedTimePT": "5:57 PM PST",
-  "updatedLongPT": "Nov 20, 5:57 PM PST",
+  "updatedAt": "2026-11-21T02:57:42.876585Z",
+  "updatedTimePT": "6:57 PM PST",
+  "updatedLongPT": "Nov 20, 6:57 PM PST",
   "live": true
  },
  "days": [
