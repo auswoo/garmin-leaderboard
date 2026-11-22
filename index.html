@@ -644,7 +644,7 @@ function renderDaily(dayIdx) {
 
   renderBoard(box, "Sleep", byVal("sleep", true).map((p) => ({
     person: p,
-    valHtml: '<span class="val">' + show(p.sleep[dayIdx]) + "</span>",
+    valHtml: ringHtml(p.sleep[dayIdx], 100, recoveryColor, show(p.sleep[dayIdx])),
     delta: deltaHtml(p.sleep[dayIdx], p.sleep[dayIdx - 1], deltaLabel, fmtDiff),
     panelHtml: sleepPanel(p, dayIdx)
   })));
@@ -682,7 +682,7 @@ function renderWeekly() {
 
   renderBoard(box, "Avg sleep", byWeekly("avgSleep", true).map((p) => ({
     person: p,
-    valHtml: '<span class="val">' + p.weekly.avgSleep.toFixed(1) + "</span>",
+    valHtml: ringHtml(p.weekly.avgSleep, 100, recoveryColor, (p.weekly.avgSleep == null ? "—" : p.weekly.avgSleep.toFixed(1))),
     panelHtml: weeklySleepPanel(p)
   })));
 
@@ -731,7 +731,7 @@ function renderMonthly() {
 
   renderBoard(box, "Avg sleep", byMonthly("avgSleep", true).map((p) => ({
     person: p,
-    valHtml: '<span class="val">' + p.monthly.avgSleep.toFixed(1) + "</span>",
+    valHtml: ringHtml(p.monthly.avgSleep, 100, recoveryColor, (p.monthly.avgSleep == null ? "—" : p.monthly.avgSleep.toFixed(1))),
     panelHtml: monthlySleepPanel(p)
   })));
 
