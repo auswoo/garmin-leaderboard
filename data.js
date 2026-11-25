@@ -34,9 +34,9 @@ window.BOARD_DATA = {
    "Nov 24",
    "Nov 25"
   ],
-  "updatedAt": "2026-11-25T09:57:40.205091Z",
-  "updatedTimePT": "1:57 AM PST",
-  "updatedLongPT": "Nov 25, 1:57 AM PST",
+  "updatedAt": "2026-11-25T10:57:22.300448Z",
+  "updatedTimePT": "2:57 AM PST",
+  "updatedLongPT": "Nov 25, 2:57 AM PST",
   "live": true
  },
  "days": [
@@ -4277,7 +4277,7 @@ window.BOARD_DATA = {
     36,
     26,
     34,
-    21
+    23
    ],
    "maxhr": [
     112,
@@ -4405,7 +4405,7 @@ window.BOARD_DATA = {
     8.63,
     8.09,
     8.67,
-    0.29
+    0.38
    ],
    "hrSeries": [
     [
@@ -5862,8 +5862,8 @@ window.BOARD_DATA = {
      60,
      64,
      68,
-     65,
-     null,
+     67,
+     75,
      null,
      null,
      null,
@@ -7363,7 +7363,7 @@ window.BOARD_DATA = {
     [
      14,
      14,
-     null,
+     14,
      null,
      null,
      null,
