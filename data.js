@@ -34,9 +34,9 @@ window.BOARD_DATA = {
    "Nov 23",
    "Nov 24"
   ],
-  "updatedAt": "2026-11-25T05:57:46.165660Z",
-  "updatedTimePT": "9:57 PM PST",
-  "updatedLongPT": "Nov 24, 9:57 PM PST",
+  "updatedAt": "2026-11-25T06:57:26.900176Z",
+  "updatedTimePT": "10:57 PM PST",
+  "updatedLongPT": "Nov 24, 10:57 PM PST",
   "live": true
  },
  "days": [
@@ -233,7 +233,7 @@ window.BOARD_DATA = {
     8925,
     9684,
     6672,
-    6154
+    9576
    ],
    "stages": [
     [
@@ -530,9 +530,9 @@ window.BOARD_DATA = {
      63
     ],
     [
-     24,
+     15,
      50,
-     41
+     50
     ]
    ],
    "stress": [
@@ -565,7 +565,7 @@ window.BOARD_DATA = {
     36,
     39,
     29,
-    36
+    39
    ],
    "maxhr": [
     99,
@@ -661,7 +661,7 @@ window.BOARD_DATA = {
     14,
     14,
     11,
-    10
+    14
    ],
    "hrload": [
     7.26,
@@ -693,7 +693,7 @@ window.BOARD_DATA = {
     9.17,
     8.69,
     7.45,
-    7.02
+    8.87
    ],
    "hrSeries": [
     [
@@ -2185,14 +2185,14 @@ window.BOARD_DATA = {
      82,
      87,
      88,
+     87,
      86,
-     null,
-     null,
-     null,
-     null,
-     null,
-     null,
-     null,
+     87,
+     80,
+     84,
+     84,
+     92,
+     98,
      null,
      null
     ]
@@ -3653,47 +3653,47 @@ window.BOARD_DATA = {
      18,
      21,
      24,
-     27,
-     30,
-     33,
-     36,
-     39,
-     42,
-     45,
-     47,
-     50,
-     53,
-     56,
-     59,
-     62,
+     26,
+     29,
+     32,
+     35,
+     38,
+     41,
+     43,
+     46,
+     49,
+     52,
+     55,
+     58,
+     61,
      64,
      61,
      59,
      57,
      55,
      53,
-     50,
-     48,
-     46,
-     44,
-     43,
-     41,
-     39,
+     51,
+     49,
+     47,
+     45,
+     42,
+     40,
      38,
      36,
      34,
-     32,
+     33,
      31,
-     29,
+     30,
+     28,
      27,
      25,
-     null,
-     null,
-     null,
-     null,
-     null,
-     null,
-     null,
+     24,
+     22,
+     21,
+     19,
+     18,
+     16,
+     15,
      null,
      null,
      null
@@ -3764,29 +3764,29 @@ window.BOARD_DATA = {
     537
    ],
    "strainYesterday": 11,
-   "strainToday": 10,
+   "strainToday": 14,
    "hrvVsOwnYesterday": "HRV 53 vs own avg 54",
    "hrvVsOwnToday": "HRV 43 vs own avg 54",
    "weekly": {
-    "steps": 57059,
+    "steps": 60481,
     "dist": 0.0,
     "avgSleep": 83.4,
     "avgRecovery": 67,
     "avgHrv": 50.6,
-    "avgStrain": 12.1,
-    "totalStrain": 85,
+    "avgStrain": 12.7,
+    "totalStrain": 89,
     "lowRhr": 56,
     "bestRec": "Nov 19 (79)",
     "bestSleep": "Nov 19 (94)"
    },
    "monthly": {
-    "steps": 220182,
+    "steps": 223604,
     "dist": 0.0,
     "avgSleep": 82.3,
     "avgRecovery": 69,
     "avgHrv": 53.6,
-    "avgStrain": 11.4,
-    "totalStrain": 342,
+    "avgStrain": 11.5,
+    "totalStrain": 346,
     "lowRhr": 53,
     "bestRec": "Nov 8 (83)",
     "bestSleep": "Nov 13 (98)"
@@ -11022,7 +11022,7 @@ window.BOARD_DATA = {
   }
  ],
  "summary": [
-  "<b>Jordan leads steps</b> &mdash; 88,434 vs 57,059 this week (1.5\u00d7).",
+  "<b>Jordan leads steps</b> &mdash; 88,434 vs 60,481 this week (1.5\u00d7).",
   "<b>Austin leads sleep</b> &mdash; avg 83.4 vs 79.7.",
   "<b>Jordan leads recovery</b> &mdash; avg 75 vs 67.",
   "<b>Bottom line</b> &mdash; Jordan leads the last full day; Jordan leads the week."
