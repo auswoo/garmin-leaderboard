@@ -34,9 +34,9 @@ window.BOARD_DATA = {
    "Nov 25",
    "Nov 26"
   ],
-  "updatedAt": "2026-11-26T21:57:45.308274Z",
-  "updatedTimePT": "1:57 PM PST",
-  "updatedLongPT": "Nov 26, 1:57 PM PST",
+  "updatedAt": "2026-11-26T22:57:37.828884Z",
+  "updatedTimePT": "2:57 PM PST",
+  "updatedLongPT": "Nov 26, 2:57 PM PST",
   "live": true
  },
  "days": [
@@ -7673,7 +7673,7 @@ window.BOARD_DATA = {
     null,
     5551,
     6138,
-    4520
+    6090
    ],
    "stages": [
     null,
@@ -8081,7 +8081,7 @@ window.BOARD_DATA = {
     null,
     10,
     10,
-    7
+    9
    ],
    "hrload": [
     9.51,
@@ -8113,7 +8113,7 @@ window.BOARD_DATA = {
     null,
     6.82,
     7.12,
-    4.81
+    5.47
    ],
    "hrSeries": [
     [
@@ -9495,10 +9495,10 @@ window.BOARD_DATA = {
      80,
      83,
      77,
-     73,
-     null,
-     null,
-     null,
+     74,
+     76,
+     78,
+     90,
      null,
      null,
      null,
@@ -10875,24 +10875,24 @@ window.BOARD_DATA = {
     [
      33,
      32,
+     31,
      30,
      29,
      27,
      26,
-     24,
-     24,
+     25,
      24,
      23,
      22,
-     20,
+     21,
      19,
      18,
      16,
      15,
      13,
      12,
+     11,
      12,
-     13,
      12,
      10,
      8,
@@ -10988,29 +10988,29 @@ window.BOARD_DATA = {
     null
    ],
    "strainYesterday": 10,
-   "strainToday": 7,
+   "strainToday": 9,
    "hrvVsOwnYesterday": "HRV 67 vs own avg 60",
    "hrvVsOwnToday": "HRV \u2014",
    "weekly": {
-    "steps": 46884,
+    "steps": 48454,
     "dist": 0.0,
     "avgSleep": 74.5,
     "avgRecovery": 63,
     "avgHrv": 58.0,
-    "avgStrain": 11.7,
-    "totalStrain": 70,
+    "avgStrain": 12.0,
+    "totalStrain": 72,
     "lowRhr": 50,
     "bestRec": "Nov 25 (80)",
     "bestSleep": "Nov 25 (89)"
    },
    "monthly": {
-    "steps": 221186,
+    "steps": 222756,
     "dist": 0.0,
     "avgSleep": 74.1,
     "avgRecovery": 64,
     "avgHrv": 59.5,
-    "avgStrain": 12.5,
-    "totalStrain": 351,
+    "avgStrain": 12.6,
+    "totalStrain": 353,
     "lowRhr": 48,
     "bestRec": "Nov 10 (80)",
     "bestSleep": "Nov 25 (89)"
