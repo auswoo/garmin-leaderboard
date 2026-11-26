@@ -34,9 +34,9 @@ window.BOARD_DATA = {
    "Nov 25",
    "Nov 26"
   ],
-  "updatedAt": "2026-11-26T18:57:34.403449Z",
-  "updatedTimePT": "10:57 AM PST",
-  "updatedLongPT": "Nov 26, 10:57 AM PST",
+  "updatedAt": "2026-11-26T19:57:36.005218Z",
+  "updatedTimePT": "11:57 AM PST",
+  "updatedLongPT": "Nov 26, 11:57 AM PST",
   "live": true
  },
  "days": [
@@ -3953,7 +3953,7 @@ window.BOARD_DATA = {
     4938,
     11116,
     13525,
-    225
+    236
    ],
    "stages": [
     [
@@ -4250,9 +4250,9 @@ window.BOARD_DATA = {
      65
     ],
     [
-     79,
-     73,
-     5
+     78,
+     74,
+     7
     ]
    ],
    "stress": [
@@ -4413,7 +4413,7 @@ window.BOARD_DATA = {
     8.09,
     8.67,
     10.3,
-    1.79
+    1.89
    ],
    "hrSeries": [
     [
@@ -5888,7 +5888,7 @@ window.BOARD_DATA = {
      62,
      58,
      59,
-     null,
+     63,
      null,
      null,
      null,
@@ -7375,21 +7375,21 @@ window.BOARD_DATA = {
      null,
      7,
      10,
-     12,
+     13,
      17,
      23,
      29,
      35,
      41,
-     48,
+     47,
      54,
-     58,
-     61,
+     59,
+     62,
      65,
-     69,
-     72,
-     76,
-     null,
+     68,
+     71,
+     75,
+     78,
      null,
      null,
      null,
@@ -7488,7 +7488,7 @@ window.BOARD_DATA = {
    "hrvVsOwnYesterday": "HRV 61 vs own avg 69",
    "hrvVsOwnToday": "HRV 62 vs own avg 69",
    "weekly": {
-    "steps": 76157,
+    "steps": 76168,
     "dist": 0.0,
     "avgSleep": 75.9,
     "avgRecovery": 68,
@@ -7500,7 +7500,7 @@ window.BOARD_DATA = {
     "bestSleep": "Nov 21 (90)"
    },
    "monthly": {
-    "steps": 395747,
+    "steps": 395758,
     "dist": 0.0,
     "avgSleep": 75.0,
     "avgRecovery": 67,
@@ -11018,7 +11018,7 @@ window.BOARD_DATA = {
   }
  ],
  "summary": [
-  "<b>Jordan leads steps</b> &mdash; 76,157 vs 57,259 this week (1.3\u00d7).",
+  "<b>Jordan leads steps</b> &mdash; 76,168 vs 57,259 this week (1.3\u00d7).",
   "<b>Austin leads sleep</b> &mdash; avg 80.0 vs 75.9.",
   "<b>Jordan leads recovery</b> &mdash; avg 68 vs 63.",
   "<b>Bottom line</b> &mdash; Ethan leads the last full day; Jordan leads the week."
