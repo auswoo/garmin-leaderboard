@@ -34,9 +34,9 @@ window.BOARD_DATA = {
    "Nov 24",
    "Nov 25"
   ],
-  "updatedAt": "2026-11-26T06:57:30.706667Z",
-  "updatedTimePT": "10:57 PM PST",
-  "updatedLongPT": "Nov 25, 10:57 PM PST",
+  "updatedAt": "2026-11-26T07:57:28.655594Z",
+  "updatedTimePT": "11:57 PM PST",
+  "updatedLongPT": "Nov 25, 11:57 PM PST",
   "live": true
  },
  "days": [
@@ -233,7 +233,7 @@ window.BOARD_DATA = {
     9684,
     6672,
     10174,
-    8914
+    9482
    ],
    "stages": [
     [
@@ -530,9 +530,9 @@ window.BOARD_DATA = {
      53
     ],
     [
-     11,
+     9,
      62,
-     63
+     65
     ]
    ],
    "stress": [
@@ -661,7 +661,7 @@ window.BOARD_DATA = {
     14,
     11,
     14,
-    14
+    15
    ],
    "hrload": [
     7.44,
@@ -693,7 +693,7 @@ window.BOARD_DATA = {
     8.69,
     7.45,
     9.48,
-    9.91
+    10.39
    ],
    "hrSeries": [
     [
@@ -2191,8 +2191,8 @@ window.BOARD_DATA = {
      93,
      94,
      89,
-     null,
-     null,
+     81,
+     79,
      null,
      null
     ]
@@ -3656,44 +3656,44 @@ window.BOARD_DATA = {
      21,
      25,
      29,
-     32,
-     36,
-     40,
-     44,
-     48,
-     52,
-     56,
-     60,
-     64,
+     33,
+     37,
+     41,
+     45,
+     49,
+     53,
+     57,
+     61,
+     65,
      68,
      72,
      69,
      67,
      64,
-     61,
-     58,
-     56,
-     53,
-     50,
-     48,
-     45,
-     42,
-     40,
-     38,
-     36,
-     34,
-     32,
-     30,
-     28,
-     26,
-     24,
+     62,
+     59,
+     57,
+     54,
+     51,
+     49,
+     46,
+     44,
+     41,
+     39,
+     37,
+     35,
+     33,
+     31,
+     29,
+     27,
+     25,
      22,
      20,
-     17,
-     15,
-     13,
-     11,
-     null,
+     18,
+     16,
+     14,
+     12,
+     10,
      null,
      null,
      null
@@ -3764,29 +3764,29 @@ window.BOARD_DATA = {
     533
    ],
    "strainYesterday": 14,
-   "strainToday": 14,
+   "strainToday": 15,
    "hrvVsOwnYesterday": "HRV 43 vs own avg 54",
    "hrvVsOwnToday": "HRV 50 vs own avg 54",
    "weekly": {
-    "steps": 63974,
+    "steps": 64542,
     "dist": 0.0,
     "avgSleep": 83.3,
     "avgRecovery": 66,
     "avgHrv": 50.0,
-    "avgStrain": 13.1,
-    "totalStrain": 92,
+    "avgStrain": 13.3,
+    "totalStrain": 93,
     "lowRhr": 56,
     "bestRec": "Nov 19 (79)",
     "bestSleep": "Nov 19 (94)"
    },
    "monthly": {
-    "steps": 227055,
+    "steps": 227623,
     "dist": 0.0,
     "avgSleep": 83.5,
     "avgRecovery": 69,
     "avgHrv": 53.7,
     "avgStrain": 11.7,
-    "totalStrain": 350,
+    "totalStrain": 351,
     "lowRhr": 53,
     "bestRec": "Nov 8 (83)",
     "bestSleep": "Nov 13 (98)"
@@ -11022,7 +11022,7 @@ window.BOARD_DATA = {
   }
  ],
  "summary": [
-  "<b>Jordan leads steps</b> &mdash; 88,179 vs 63,974 this week (1.4\u00d7).",
+  "<b>Jordan leads steps</b> &mdash; 88,179 vs 64,542 this week (1.4\u00d7).",
   "<b>Austin leads sleep</b> &mdash; avg 83.3 vs 76.9.",
   "<b>Jordan leads recovery</b> &mdash; avg 71 vs 66.",
   "<b>Bottom line</b> &mdash; Jordan leads the last full day; Jordan leads the week."
