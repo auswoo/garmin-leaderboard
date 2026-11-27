@@ -34,9 +34,9 @@ window.BOARD_DATA = {
    "Nov 26",
    "Nov 27"
   ],
-  "updatedAt": "2026-11-27T17:57:40.651548Z",
-  "updatedTimePT": "9:57 AM PST",
-  "updatedLongPT": "Nov 27, 9:57 AM PST",
+  "updatedAt": "2026-11-27T18:57:34.873672Z",
+  "updatedTimePT": "10:57 AM PST",
+  "updatedLongPT": "Nov 27, 10:57 AM PST",
   "live": true
  },
  "days": [
@@ -233,7 +233,7 @@ window.BOARD_DATA = {
     10174,
     9512,
     7418,
-    457
+    1090
    ],
    "stages": [
     [
@@ -534,9 +534,9 @@ window.BOARD_DATA = {
      45
     ],
     [
-     64,
+     60,
      63,
-     4
+     8
     ]
    ],
    "stress": [
@@ -569,7 +569,7 @@ window.BOARD_DATA = {
     39,
     41,
     43,
-    20
+    21
    ],
    "maxhr": [
     125,
@@ -697,7 +697,7 @@ window.BOARD_DATA = {
     9.48,
     10.62,
     8.62,
-    1.43
+    1.74
    ],
    "hrSeries": [
     [
@@ -2171,8 +2171,8 @@ window.BOARD_DATA = {
      76,
      72,
      79,
-     null,
-     null,
+     76,
+     72,
      null,
      null,
      null,
@@ -3654,19 +3654,19 @@ window.BOARD_DATA = {
     ],
     [
      7,
-     11,
+     10,
      14,
      18,
-     22,
-     26,
+     21,
+     25,
      29,
      32,
-     36,
+     35,
      39,
      43,
      46,
      50,
-     53,
+     54,
      57,
      61,
      65,
@@ -3772,7 +3772,7 @@ window.BOARD_DATA = {
    "hrvVsOwnYesterday": "HRV 47 vs own avg 53",
    "hrvVsOwnToday": "HRV 50 vs own avg 53",
    "weekly": {
-    "steps": 52842,
+    "steps": 53475,
     "dist": 0.0,
     "avgSleep": 81.4,
     "avgRecovery": 65,
@@ -3784,7 +3784,7 @@ window.BOARD_DATA = {
     "bestSleep": "Nov 23 (92)"
    },
    "monthly": {
-    "steps": 223409,
+    "steps": 224042,
     "dist": 0.0,
     "avgSleep": 83.2,
     "avgRecovery": 69,
@@ -11026,7 +11026,7 @@ window.BOARD_DATA = {
   }
  ],
  "summary": [
-  "<b>Jordan leads steps</b> &mdash; 80,915 vs 52,842 this week (1.5\u00d7).",
+  "<b>Jordan leads steps</b> &mdash; 80,915 vs 53,475 this week (1.5\u00d7).",
   "<b>Austin leads sleep</b> &mdash; avg 81.4 vs 75.5.",
   "<b>Austin leads recovery</b> &mdash; avg 65 vs 64.",
   "<b>Bottom line</b> &mdash; Jordan leads the last full day; Austin leads the week."
