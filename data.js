@@ -34,9 +34,9 @@ window.BOARD_DATA = {
    "Nov 26",
    "Nov 27"
   ],
-  "updatedAt": "2026-11-27T14:57:45.804353Z",
-  "updatedTimePT": "6:57 AM PST",
-  "updatedLongPT": "Nov 27, 6:57 AM PST",
+  "updatedAt": "2026-11-27T15:57:39.334941Z",
+  "updatedTimePT": "7:57 AM PST",
+  "updatedLongPT": "Nov 27, 7:57 AM PST",
   "live": true
  },
  "days": [
@@ -3953,7 +3953,7 @@ window.BOARD_DATA = {
     11116,
     13525,
     12686,
-    559
+    2559
    ],
    "stages": [
     [
@@ -4381,7 +4381,7 @@ window.BOARD_DATA = {
     14,
     15,
     14,
-    1
+    2
    ],
    "hrload": [
     10.82,
@@ -7371,13 +7371,13 @@ window.BOARD_DATA = {
     [
      null,
      18,
-     20,
-     23,
+     21,
+     24,
      27,
-     33,
-     40,
-     46,
-     50,
+     32,
+     37,
+     42,
+     48,
      53,
      null,
      null,
@@ -7484,29 +7484,29 @@ window.BOARD_DATA = {
     298
    ],
    "strainYesterday": 14,
-   "strainToday": 1,
+   "strainToday": 2,
    "hrvVsOwnYesterday": "HRV 62 vs own avg 69",
    "hrvVsOwnToday": "HRV 62 vs own avg 69",
    "weekly": {
-    "steps": 74639,
+    "steps": 76639,
     "dist": 0.0,
     "avgSleep": 71.9,
     "avgRecovery": 64,
     "avgHrv": 69.4,
-    "avgStrain": 11.9,
-    "totalStrain": 83,
+    "avgStrain": 12.0,
+    "totalStrain": 84,
     "lowRhr": 49,
     "bestRec": "Nov 23 (83)",
     "bestSleep": "Nov 21 (90)"
    },
    "monthly": {
-    "steps": 396789,
+    "steps": 398789,
     "dist": 0.0,
     "avgSleep": 73.9,
     "avgRecovery": 66,
     "avgHrv": 69.3,
     "avgStrain": 13.9,
-    "totalStrain": 416,
+    "totalStrain": 417,
     "lowRhr": 48,
     "bestRec": "Nov 18 (85)",
     "bestSleep": "Nov 1 (93)"
@@ -11018,7 +11018,7 @@ window.BOARD_DATA = {
   }
  ],
  "summary": [
-  "<b>Jordan leads steps</b> &mdash; 74,639 vs 52,385 this week (1.4\u00d7).",
+  "<b>Jordan leads steps</b> &mdash; 76,639 vs 52,385 this week (1.5\u00d7).",
   "<b>Austin leads sleep</b> &mdash; avg 80.5 vs 73.0.",
   "<b>Bottom line</b> &mdash; Jordan leads the last full day; Austin leads the week."
  ]
